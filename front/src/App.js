@@ -1,9 +1,10 @@
 import logo from './logo.svg';
 import './App.css';
 import { useState, useEffect } from 'react';
+import Board from './components/Board'
 
 
-function App() {
+function App(socket) {
   const [cliente, setCliente] = useState('Boton Normal');
   useEffect(() => {
     if (cliente == 'Gaspar') {
@@ -17,6 +18,7 @@ return (
       <p>
         Edit <code>src/App.js</code> and save to reload.
       </p>
+      <Board socket={socket}></Board>
       <a
         className="App-link"
         href="https://reactjs.org"
