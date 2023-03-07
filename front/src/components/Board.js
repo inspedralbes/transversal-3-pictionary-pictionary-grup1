@@ -12,12 +12,11 @@ function Board({ socket }) {
   const firstCanvas = useRef(null); //Serveix per agafar un component com a referencia
   const secondCanvas = useRef(null);
   //Color picker
-  const [currentColor, setCurrentColor] = useState("#fff");
+  const [currentColor, setCurrentColor] = useState("#000");
 
   const handleChangeComplete = (color) => {
     setCurrentColor(color.hex);
   };
-
 
   const clear = () => {
     // poner control de si es pintor o no
@@ -26,6 +25,7 @@ function Board({ socket }) {
 
   const undo = () => {
     // poner control de si es pintor o no
+    console.log("undoed");
     firstCanvas.current.undo();
   };
 
@@ -44,8 +44,10 @@ function Board({ socket }) {
     socket.emit("give_me_the_board");
 
     socket.on('new_board_data', (data) => {
-      console.log("holaaaaa");
-      secondCanvas.current.loadSaveData(data.board);
+      if (!pintor) {
+        console.log("holaaaaa");
+        secondCanvas.current.loadSaveData(data.board);
+      }
     });
 
     socket.on('pintor', (data) => {
@@ -60,13 +62,13 @@ function Board({ socket }) {
       undo();
     }
   })
-  
+
   if (pintor) {
     return (
       <div className="Board">
         <button onClick={clear}>Neteja</button>
         <button onClick={undo}>Desfes</button>
-        <CirclePicker style={{ border: "4px solid #000" }} color={currentColor} onChangeComplete={handleChangeComplete}></CirclePicker>  
+        <CirclePicker style={{ border: "4px solid #000" }} color={currentColor} onChangeComplete={handleChangeComplete}></CirclePicker>
         <CanvasDraw
           brushRadius={5}
           brushColor={currentColor}
@@ -77,18 +79,16 @@ function Board({ socket }) {
           ref={firstCanvas}
           onChange={sendBoardDataToSocketIo}
         />
-        <h1>Canvas guardat:</h1>
-        <CanvasDraw hideGrid={true} disabled={true} immediateLoading={true} ref={secondCanvas} />
       </div>
     );
   } else {
     return (
       <div className="Board">
-        <CanvasDraw hideGrid={true} disabled={true} immediateLoading={true} ref={secondCanvas} style={{ border: "4px solid #000" }}/>
+        <CanvasDraw hideGrid={true} disabled={true} immediateLoading={true} ref={secondCanvas} style={{ border: "4px solid #000" }} />
       </div>
     );
   }
- 
+
 }
 
 export default Board;
