@@ -13,9 +13,26 @@ const socketIO = require("socket.io")(server, {
 });
 
 let boardData;
+let i=0;
+let arrI=[]
 
 socketIO.on('connection', socket => {
-    console.log(socket.id + " connected");
+    
+    i++
+    // arrI.push(i);
+    socket.data.id = i;
+    console.log(socket.data.id + " connected ");
+
+    if (socket.data.id == 1) {
+        socketIO.to(socket.id).emit("pintor", {
+            pintor: true
+        })
+    } else {
+        socketIO.to(socket.id).emit("pintor", {
+            pintor: false
+        })
+    }
+    
 
     socket.on('save_coord', (arrayDatos) => {
         boardData = arrayDatos;
@@ -27,7 +44,7 @@ socketIO.on('connection', socket => {
     });
 
     socket.on('disconnect', () => {
-        console.log(socket.id + " disconnected");
+        console.log(socket.id + " disconnected "+i );
     })
 });
 

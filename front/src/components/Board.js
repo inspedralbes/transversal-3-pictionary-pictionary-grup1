@@ -6,6 +6,7 @@ import CanvasDraw from "react-canvas-draw";
 
 function Board({ socket }) {
   const [contador, setContador] = useState(0);
+  const [pintor, setPintor] = useState(false);
   const firstCanvas = useRef(null); //Serveix per agafar un component com a referencia
   const secondCanvas = useRef(null);
 
@@ -36,6 +37,11 @@ function Board({ socket }) {
         secondCanvas.current.loadSaveData(data.board);
       }
     });
+
+    socket.on('pintor', (data) => {
+      setPintor(data.pintor);
+    });
+
   }, [])
 
   useEffect(() => {
@@ -47,23 +53,30 @@ function Board({ socket }) {
       undo();
     }
   })
-  return (
-    <div className="Board">
-      <button onClick={clear}>Neteja</button>
-      <CanvasDraw
-        brushRadius={5}
-        brushColor={"red"}
-        hideInterface={true}
-        loadTimeOffset={0}
-        lazyRadius={5}
-        style={{ border: "4px solid #000" }}
-        ref={firstCanvas}
-        onChange={sendBoardDataToSocketIo}
-      />
-      <h1>Canvas guardat:</h1>
-      <CanvasDraw hideGrid={true} disabled={true} immediateLoading={true} ref={secondCanvas} />
-    </div>
-  );
+  if (pintor) {
+    return (
+      <div className="Board">
+        <button onClick={clear}>Neteja</button>
+        <CanvasDraw
+          brushRadius={5}
+          brushColor={"red"}
+          hideInterface={true}
+          loadTimeOffset={0}
+          lazyRadius={5}
+          style={{ border: "4px solid #000" }}
+          ref={firstCanvas}
+          onChange={sendBoardDataToSocketIo}
+        />
+      </div>
+    );
+  } else {
+    return (
+      <div className="Board">
+        <CanvasDraw hideGrid={true} disabled={true} immediateLoading={true} ref={secondCanvas} style={{ border: "4px solid #000" }}/>
+      </div>
+    );
+  }
+ 
 }
 
 export default Board;
