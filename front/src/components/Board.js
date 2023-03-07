@@ -10,6 +10,7 @@ import { CirclePicker } from "react-color";
 
 function Board({ socket }) {
   const [contador, setContador] = useState(0);
+  const [pintor, setPintor] = useState(false);
   const firstCanvas = useRef(null); //Serveix per agafar un component com a referencia
   const secondCanvas = useRef(null);
   //Color picker
@@ -27,14 +28,17 @@ function Board({ socket }) {
   };
 
   const clear = () => {
+    // poner control de si es pintor o no
     firstCanvas.current.clear();
   };
 
   const undo = () => {
+    // poner control de si es pintor o no
     firstCanvas.current.undo();
   };
 
   const sendBoardDataToSocketIo = () => {
+    // poner control de si es pintor o no
     console.log("Estoy mandando datos");
     const data = firstCanvas.current.getSaveData(); //Dona totes les coordenades utilitzades en el CanvasDraw
     socket.emit('save_coord', data)
@@ -46,47 +50,55 @@ function Board({ socket }) {
     //   console.log(contador);
     //   sendBoardDataToSocketIo();
     // }, 1000);    
+    socket.emit("give_me_the_board");
+
     socket.on('new_board_data', (data) => {
-      if (data != secondCanvas.current.getSaveData()) {
-        console.log("holaaaaa");
-        secondCanvas.current.loadSaveData(data.board);
-      }
+      secondCanvas.current.loadSaveData(data.board);
     });
+
+    socket.on('pintor', (data) => {
+      setPintor(data.pintor);
+    });
+
   }, [])
 
-  useEffect(() => {
-    console.log("hola");
-  }, [CanvasDraw]);
-
-  document.addEventListener('keydown', function(e) {
-    if(e.ctrlKey && e.key === 'z') {
+  document.addEventListener('keydown', function (e) {
+    if (e.ctrlKey && e.key === 'z') {
       undo();
     }
   })
-  return (
-    <div className="Board">
-      <button onClick={clear}>Neteja</button>
-      <button onClick={undo}>Desfes</button>
-      <CirclePicker className="CirclePicker" style={{ border: "4px solid #000" }} color={currentColor} onChangeComplete={handleChangeComplete}></CirclePicker>  
-      <input id="brushRadius" type={"range"} min="1" max="50" step={0} value={brushRadius} onChange={(e) => setBrushRadius(e.target.value)} ></input>
-      <CanvasDraw
-        className="Board__draw"
-        canvasWidth={700}
-        canvasHeight={700}
-        brushRadius={brushRadius}
-        brushColor={currentColor}
-        hideGrid={true}
-        hideInterface={true}
-        loadTimeOffset={0}
-        lazyRadius={1}
-        style={{ border: "4px solid #000" }}
-        ref={firstCanvas}
-        onChange={sendBoardDataToSocketIo}
-      />
-      <h1>Canvas guardat:</h1>
-      <CanvasDraw hideGrid={true} hideInterface={true} canvasWidth={700} canvasHeight={700}disabled={true} immediateLoading={true} ref={secondCanvas} />
-    </div>
-  );
+
+  if (pintor) {
+    return (
+      <div className="Board">
+        <button onClick={clear}>Neteja</button>
+        <button onClick={undo}>Desfes</button>
+        <CirclePicker className="CirclePicker" style={{ border: "4px solid #000" }} color={currentColor} onChangeComplete={handleChangeComplete}></CirclePicker>  
+        <input id="brushRadius" type={"range"} min="1" max="50" step={0} value={brushRadius} onChange={(e) => setBrushRadius(e.target.value)} ></input>
+        <CanvasDraw
+          className="Board__draw"
+          canvasWidth={700}
+          canvasHeight={700}
+          brushRadius={brushRadius}
+          brushColor={currentColor}
+          hideGrid={true}
+          hideInterface={true}
+          loadTimeOffset={0}
+          lazyRadius={1}
+          style={{ border: "4px solid #000" }}
+          ref={firstCanvas}
+          onChange={sendBoardDataToSocketIo}
+        />
+      </div>
+    );
+  } else {
+    return (
+      <div className="Board">
+        <CanvasDraw hideGrid={true} disabled={true} immediateLoading={true} ref={secondCanvas} style={{ border: "4px solid #000" }}/>
+      </div>
+    );
+  }
+ 
 }
 
 export default Board;
