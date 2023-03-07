@@ -6,7 +6,8 @@ import { CirclePicker } from "react-color";
 
 //REFERENCIA: https://github.com/embiem/react-canvas-draw
 
-function Board() {
+function Board({ socket }) {
+  const [contador, setContador] = useState(0);
   const firstCanvas = useRef(null); //Serveix per agafar un component com a referencia
   const secondCanvas = useRef(null);
   //Color picker
@@ -17,12 +18,6 @@ function Board() {
   };
 
 
-  const save = () => {
-    const data = firstCanvas.current.getSaveData(); //Dona totes les coordenades utilitzades en el CanvasDraw
-    console.log(data);
-    secondCanvas.current.loadSaveData(data);
-  };
-
   const clear = () => {
     firstCanvas.current.clear();
   };
@@ -31,12 +26,41 @@ function Board() {
     firstCanvas.current.undo();
   };
 
+  const sendBoardDataToSocketIo = () => {
+    console.log("Estoy mandando datos");
+    const data = firstCanvas.current.getSaveData(); //Dona totes les coordenades utilitzades en el CanvasDraw
+    socket.emit('save_coord', data)
+  }
+
+  useEffect(() => {
+    // const interval = setInterval(() => {
+    //   setContador(contador + 1);
+    //   console.log(contador);
+    //   sendBoardDataToSocketIo();
+    // }, 1000);
+    
+    socket.on('new_board_data', (data) => {
+      if (data != secondCanvas.current.getSaveData()) {
+        console.log("holaaaaa");
+        secondCanvas.current.loadSaveData(data.board);
+      }
+    });
+  }, [])
+
+  useEffect(() => {
+    console.log("hola");
+  }, [CanvasDraw]);
+
+  document.addEventListener('keydown', function(e) {
+    if(e.ctrlKey && e.key === 'z') {
+      undo();
+    }
+  })
   return (
     <div className="Board">
-      <button onClick={save}>Guarda</button>
       <button onClick={clear}>Neteja</button>
       <button onClick={undo}>Desfes</button>
-      <CirclePicker color={currentColor} onChangeComplete={handleChangeComplete}></CirclePicker>  
+      <CirclePicker style={{ border: "4px solid #000" }} color={currentColor} onChangeComplete={handleChangeComplete}></CirclePicker>  
       <CanvasDraw
         brushRadius={5}
         brushColor={currentColor}
@@ -45,9 +69,10 @@ function Board() {
         lazyRadius={5}
         style={{ border: "4px solid #000" }}
         ref={firstCanvas}
+        onChange={sendBoardDataToSocketIo}
       />
       <h1>Canvas guardat:</h1>
-      <CanvasDraw hideGrid={true} disabled={true} ref={secondCanvas} />
+      <CanvasDraw hideGrid={true} disabled={true} immediateLoading={true} ref={secondCanvas} />
     </div>
   );
 }

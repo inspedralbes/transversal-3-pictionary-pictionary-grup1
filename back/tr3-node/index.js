@@ -12,12 +12,18 @@ const socketIO = require("socket.io")(server, {
     },
 });
 
+let boardData;
+
 socketIO.on('connection', socket => {
     console.log(socket.id + " connected");
 
-    socket.on('saveCoord', (arrayDatos) => {
-        socket.coordenadas = arrayDatos;
-        console.log('Datos usuari: ' + socket.coordenadas);
+    socket.on('save_coord', (arrayDatos) => {
+        boardData = arrayDatos;
+        // console.log('board data: ' + boardData);
+
+        socketIO.emit("new_board_data", {
+            board: boardData
+        })
     });
 
     socket.on('disconnect', () => {
