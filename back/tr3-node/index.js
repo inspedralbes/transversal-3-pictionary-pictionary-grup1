@@ -12,7 +12,9 @@ const socketIO = require("socket.io")(server, {
     },
 });
 
-let boardData;
+let boardData = undefined;
+
+let players;
 
 socketIO.on('connection', socket => {
     console.log(socket.id + " connected");
@@ -24,6 +26,14 @@ socketIO.on('connection', socket => {
         socketIO.emit("new_board_data", {
             board: boardData
         })
+    });
+
+    socket.on('give_me_the_board', () => {
+        if (boardData != undefined) {
+            socketIO.emit("new_board_data", {
+                board: boardData
+            })
+        }
     });
 
     socket.on('disconnect', () => {
