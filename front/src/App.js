@@ -9,7 +9,8 @@ import routes from "./index.js";
 function App({ socket }) {
   const [result, setResult] = useState(null);
   const [wordToCheck, setWordToCheck] = useState();
-
+  const [pintor, setPintor] = useState(false);
+  
   function handleFormSubmit(word) {
     fetch(routes.fetchLaravel + 'checkWord', {
       method: 'POST',
@@ -31,14 +32,31 @@ function App({ socket }) {
     });
   }, [])
 
-  return (
-    <div>
-      {wordToCheck && <p>{wordToCheck}</p>}
-      {result && <p>{result}</p>}
-      <WordForm onSubmit={handleFormSubmit} /><br></br>
-      <Board socket={socket}></Board>
-    </div>
-  );
+  useEffect(() => {
+    socket.on('pintor', (data) => {
+      setPintor(data.pintor);
+    });
+
+  }, [])
+
+    if (pintor) {
+      return (
+        <div>
+          {wordToCheck && <p>{wordToCheck}</p>}
+          {result && <p>{result}</p>}
+          <Board socket={socket}></Board>
+        </div>
+      )}else{
+        return (
+          <div>
+            {wordToCheck && <p>{wordToCheck}</p>}
+            {result && <p>{result}</p>}
+            <WordForm onSubmit={handleFormSubmit} socket={socket} /><br></br>
+            <Board socket={socket}></Board>
+          </div>
+        )
+      }
+
 }
 
 export default App;
