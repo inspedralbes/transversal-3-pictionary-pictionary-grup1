@@ -10,7 +10,22 @@ import EndGame from './pages/EndGame';
 
 import {BrowserRouter, HashRouter, Routes, Route } from "react-router-dom";
 
+import socketIO from "socket.io-client";
 
+const routes = {
+  // fetchLaravel: "http://localhost:8000",
+  // fetchNode: "http://localhost:7500",
+  wsNode: "ws://localhost:7500",
+};
+
+var socket = socketIO(routes.wsNode, {
+  withCredentials: true,
+  cors: {
+    origin: "*",
+    credentials: true,
+  },
+  transports: ["websocket"],
+});
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -24,6 +39,7 @@ root.render(
           </Routes>
       </HashRouter>
     
+    <App socket={socket} />
   </React.StrictMode>
 );
 
