@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import React from "react";
 import CanvasDraw from "react-canvas-draw";
+import { CirclePicker } from "react-color";
+
 
 //REFERENCIA: https://github.com/embiem/react-canvas-draw
 
@@ -9,6 +11,13 @@ function Board({ socket }) {
   const [pintor, setPintor] = useState(false);
   const firstCanvas = useRef(null); //Serveix per agafar un component com a referencia
   const secondCanvas = useRef(null);
+  //Color picker
+  const [currentColor, setCurrentColor] = useState("#fff");
+
+  const handleChangeComplete = (color) => {
+    setCurrentColor(color.hex);
+  };
+
 
   const clear = () => {
     firstCanvas.current.clear();
@@ -53,13 +62,16 @@ function Board({ socket }) {
       undo();
     }
   })
+  
   if (pintor) {
     return (
       <div className="Board">
         <button onClick={clear}>Neteja</button>
+        <button onClick={undo}>Desfes</button>
+        <CirclePicker style={{ border: "4px solid #000" }} color={currentColor} onChangeComplete={handleChangeComplete}></CirclePicker>  
         <CanvasDraw
           brushRadius={5}
-          brushColor={"red"}
+          brushColor={currentColor}
           hideInterface={true}
           loadTimeOffset={0}
           lazyRadius={5}
@@ -67,6 +79,8 @@ function Board({ socket }) {
           ref={firstCanvas}
           onChange={sendBoardDataToSocketIo}
         />
+        <h1>Canvas guardat:</h1>
+        <CanvasDraw hideGrid={true} disabled={true} immediateLoading={true} ref={secondCanvas} />
       </div>
     );
   } else {
