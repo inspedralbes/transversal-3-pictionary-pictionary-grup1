@@ -9,12 +9,6 @@ function Board({ socket }) {
   const firstCanvas = useRef(null); //Serveix per agafar un component com a referencia
   const secondCanvas = useRef(null);
 
-  const save = () => {
-    // const data = firstCanvas.current.getSaveData(); //Dona totes les coordenades utilitzades en el CanvasDraw
-    // socket.emit('save_coord', data)
-    // console.log(data);
-  };
-
   const clear = () => {
     firstCanvas.current.clear();
   };
@@ -42,26 +36,20 @@ function Board({ socket }) {
         secondCanvas.current.loadSaveData(data.board);
       }
     });
-
-    // return () => {
-    //   clearInterval(interval);
-    // };
   }, [])
 
   useEffect(() => {
     console.log("hola");
   }, [CanvasDraw]);
 
-  // useEffect(() => {
-  //   console.log("hola actualiza cont");
-  //   sendBoardDataToSocketIo();
-  // }, [contador])
-
+  document.addEventListener('keydown', function(e) {
+    if(e.ctrlKey && e.key === 'z') {
+      undo();
+    }
+  })
   return (
     <div className="Board">
-      <button onClick={save}>Guarda</button>
       <button onClick={clear}>Neteja</button>
-      <button onClick={undo}>Desfes</button>
       <CanvasDraw
         brushRadius={5}
         brushColor={"red"}
