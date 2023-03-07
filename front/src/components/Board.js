@@ -20,31 +20,32 @@ function Board({ socket }) {
 
 
   const clear = () => {
+    // poner control de si es pintor o no
     firstCanvas.current.clear();
   };
 
   const undo = () => {
+    // poner control de si es pintor o no
     firstCanvas.current.undo();
   };
 
   const sendBoardDataToSocketIo = () => {
+    // poner control de si es pintor o no
     console.log("Estoy mandando datos");
     const data = firstCanvas.current.getSaveData(); //Dona totes les coordenades utilitzades en el CanvasDraw
     socket.emit('save_coord', data)
   }
 
   useEffect(() => {
-    // const interval = setInterval(() => {
-    //   setContador(contador + 1);
-    //   console.log(contador);
-    //   sendBoardDataToSocketIo();
-    // }, 1000);
-    
+    setInterval(() => {
+      console.log("holainterval");
+    }, 1000);
+
+    socket.emit("give_me_the_board");
+
     socket.on('new_board_data', (data) => {
-      if (data != secondCanvas.current.getSaveData()) {
-        console.log("holaaaaa");
-        secondCanvas.current.loadSaveData(data.board);
-      }
+      console.log("holaaaaa");
+      secondCanvas.current.loadSaveData(data.board);
     });
 
     socket.on('pintor', (data) => {
@@ -53,12 +54,9 @@ function Board({ socket }) {
 
   }, [])
 
-  useEffect(() => {
-    console.log("hola");
-  }, [CanvasDraw]);
 
-  document.addEventListener('keydown', function(e) {
-    if(e.ctrlKey && e.key === 'z') {
+  document.addEventListener('keydown', function (e) {
+    if (e.ctrlKey && e.key === 'z') {
       undo();
     }
   })
