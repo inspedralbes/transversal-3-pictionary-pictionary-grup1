@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import React from "react";
+import "../Board.css"
 import CanvasDraw from "react-canvas-draw";
+import heart from "../img/Heart_corazón.svg.png"
 import { CirclePicker } from "react-color";
 
 
@@ -12,11 +14,17 @@ function Board({ socket }) {
   const secondCanvas = useRef(null);
   //Color picker
   const [currentColor, setCurrentColor] = useState("#fff");
+  const [brushRadius, setBrushRadius] = useState(0);
+
 
   const handleChangeComplete = (color) => {
     setCurrentColor(color.hex);
   };
 
+  const handleBrushRadius = (e) => {
+    console.log(brushRadius);
+    // setBrushRadius(radius)
+  };
 
   const clear = () => {
     firstCanvas.current.clear();
@@ -37,8 +45,7 @@ function Board({ socket }) {
     //   setContador(contador + 1);
     //   console.log(contador);
     //   sendBoardDataToSocketIo();
-    // }, 1000);
-    
+    // }, 1000);    
     socket.on('new_board_data', (data) => {
       if (data != secondCanvas.current.getSaveData()) {
         console.log("holaaaaa");
@@ -60,19 +67,24 @@ function Board({ socket }) {
     <div className="Board">
       <button onClick={clear}>Neteja</button>
       <button onClick={undo}>Desfes</button>
-      <CirclePicker style={{ border: "4px solid #000" }} color={currentColor} onChangeComplete={handleChangeComplete}></CirclePicker>  
+      <CirclePicker className="CirclePicker" style={{ border: "4px solid #000" }} color={currentColor} onChangeComplete={handleChangeComplete}></CirclePicker>  
+      <input id="brushRadius" type={"range"} min="1" max="50" step={0} value={brushRadius} onChange={(e) => setBrushRadius(e.target.value)} ></input>
       <CanvasDraw
-        brushRadius={5}
+        className="Board__draw"
+        canvasWidth={700}
+        canvasHeight={700}
+        brushRadius={brushRadius}
         brushColor={currentColor}
+        hideGrid={true}
         hideInterface={true}
         loadTimeOffset={0}
-        lazyRadius={5}
+        lazyRadius={1}
         style={{ border: "4px solid #000" }}
         ref={firstCanvas}
         onChange={sendBoardDataToSocketIo}
       />
       <h1>Canvas guardat:</h1>
-      <CanvasDraw hideGrid={true} disabled={true} immediateLoading={true} ref={secondCanvas} />
+      <CanvasDraw hideGrid={true} hideInterface={true} canvasWidth={700} canvasHeight={700}disabled={true} immediateLoading={true} ref={secondCanvas} />
     </div>
   );
 }
