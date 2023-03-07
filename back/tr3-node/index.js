@@ -96,6 +96,7 @@ socketIO.on('connection', socket => {
         if (boardData != undefined) {
             sendBoardData();
         }
+        sendWordToCheck();
     });
 
     socket.on('disconnect', () => {
@@ -105,8 +106,6 @@ socketIO.on('connection', socket => {
                 arrI.splice(index, 1);
                 enviarPintor()
             }
-
-
         }
     })
 });

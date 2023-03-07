@@ -8,7 +8,7 @@ import routes from "./index.js";
 
 function App({ socket }) {
   const [result, setResult] = useState(null);
-  const [wordToCheck, setWordToCheck] = useState();
+  const [wordToCheck, setWordToCheck] = useState("");
   const [pintor, setPintor] = useState(false);
   
   function handleFormSubmit(word) {
@@ -30,13 +30,10 @@ function App({ socket }) {
     socket.on('word_to_check', (data) => {
       setWordToCheck(data.word);
     });
-  }, [])
 
-  useEffect(() => {
     socket.on('pintor', (data) => {
       setPintor(data.pintor);
     });
-
   }, [])
 
     if (pintor) {
@@ -49,7 +46,6 @@ function App({ socket }) {
       )}else{
         return (
           <div>
-            {wordToCheck && <p>{wordToCheck}</p>}
             {result && <p>{result}</p>}
             <WordForm onSubmit={handleFormSubmit} socket={socket} /><br></br>
             <Board socket={socket}></Board>
