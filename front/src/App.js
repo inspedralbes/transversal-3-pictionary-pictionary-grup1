@@ -5,7 +5,7 @@ import Board from "./components/Board";
 import WordForm from './components/WordForm';
 import React from 'react';
 
-function App() {
+function App({socket}) {
   const [result, setResult] = useState(null);
   const [wordToCheck, setWordToCheck] = useState();
 
