@@ -59,7 +59,7 @@ let players;
 let i = 0;
 let idDrawer = 0;
 let arrI = []
-const laravelRoute = "http://localhost:8000/api/";
+const laravelRoute = "http://127.0.0.1:8000/api/";
 let wordToCheck = "";
 
 // ------------------------------------------------------------------
