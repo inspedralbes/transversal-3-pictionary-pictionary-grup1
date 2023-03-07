@@ -12,7 +12,7 @@ function App({ socket }) {
   const [pintor, setPintor] = useState(false);
   
   function handleFormSubmit(word) {
-    fetch(routes.fetchLaravel + '/checkWord', {
+    fetch(routes.fetchLaravel + 'checkWord', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -27,15 +27,9 @@ function App({ socket }) {
       .catch(error => console.error(error));
   }
   useEffect(() => {
-    fetch(routes.fetchLaravel + '/getWord', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then(response => response.json())
-      .then(data => setWordToCheck(data.wordToCheck))
-      .catch(error => console.error(error));
+    socket.on('word_to_check', (data) => {
+      setWordToCheck(data.word);
+    });
   }, [])
 
   useEffect(() => {
