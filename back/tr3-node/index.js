@@ -110,10 +110,16 @@ socketIO.on('connection', socket => {
     })
 });
 
-function sendBoardData() {
-    socketIO.emit("new_board_data", {
-        board: boardData
-    })
+async function sendBoardData() {
+  const sockets = await socketIO.fetchSockets();
+
+    sockets.forEach(user => {
+        if (user.data.id != arrI[0]) {
+            socketIO.to(user.id).emit("new_board_data", {
+              board: boardData
+            })
+        }
+    });
 }
 
 function sendWordToCheck() {

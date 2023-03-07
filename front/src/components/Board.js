@@ -40,7 +40,9 @@ function Board({ socket }) {
     socket.emit("give_me_the_board");
 
     socket.on('new_board_data', (data) => {
-      secondCanvas.current.loadSaveData(data.board);
+      if (!pintor) {
+        secondCanvas.current.loadSaveData(data.board);
+      }
     });
 
     socket.on('pintor', (data) => {
