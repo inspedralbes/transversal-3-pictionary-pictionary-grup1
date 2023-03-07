@@ -39,15 +39,20 @@ function Board({ socket }) {
     });
   }, []);
 
+  const keydown = (e) => {
+    if (e.ctrlKey && e.key === "z" && pintor) {
+        
+      firstCanvas.current.undo();
+      sendBoardDataToSocketIo();
+    }
+  }
+
   useEffect(() => {
-    document.addEventListener("keydown", function (e) {
-      if (e.ctrlKey && e.key === "z" && pintor) {
-        console.log("awa");
-        firstCanvas.current.undo();
-        sendBoardDataToSocketIo();
-      }
-    });
-  }, [CanvasDraw]);
+    window.addEventListener("keydown", keydown);
+    return () => {
+      window.removeEventListener("keydown", keydown);
+    }
+  });
 
   if (pintor) {
     return (
