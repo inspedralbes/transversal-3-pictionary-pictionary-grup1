@@ -4,13 +4,14 @@ import { useState, useEffect } from "react";
 import Board from "./components/Board";
 import WordForm from './components/WordForm';
 import React from 'react';
+import routes from "./index.js";
 
-function App({socket}) {
+function App({ socket }) {
   const [result, setResult] = useState(null);
   const [wordToCheck, setWordToCheck] = useState();
 
   function handleFormSubmit(word) {
-    fetch('http://localhost:8000/api/checkWord', {
+    fetch(routes.fetchLaravel + '/checkWord', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -25,7 +26,7 @@ function App({socket}) {
       .catch(error => console.error(error));
   }
   useEffect(() => {
-    fetch('http://localhost:8000/api/getWord', {
+    fetch(routes.fetchLaravel + '/getWord', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
