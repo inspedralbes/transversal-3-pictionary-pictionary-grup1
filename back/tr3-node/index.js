@@ -16,26 +16,35 @@ let boardData = undefined;
 
 let players;
 let i=0;
+let idDrawer=0;
 let arrI=[]
 
 socketIO.on('connection', socket => {
     
     i++
-    // arrI.push(i);
     socket.data.id = i;
+    arrI.push(socket.data.id);
+    idDrawer= Math.min.apply(Math, arrI)
     console.log(socket.data.id + " connected ");
+    
+    enviarPintor()
 
-    if (socket.data.id == 1) {
-        socketIO.to(socket.id).emit("pintor", {
-            pintor: true
-        })
-    } else {
-        socketIO.to(socket.id).emit("pintor", {
-            pintor: false
-        })
+    async function enviarPintor() {
+        const sockets = await socketIO.fetchSockets();
+
+        sockets.forEach(user  => {
+            if (user.data.id == arrI[0]) {
+                socketIO.to(user.id).emit("pintor", {
+                    pintor: true
+                })
+            } else {
+                socketIO.to(user.id).emit("pintor", {
+                    pintor: false
+                })
+            }
+        });
     }
     
-
     socket.on('save_coord', (arrayDatos) => {
         boardData = arrayDatos;
         // console.log('board data: ' + boardData);
@@ -55,6 +64,14 @@ socketIO.on('connection', socket => {
 
     socket.on('disconnect', () => {
         console.log(socket.id + " disconnected "+i );
+        for (let index = 0; index < arrI.length; index++) {
+            if(arrI[index]===socket.data.id){
+                arrI.splice(index, 1);
+                enviarPintor()
+            }
+            
+            
+        }
     })
 });
 
