@@ -13,10 +13,12 @@ function WordForm(props) {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input type="text" value={word} onChange={handleChange} placeholder="Enter a word" />
-      <button type="submit">Check</button>
-    </form>
+    <div>
+      <form onSubmit={handleSubmit}>
+        <input type="text" value={word} onChange={handleChange} placeholder="Enter a word" />
+        <button type="submit">Check</button>
+      </form>
+    </div>
   );
 }
 

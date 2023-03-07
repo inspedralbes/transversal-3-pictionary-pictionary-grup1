@@ -5,33 +5,43 @@ import Board from "./components/Board";
 import WordForm from './components/WordForm';
 import React from 'react';
 
-function App(socket) {
+function App() {
+  const [result, setResult] = useState(null);
+  const [wordToCheck, setWordToCheck] = useState();
+
   function handleFormSubmit(word) {
-    fetch('/check-word', {
+    fetch('http://localhost:8000/api/checkWord', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
       },
       body: JSON.stringify({
-        word: word
+        word: word,
+        wordToCheck: wordToCheck
       })
     })
       .then(response => response.json())
-      .then(data => alert(data.message))
+      .then(data => setResult(data.result))
       .catch(error => console.error(error));
   }
-  const [cliente, setCliente] = useState("Boton Normal");
   useEffect(() => {
-    if (cliente == "Gaspar") {
-      console.log("El boton se llama “Gaspar”.");
-    }
-  }, [cliente]); //Aquí se pone qué estado queremos que detecte el cambio.
+    fetch('http://localhost:8000/api/getWord', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(response => response.json())
+      .then(data => setWordToCheck(data.wordToCheck))
+      .catch(error => console.error(error));
+  }, [])
+
   return (
     <div>
+      {wordToCheck && <p>{wordToCheck}</p>}
+      {result && <p>{result}</p>}
+      <WordForm onSubmit={handleFormSubmit} /><br></br>
       <Board></Board>
-      <WordForm onSubmit={handleFormSubmit} />
-
     </div>
   );
 }
