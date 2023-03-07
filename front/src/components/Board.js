@@ -62,7 +62,7 @@ function Board({ socket }) {
       undo();
     }
   })
-  
+
   if (pintor) {
     return (
       <div className="Board">
@@ -79,8 +79,6 @@ function Board({ socket }) {
           ref={firstCanvas}
           onChange={sendBoardDataToSocketIo}
         />
-        <h1>Canvas guardat:</h1>
-        <CanvasDraw hideGrid={true} disabled={true} immediateLoading={true} ref={secondCanvas} />
       </div>
     );
   } else {
