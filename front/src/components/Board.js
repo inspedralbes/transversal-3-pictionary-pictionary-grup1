@@ -72,6 +72,7 @@ function Board({ socket }) {
           style={{ border: "4px solid #000" }}
           ref={firstCanvas}
           onChange={sendBoardDataToSocketIo}
+          // onMouseDown={sendBoardDataToSocketIo}
         />
       </div>
     );

@@ -10,6 +10,7 @@ function App({ socket }) {
   const [result, setResult] = useState(null);
   const [wordToCheck, setWordToCheck] = useState("");
   const [pintor, setPintor] = useState(false);
+  const [firstTime, setFirstTime] = useState(true);
 
   const messageResponses = {
     wordAttemptError: "You failed the attempt!",
@@ -23,6 +24,10 @@ function App({ socket }) {
   }
 
   useEffect(() => {
+    if (firstTime) {
+      socket.emit('get_game_data')
+    }
+
     socket.on('word_to_check', (data) => {
       setWordToCheck(data.word);
     });
@@ -38,6 +43,11 @@ function App({ socket }) {
 
     socket.on('pintor', (data) => {
       setPintor(data.pintor);
+    });
+
+    socket.on('game_data', (data) => {
+      console.log(data);
+      setWordToCheck(data.words[0]);
     });
   }, [])
 
