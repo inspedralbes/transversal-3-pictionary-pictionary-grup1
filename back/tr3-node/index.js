@@ -61,6 +61,7 @@ let idDrawer = 0;
 let arrI = []
 const laravelRoute = "http://127.0.0.1:8000/api/";
 let wordToCheck = "";
+let lobbies = [];
 
 // ------------------------------------------------------------------
 
@@ -85,6 +86,35 @@ socketIO.on('connection', socket => {
   }
 
   enviarPintor()
+
+  const random_hex_color_code = () => {
+    let n = (Math.random() * 0xfffff * 1000000).toString(16);
+    return n.slice(0, 6);
+  };
+
+  socket.on("new lobby", () => {
+    let existeix = false;
+    let newLobbyIdentifier;
+
+    do {
+      newLobbyIdentifier = random_hex_color_code();
+
+      lobbies.forEach((element) => {
+        if (element.lobbyIdentifier == newLobbyIdentifier) {
+          existeix = true;
+        }
+      });
+    } while (existeix);
+
+    if (!existeix) {
+      lobbies.push({
+        lobbyIdentifier: newLobbyIdentifier,
+        ownerId: socket.data.id,
+        members: [],
+      });
+    }
+    console.log(lobbies);
+  });
 
   socket.on('save_coord', (arrayDatos) => {
     boardData = arrayDatos;
