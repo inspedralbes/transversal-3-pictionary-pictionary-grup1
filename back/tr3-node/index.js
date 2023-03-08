@@ -136,7 +136,7 @@ socketIO.on('connection', socket => {
 
   socket.on("get_game_data", () => {
     setLobbyWord(socket.data.current_lobby);
-    enviarPintor()
+    enviarPintor(socket.data.current_lobby)
     let data;
     lobbies.forEach(lobby => {
       if (lobby.lobbyIdentifier == socket.data.current_lobby) {
@@ -202,7 +202,7 @@ function leaveLobby(socket) {
   lobbies.forEach((lobby, ind_lobby) => {
     if (lobby.lobbyIdentifier == socket.data.current_lobby) {
       lobby.members.forEach((member, index) => {
-        if (member.id == socket.data.id) {
+        if (member.idUser == socket.data.id) {
           lobby.members.splice(index, 1);
         }
       });
@@ -299,7 +299,7 @@ async function enviarPintor(room) {
   lobbies.forEach((element) => {
     if (element.lobbyIdentifier == room) {
       sockets.forEach(user => {
-        if (user.data.id == lobbies.members[0].idUser) {
+        if (user.data.id == element.members[0].idUser) {
           socketIO.to(user.id).emit("pintor", {
             pintor: true
           })
