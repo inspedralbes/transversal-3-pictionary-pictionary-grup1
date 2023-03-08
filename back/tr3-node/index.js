@@ -10,10 +10,10 @@ const host = '0.0.0.0';
 const axios = require("axios");
 
 const socketIO = require("socket.io")(server, {
-    cors: {
-        origin: true,
-        credentials: true,
-    },
+  cors: {
+    origin: true,
+    credentials: true,
+  },
 });
 
 // ================= SAVE TOKEN AS COOKIE ================
@@ -66,14 +66,14 @@ let wordToCheck = "";
 
 socketIO.on('connection', socket => {
 
-    i++
-    socket.data.id = i;
-    arrI.push(socket.data.id);
-    idDrawer = Math.min.apply(Math, arrI)
-    console.log(socket.data.id + " connected ");
+  i++
+  socket.data.id = i;
+  arrI.push(socket.data.id);
+  idDrawer = Math.min.apply(Math, arrI)
+  console.log(socket.data.id + " connected ");
 
-    if (i == 1) {
-        axios
+  if (i == 1) {
+    axios
       .get(laravelRoute + "getWord")
       .then(function (response) {
         wordToCheck = response.data.wordToCheck;
@@ -82,69 +82,88 @@ socketIO.on('connection', socket => {
       .catch(function (error) {
         console.log(error);
       });
+  }
+
+  enviarPintor()
+
+  socket.on('save_coord', (arrayDatos) => {
+    boardData = arrayDatos;
+
+    sendBoardData();
+  });
+
+  socket.on('give_me_the_board', () => {
+    if (boardData != undefined) {
+      sendBoardData();
     }
+    sendWordToCheck(socket);
+  });
 
-    enviarPintor()
+  socket.on('try_word_attempt', (data) => {
+    if (data.word == wordToCheck) {
+      socketIO.to(socket.id).emit('answer_result', {
+        resultsMatch: true
+      })
+    } else {
+      socketIO.to(socket.id).emit('answer_result', {
+        resultsMatch: false
+      })
+    }
+  });
 
-    socket.on('save_coord', (arrayDatos) => {
-        boardData = arrayDatos;
-
-        sendBoardData();
-    });
-
-    socket.on('give_me_the_board', () => {
-        if (boardData != undefined) {
-            sendBoardData();
-        }
-        sendWordToCheck();
-    });
-
-    socket.on('disconnect', () => {
-        console.log(socket.id + " disconnected " + i);
-        for (let index = 0; index < arrI.length; index++) {
-            if (arrI[index] === socket.data.id) {
-                arrI.splice(index, 1);
-                enviarPintor()
-            }
-        }
-    })
+  socket.on('disconnect', () => {
+    console.log(socket.id + " disconnected " + i);
+    for (let index = 0; index < arrI.length; index++) {
+      if (arrI[index] === socket.data.id) {
+        arrI.splice(index, 1);
+        enviarPintor()
+      }
+    }
+  })
 });
 
 async function sendBoardData() {
   const sockets = await socketIO.fetchSockets();
 
-    sockets.forEach(user => {
-        if (user.data.id != arrI[0]) {
-            socketIO.to(user.id).emit("new_board_data", {
-              board: boardData
-            })
-        }
-    });
+  sockets.forEach(user => {
+    if (user.data.id != arrI[0]) {
+      socketIO.to(user.id).emit("new_board_data", {
+        board: boardData
+      })
+    }
+  });
 }
 
-function sendWordToCheck() {
-    console.log(wordToCheck);
-    socketIO.emit("word_to_check", {
-        word: wordToCheck
+function sendWordToCheck(socket = undefined) {
+  console.log(wordToCheck);
+  if (socket != undefined) {
+    socketIO.to(socket.id).emit("word_to_check", {
+      word: wordToCheck
     })
+  } else {
+    socketIO.emit("word_to_check", {
+      word: wordToCheck
+    })
+  }
+
 }
 
 async function enviarPintor() {
-    const sockets = await socketIO.fetchSockets();
+  const sockets = await socketIO.fetchSockets();
 
-    sockets.forEach(user => {
-        if (user.data.id == arrI[0]) {
-            socketIO.to(user.id).emit("pintor", {
-                pintor: true
-            })
-        } else {
-            socketIO.to(user.id).emit("pintor", {
-                pintor: false
-            })
-        }
-    });
+  sockets.forEach(user => {
+    if (user.data.id == arrI[0]) {
+      socketIO.to(user.id).emit("pintor", {
+        pintor: true
+      })
+    } else {
+      socketIO.to(user.id).emit("pintor", {
+        pintor: false
+      })
+    }
+  });
 }
 
 server.listen(PORT, host, () => {
-    console.log("Listening on *:" + PORT);
+  console.log("Listening on *:" + PORT);
 });
