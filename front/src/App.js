@@ -10,8 +10,7 @@ function App({ socket }) {
   const [result, setResult] = useState(null);
   const [wordToCheck, setWordToCheck] = useState("");
   const [pintor, setPintor] = useState(false);
-  const [wordGuessed, setwordGuessed] = useState("");
-  const [userMessages, setUserMessages] = useState({});
+  const [userMessages, setUserMessages] = useState([]);
 
   const messageResponses = {
     wordAttemptError: "You failed the attempt!",
@@ -19,9 +18,11 @@ function App({ socket }) {
   }
 
   function handleFormSubmit(word) {
-    socket.emit("try_word_attempt", {
-      word: word,
-    })
+    if (word.trim() !== "") {
+      socket.emit("try_word_attempt", {
+        word: word,
+      });
+    }
   }
 
   useEffect(() => {
@@ -32,10 +33,8 @@ function App({ socket }) {
     socket.on('send_guessed_word', (data) => {
       const userId = data.id;
       const userMessage = data.wordGuessed;
-      setUserMessages(prevUserMessages => ({
-        ...prevUserMessages,
-        [userId]: [...(prevUserMessages[userId] || []), userMessage]
-      }));
+
+      setUserMessages(prevUserMessages => [...prevUserMessages, { userId, userMessage }]);
     });
 
     socket.on('answer_result', (data) => {
@@ -44,31 +43,38 @@ function App({ socket }) {
       } else {
         setResult(messageResponses.wordAttemptError)
       }
-    })
+    });
 
     socket.on('pintor', (data) => {
       setPintor(data.pintor);
     });
-  }, [])
+
+    return () => {
+      socket.off('word_to_check');
+      socket.off('send_guessed_word');
+      socket.off('answer_result');
+      socket.off('pintor');
+    };
+  }, []);
 
   if (pintor) {
     return (
       <div>
         <div>
-          {Object.entries(userMessages).map(([userId, messages]) => (
-            <div key={userId}>
-              <h2>Messages from user {userId}</h2>
-              <ul>
-                {messages.map((message, index) => (
-                  <li key={index}>{message}</li>
+          {wordToCheck && <p>{wordToCheck}</p>}
+          {result && <p>{result}</p>}
+          <Board socket={socket}></Board>
+          {userMessages.length > 0 && (
+            <div>
+              <ul style={{ listStyle: "none" }}>
+                {userMessages.map((message, index) => (
+                  <li key={index}>User {message.userId}: {message.userMessage}</li>
                 ))}
               </ul>
             </div>
-          ))}
+          )}
         </div>
-        {wordToCheck && <p>{wordToCheck}</p>}
-        {result && <p>{result}</p>}
-        <Board socket={socket}></Board>
+
       </div>
     )
   } else {
@@ -80,7 +86,6 @@ function App({ socket }) {
       </div>
     )
   }
-
 }
 
 export default App;
