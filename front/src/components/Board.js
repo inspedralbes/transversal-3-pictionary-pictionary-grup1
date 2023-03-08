@@ -10,7 +10,7 @@ function Board({ socket }) {
   const firstCanvas = useRef(null); //Serveix per agafar un component com a referencia
   const secondCanvas = useRef(null);
   //Color picker
-  const [currentColor, setCurrentColor] = useState("#fff");
+  const [currentColor, setCurrentColor] = useState("#000");
 
   const clear = () => {
     // poner control de si es pintor o no
