@@ -21,11 +21,6 @@ function Board({ socket }) {
     setCurrentColor(color.hex);
   };
 
-  const handleBrushRadius = (e) => {
-    console.log(brushRadius);
-    // setBrushRadius(radius)
-  };
-
   const clear = () => {
     // poner control de si es pintor o no
     firstCanvas.current.clear();
