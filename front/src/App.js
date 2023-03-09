@@ -10,26 +10,31 @@ function App({ socket }) {
   const [result, setResult] = useState(null);
   const [wordToCheck, setWordToCheck] = useState("");
   const [pintor, setPintor] = useState(false);
-  
-  function handleFormSubmit(word) {
-    fetch(routes.fetchLaravel + 'checkWord', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        word: word,
-        wordToCheck: wordToCheck
-      })
-    })
-      .then(response => response.json())
-      .then(data => setResult(data.result))
-      .catch(error => console.error(error));
+
+  const messageResponses = {
+    wordAttemptError: "You failed the attempt!",
+    wordAttemptSuccess: "Well done! You're the best!"
   }
+
+  function handleFormSubmit(word) {
+    socket.emit("try_word_attempt", {
+      word: word
+    })
+  }
+
   useEffect(() => {
     socket.on('word_to_check', (data) => {
       setWordToCheck(data.word);
     });
+
+    socket.on('answer_result', (data) => {
+      console.log(data);
+      if (data.resultsMatch) {
+        setResult(messageResponses.wordAttemptSuccess)
+      } else {
+        setResult(messageResponses.wordAttemptError)
+      }
+    })
 
     socket.on('pintor', (data) => {
       setPintor(data.pintor);
