@@ -15,7 +15,7 @@ function Board({ socket }) {
   //Color picker
   const [currentColor, setCurrentColor] = useState("#000");
   //Tamaño de brocha
-  const [brushRadius, setBrushRadius] = useState(0);
+  const [brushRadius, setBrushRadius] = useState(1);
 
 
   const handleChangeComplete = (color) => {
