@@ -1,0 +1,24 @@
+@font-face{
+    font-family: comicAndy;
+    src: url("../fonts/comic_andy/Comic_Andy.ttf");
+}
+
+@font-face{
+    font-family: futuraHandwritten;
+    src: url("../fonts/futurahandwritten/FuturaHandwritten.ttf");
+}
+
+@font-face{
+    font-family: listerFilled;
+    src: url("../fonts/lister/Lister.ttf");
+}
+
+@font-face{
+    font-family: lister;
+    src: url("../fonts/lister/ListerHollow.ttf");
+}
+
+@font-face{
+    font-family: matSaleh;
+    src: url("../fonts/mat_saleh/Mat\ Saleh.ttf");
+}

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import React from "react";
-import "../Board.css"
+import "../styles/Board.css"
 import CanvasDraw from "react-canvas-draw";
 import heart from "../img/Heart_corazón.svg.png"
 import { CirclePicker } from "react-color";
@@ -107,6 +107,6 @@ function Board({ socket }) {
       </div>
     );
   }
-}
+  }
 
 export default Board;
