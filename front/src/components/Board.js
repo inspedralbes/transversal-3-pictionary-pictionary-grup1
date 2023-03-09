@@ -51,7 +51,7 @@ function Board({ socket }) {
       if (!pintor) {
         secondCanvas.current.loadSaveData(data.board);
       }
-    });
+    }, 0);
   }, []);
 
   const keydown = (e) => {

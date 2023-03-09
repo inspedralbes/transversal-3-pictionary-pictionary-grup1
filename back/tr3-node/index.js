@@ -118,7 +118,6 @@ socketIO.on('connection', socket => {
       joinLobby(socket, newLobbyIdentifier)
     }
 
-    console.log(lobbies);
   });
 
   socket.on("join_room", (data) => {
@@ -188,8 +187,8 @@ socketIO.on('connection', socket => {
 });
 
 function setLobbyWord(room) {
-  lobbies.forEach((element) => {
-    if (element.lobbyIdentifier == room) {
+  lobbies.forEach((lobby) => {
+    if (lobby.lobbyIdentifier == room) {
       axios
         .get(laravelRoute + "getWord")
         .then(function (response) {
