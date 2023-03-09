@@ -57,7 +57,6 @@ let boardData = undefined;
 
 let players;
 let i = 0;
-let idDrawer = 0;
 let arrI = []
 const laravelRoute = "http://127.0.0.1:8000/api/";
 let wordToCheck = "";
@@ -69,7 +68,6 @@ socketIO.on('connection', socket => {
     i++
     socket.data.id = i;
     arrI.push(socket.data.id);
-    idDrawer = Math.min.apply(Math, arrI)
     console.log(socket.data.id + " connected ");
 
     if (i == 1) {

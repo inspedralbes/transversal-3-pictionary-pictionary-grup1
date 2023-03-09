@@ -47,7 +47,7 @@ function App({ socket }) {
         return (
           <div>
             {result && <p>{result}</p>}
-            <WordForm onSubmit={handleFormSubmit} socket={socket} /><br></br>
+            <WordForm onSubmit={handleFormSubmit} /><br></br>
             <Board socket={socket}></Board>
           </div>
         )
