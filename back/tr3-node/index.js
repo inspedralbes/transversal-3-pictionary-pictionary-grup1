@@ -10,10 +10,10 @@ const host = '0.0.0.0';
 const axios = require("axios");
 
 const socketIO = require("socket.io")(server, {
-    cors: {
-        origin: true,
-        credentials: true,
-    },
+  cors: {
+    origin: true,
+    credentials: true,
+  },
 });
 
 // ================= SAVE TOKEN AS COOKIE ================
@@ -59,21 +59,22 @@ let players;
 let i = 0;
 let idDrawer = 0;
 let arrI = []
-const laravelRoute = "http://localhost:8000/api/";
+const laravelRoute = "http://127.0.0.1:8000/api/";
 let wordToCheck = "";
+let lobbies = [];
 
 // ------------------------------------------------------------------
 
 socketIO.on('connection', socket => {
 
-    i++
-    socket.data.id = i;
-    arrI.push(socket.data.id);
-    idDrawer = Math.min.apply(Math, arrI)
-    console.log(socket.data.id + " connected ");
+  i++
+  socket.data.id = i;
+  arrI.push(socket.data.id);
+  idDrawer = Math.min.apply(Math, arrI)
+  console.log(socket.data.id + " connected ");
 
-    if (i == 1) {
-        axios
+  if (i == 1) {
+    axios
       .get(laravelRoute + "getWord")
       .then(function (response) {
         wordToCheck = response.data.wordToCheck;
@@ -82,64 +83,117 @@ socketIO.on('connection', socket => {
       .catch(function (error) {
         console.log(error);
       });
+  }
+
+  enviarPintor()
+
+  const random_hex_color_code = () => {
+    let n = (Math.random() * 0xfffff * 1000000).toString(16);
+    return n.slice(0, 6);
+  };
+
+  socket.on("new lobby", () => {
+    let existeix = false;
+    let newLobbyIdentifier;
+
+    do {
+      newLobbyIdentifier = random_hex_color_code();
+
+      lobbies.forEach((element) => {
+        if (element.lobbyIdentifier == newLobbyIdentifier) {
+          existeix = true;
+        }
+      });
+    } while (existeix);
+
+    if (!existeix) {
+      lobbies.push({
+        lobbyIdentifier: newLobbyIdentifier,
+        ownerId: socket.data.id,
+        members: [],
+      });
     }
+    console.log(lobbies);
+  });
 
-    enviarPintor()
+  socket.on('save_coord', (arrayDatos) => {
+    boardData = arrayDatos;
 
-    socket.on('save_coord', (arrayDatos) => {
-        boardData = arrayDatos;
+    sendBoardData();
+  });
 
-        sendBoardData();
-    });
+  socket.on('give_me_the_board', () => {
+    if (boardData != undefined) {
+      sendBoardData();
+    }
+    sendWordToCheck(socket);
+  });
 
-    socket.on('give_me_the_board', () => {
-        if (boardData != undefined) {
-            sendBoardData();
-        }
-    });
+  socket.on('try_word_attempt', (data) => {
+    if (data.word == wordToCheck) {
+      socketIO.to(socket.id).emit('answer_result', {
+        resultsMatch: true
+      })
+    } else {
+      socketIO.to(socket.id).emit('answer_result', {
+        resultsMatch: false
+      })
+    }
+  });
 
-    socket.on('disconnect', () => {
-        console.log(socket.id + " disconnected " + i);
-        for (let index = 0; index < arrI.length; index++) {
-            if (arrI[index] === socket.data.id) {
-                arrI.splice(index, 1);
-                enviarPintor()
-            }
-
-
-        }
-    })
+  socket.on('disconnect', () => {
+    console.log(socket.id + " disconnected " + i);
+    for (let index = 0; index < arrI.length; index++) {
+      if (arrI[index] === socket.data.id) {
+        arrI.splice(index, 1);
+        enviarPintor()
+      }
+    }
+  })
 });
 
-function sendBoardData() {
-    socketIO.emit("new_board_data", {
+async function sendBoardData() {
+  const sockets = await socketIO.fetchSockets();
+
+  sockets.forEach(user => {
+    if (user.data.id != arrI[0]) {
+      socketIO.to(user.id).emit("new_board_data", {
         board: boardData
-    })
+      })
+    }
+  });
 }
 
-function sendWordToCheck() {
-    console.log(wordToCheck);
-    socketIO.emit("word_to_check", {
-        word: wordToCheck
+function sendWordToCheck(socket = undefined) {
+  console.log(wordToCheck);
+  if (socket != undefined) {
+    socketIO.to(socket.id).emit("word_to_check", {
+      word: wordToCheck
     })
+  } else {
+    socketIO.emit("word_to_check", {
+      word: wordToCheck
+    })
+  }
+
 }
 
 async function enviarPintor() {
-    const sockets = await socketIO.fetchSockets();
+  const sockets = await socketIO.fetchSockets();
 
-    sockets.forEach(user => {
-        if (user.data.id == arrI[0]) {
-            socketIO.to(user.id).emit("pintor", {
-                pintor: true
-            })
-        } else {
-            socketIO.to(user.id).emit("pintor", {
-                pintor: false
-            })
-        }
-    });
+  sockets.forEach(user => {
+    if (user.data.id == arrI[0]) {
+      socketIO.to(user.id).emit("pintor", {
+        pintor: true
+      })
+    } else {
+      socketIO.to(user.id).emit("pintor", {
+        pintor: false
+      })
+    }
+  });
 }
 
 server.listen(PORT, host, () => {
-    console.log("Listening on *:" + PORT);
+  console.log("Listening on *:" + PORT);
 });

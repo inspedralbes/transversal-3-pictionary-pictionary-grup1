@@ -15,16 +15,4 @@ class WordController extends Controller
         return response()->json(['wordToCheck' => $wordToCheck]);
         
     }
-
-    public function checkWord(Request $request)
-    {
-        $userWord = strtolower($request->input('word'));
-        $wordToCheck = strtolower($request->input('wordToCheck'));
-
-        if ($wordToCheck == $userWord) {
-            return response()->json(['result' => 'Correct!!!!', 'wordToCheck' => $wordToCheck]);
-        } else {
-            return response()->json(['result' => 'Incorrect.', 'wordToCheck' => $wordToCheck]);
-        }
-    }
 }

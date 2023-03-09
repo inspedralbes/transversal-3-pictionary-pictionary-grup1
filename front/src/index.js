@@ -3,6 +3,11 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import LandingPage from './pages/LandingPage';
+import Game from './pages/Game';
+import Lobby from './pages/Lobby';
+import EndGame from './pages/EndGame';
+import { BrowserRouter, HashRouter, Routes, Route } from "react-router-dom";
 import socketIO from "socket.io-client";
 
 const routes = {
@@ -23,7 +28,15 @@ var socket = socketIO(routes.wsNode, {
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App socket={socket} />
+    <HashRouter>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/game" element={<Game socket={socket} />} />
+        <Route path="/lobby" element={<Lobby socket={socket} />} />
+        <Route path="/endGame" element={<EndGame />} />
+      </Routes>
+    </HashRouter>
+
   </React.StrictMode>
 );
 
