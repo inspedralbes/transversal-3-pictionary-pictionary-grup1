@@ -11,3 +11,14 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+
+.game__timer{
+  border: 2px solid red;
+  border-radius: 100px;
+  background-color: white;
+  text-align: center;
+  width: 70px;
+  height: 70px;
+  font-size: 46px;
+}

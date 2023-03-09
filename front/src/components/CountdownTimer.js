@@ -3,7 +3,7 @@ import { render } from "react-dom";
 
 
 function CountdownTimer() {
-  const [counter, setCounter] = React.useState(40);
+  const [counter, setCounter] = React.useState(60);
   let timer;
 
   
@@ -26,10 +26,9 @@ function CorrectAnswer(){
 
   return (
     <div>
-      <div>Countdown: {counter}</div>
+      <div className="game__timer">{counter}</div>
       <button onClick={CorrectAnswer}>Correct</button>
     </div>
   );
 }
-
 export default CountdownTimer;
