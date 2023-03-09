@@ -4,6 +4,7 @@ import "../Board.css"
 import CanvasDraw from "react-canvas-draw";
 import heart from "../img/Heart_corazón.svg.png"
 import { CirclePicker } from "react-color";
+import CountdownTimer from "./CountdownTimer";
 
 //REFERENCIA: https://github.com/embiem/react-canvas-draw
 
@@ -72,6 +73,7 @@ function Board({ socket }) {
   if (pintor) {
     return (
       <div className="Board">
+        <CountdownTimer />
         <button onClick={clear}>Clear</button>
         <CirclePicker
           style={{ border: "4px solid #000" }}
@@ -99,6 +101,7 @@ function Board({ socket }) {
   } else {
     return (
       <div className="Board">
+        <CountdownTimer />
         <CanvasDraw
           hideGrid={true}
           disabled={true}
