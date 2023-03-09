@@ -1,4 +1,5 @@
-import { NavLink, Link } from'react-router-dom';
+import { Link } from 'react-router-dom';
+import "../styles/LandingPage.css"
 
 
 function LandingPage() {

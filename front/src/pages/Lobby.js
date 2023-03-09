@@ -9,8 +9,6 @@ function Lobby() {
         
         <NavLink to='/'><button>Return</button></NavLink>
         <NavLink to='/game'><button>Start</button></NavLink>
-
- 
       </div>
     
     );
