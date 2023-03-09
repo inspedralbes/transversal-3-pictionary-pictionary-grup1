@@ -27,15 +27,16 @@ function Board({ socket }) {
 
   useEffect(() => {
     socket.emit("give_me_the_board");
+    
+    socket.on("pintor", (data) => {
+      setPintor(data.pintor);
+      console.log(data.pintor)
+    });
 
     socket.on("new_board_data", (data) => {
       if (!pintor) {
         secondCanvas.current.loadSaveData(data.board);
       }
-    });
-
-    socket.on("pintor", (data) => {
-      setPintor(data.pintor);
     });
   }, []);
 

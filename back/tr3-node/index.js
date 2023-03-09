@@ -160,13 +160,17 @@ socketIO.on('connection', socket => {
   });
 
   socket.on('try_word_attempt', (data) => {
-    if (data.word == wordToCheck) {
+    if (data.word.toLowerCase() === wordToCheck.toLowerCase()) {
       socketIO.to(socket.id).emit('answer_result', {
-        resultsMatch: true
+        resultsMatch: true,
       })
     } else {
       socketIO.to(socket.id).emit('answer_result', {
-        resultsMatch: false
+        resultsMatch: false,
+      })
+      socketIO.emit('send_guessed_word', {
+        wordGuessed: data.word,
+        id: socket.id
       })
     }
   });
@@ -280,10 +284,9 @@ async function sendBoardData() {
 }
 
 function sendWordToCheck(socket = undefined) {
-  console.log(wordToCheck);
   if (socket != undefined) {
     socketIO.to(socket.id).emit("word_to_check", {
-      word: wordToCheck
+      word: wordToCheck,
     })
   } else {
     socketIO.emit("word_to_check", {
