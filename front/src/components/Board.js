@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import React from "react";
-//import "../Board.css";
+import "../Board.css";
 import CanvasDraw from "react-canvas-draw";
 
 //REFERENCIA: https://github.com/embiem/react-canvas-draw
@@ -16,7 +16,7 @@ function Board() {
   };
 
   const clear = () => {
-    firstCanvas.current.clear();7
+    firstCanvas.current.clear();
   };
 
   const undo = () => {
