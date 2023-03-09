@@ -10,6 +10,8 @@ function App({ socket }) {
   const [result, setResult] = useState(null);
   const [wordToCheck, setWordToCheck] = useState("");
   const [pintor, setPintor] = useState(false);
+  const [firstTime, setFirstTime] = useState(true);
+  const [userMessages, setUserMessages] = useState([]);
 
   const messageResponses = {
     wordAttemptError: "You failed the attempt!",
@@ -17,36 +19,72 @@ function App({ socket }) {
   }
 
   function handleFormSubmit(word) {
-    socket.emit("try_word_attempt", {
-      word: word
-    })
+    if (word.trim() !== "") {
+      socket.emit("try_word_attempt", {
+        word: word,
+      });
+    }
   }
 
   useEffect(() => {
+    if (firstTime) {
+      socket.emit('get_game_data')
+    }
+
     socket.on('word_to_check', (data) => {
       setWordToCheck(data.word);
     });
 
+    socket.on('send_guessed_word', (data) => {
+      const userId = data.id;
+      const userMessage = data.wordGuessed;
+
+      setUserMessages(prevUserMessages => [...prevUserMessages, { userId, userMessage }]);
+    });
+
     socket.on('answer_result', (data) => {
-      console.log(data);
       if (data.resultsMatch) {
         setResult(messageResponses.wordAttemptSuccess)
       } else {
         setResult(messageResponses.wordAttemptError)
       }
-    })
+    });
 
     socket.on('pintor', (data) => {
       setPintor(data.pintor);
     });
-  }, [])
+
+    socket.on('game_data', (data) => {
+      console.log(data);
+      setWordToCheck(data.words[0]);
+    });
+    
+    return () => {
+      socket.off('word_to_check');
+      socket.off('send_guessed_word');
+      socket.off('answer_result');
+      socket.off('pintor');
+    };
+  }, []);
 
   if (pintor) {
     return (
       <div>
-        {wordToCheck && <p>{wordToCheck}</p>}
-        {result && <p>{result}</p>}
-        <Board socket={socket}></Board>
+        <div>
+          {wordToCheck && <p>{wordToCheck}</p>}
+          {result && <p>{result}</p>}
+          <Board socket={socket}></Board>
+          {userMessages.length > 0 && (
+            <div>
+              <ul style={{ listStyle: "none" }}>
+                {userMessages.map((message, index) => (
+                  <li key={index}>User {message.userId}: {message.userMessage}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+
       </div>
     )
   } else {
@@ -58,7 +96,6 @@ function App({ socket }) {
       </div>
     )
   }
-
 }
 
 export default App;
