@@ -14,20 +14,15 @@ function CountdownTimer() {
     }
     else if (counter === 30){
         console.log("30 segundons");
+        //clearTimeout(timer);
         
     }
     
 }, [counter]);
 
-function CorrectAnswer(){
-    clearTimeout(timer);
-    console.log("Time :", 40 - counter, "segundos");  
-  }
-
   return (
     <div>
       <div className="game__timer">{counter}</div>
-      <button onClick={CorrectAnswer}>Correct</button>
     </div>
   );
 }
