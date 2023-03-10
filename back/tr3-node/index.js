@@ -72,20 +72,6 @@ socketIO.on('connection', socket => {
   idDrawer = Math.min.apply(Math, arrI)
   console.log(socket.data.id + " connected ");
 
-  if (i == 1) {
-    axios
-      .get(laravelRoute + "getWord")
-      .then(function (response) {
-        wordToCheck = response.data.wordToCheck;
-        sendWordToCheck()
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  }
-
-  enviarPintor()
-
   const random_hex_color_code = () => {
     let n = (Math.random() * 0xfffff * 1000000).toString(16);
     return n.slice(0, 6);
@@ -291,9 +277,7 @@ function joinLobby(socket, lobbyIdentifier) {
       });
 
       if (disponible) {
-        // lobby.rounds++;
         lobby.members.push({
-          // nom: socket.data.name,
           idUser: socket.data.id,
         });
 
@@ -332,7 +316,6 @@ async function sendUserList(room) {
   const sockets = await socketIO.in(room).fetchSockets();
 
   sockets.forEach((element) => {
-    // console.log(socketIO.sockets.sockets.get(element.id).data.name);
     list.push({
       name: element.data.id,
     });
