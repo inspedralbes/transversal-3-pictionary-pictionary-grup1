@@ -1,34 +1,49 @@
-import logo from './logo.svg';
-import './App.css';
-import { useState, useEffect } from 'react';
-
+import logo from "./logo.svg";
+import "./App.css";
+import { useState, useEffect } from "react";
+import Board from "./components/Board";
+import WordForm from './components/WordForm';
+import React from 'react';
 
 function App() {
-  const [cliente, setCliente] = useState('Boton Normal');
-  useEffect(() => {
-    if (cliente == 'Gaspar') {
-    console.log('El boton se llama “Gaspar”.');
+  const [result, setResult] = useState(null);
+  const [wordToCheck, setWordToCheck] = useState();
+
+  function handleFormSubmit(word) {
+    fetch('http://localhost:8000/api/checkWord', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        word: word,
+        wordToCheck: wordToCheck
+      })
+    })
+      .then(response => response.json())
+      .then(data => setResult(data.result))
+      .catch(error => console.error(error));
   }
-}, [cliente]); //Aquí se pone qué estado queremos que detecte el cambio.
-return (
-  <div className="App">
-    <header className="App-header">
-      <img src={logo} className="App-logo" alt="logo" />
-      <p>
-        Edit <code>src/App.js</code> and save to reload.
-      </p>
-      <a
-        className="App-link"
-        href="https://reactjs.org"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Learn React
-      </a>
-      <button onClick={() => setCliente('Gaspar')}>{ cliente }</button>
-    </header>
-  </div>
-);
+  useEffect(() => {
+    fetch('http://localhost:8000/api/getWord', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(response => response.json())
+      .then(data => setWordToCheck(data.wordToCheck))
+      .catch(error => console.error(error));
+  }, [])
+
+  return (
+    <div>
+      {wordToCheck && <p>{wordToCheck}</p>}
+      {result && <p>{result}</p>}
+      <WordForm onSubmit={handleFormSubmit} /><br></br>
+      <Board></Board>
+    </div>
+  );
 }
 
 export default App;

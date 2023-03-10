@@ -3,12 +3,27 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import socketIO from "socket.io-client";
 
+const routes = {
+  // fetchLaravel: "http://localhost:8000",
+  // fetchNode: "http://localhost:7500",
+  wsNode: "ws://localhost:7500",
+};
+
+var socket = socketIO(routes.wsNode, {
+  withCredentials: true,
+  cors: {
+    origin: "*",
+    credentials: true,
+  },
+  transports: ["websocket"],
+});
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <App socket={socket} />
   </React.StrictMode>
 );
 
