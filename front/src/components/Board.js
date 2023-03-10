@@ -45,7 +45,6 @@ function Board({ socket }) {
     
     socket.on("pintor", (data) => {
       setPintor(data.pintor);
-      console.log(data.pintor)
     });
 
     socket.on("new_board_data", (data) => {
