@@ -5,7 +5,7 @@ var cookieParser = require("cookie-parser");
 const app = express();
 const http = require('http');
 const server = http.createServer(app);
-const PORT = 7500;
+const PORT = 7878;
 const host = '0.0.0.0';
 const axios = require("axios");
 
@@ -59,8 +59,7 @@ let players;
 let i = 0;
 let idDrawer = 0;
 let arrI = []
-const laravelRoute = "http://127.0.0.1:8000/api/";
-let wordToCheck = "";
+const laravelRoute = "http://127.0.0.1:8000/index.php/";
 let lobbies = [];
 
 // ------------------------------------------------------------------
@@ -72,6 +71,20 @@ socketIO.on('connection', socket => {
   arrI.push(socket.data.id);
   idDrawer = Math.min.apply(Math, arrI)
   console.log(socket.data.id + " connected ");
+
+  if (i == 1) {
+    axios
+      .get(laravelRoute + "getWord")
+      .then(function (response) {
+        wordToCheck = response.data.wordToCheck;
+        sendWordToCheck()
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
+
+  enviarPintor()
 
   const random_hex_color_code = () => {
     let n = (Math.random() * 0xfffff * 1000000).toString(16);
@@ -131,10 +144,12 @@ socketIO.on('connection', socket => {
       }
     });
 
+    setLobbyWord(socket.data.current_lobby);
   });
 
   socket.on("get_game_data", () => {
     setLobbyWord(socket.data.current_lobby);
+    enviarPintor(socket.data.current_lobby)
     let data;
     lobbies.forEach(lobby => {
       if (lobby.lobbyIdentifier == socket.data.current_lobby) {
@@ -158,6 +173,13 @@ socketIO.on('connection', socket => {
   });
 
   socket.on('try_word_attempt', (data) => {
+    let wordToCheck;
+    lobbies.forEach(lobby => {
+      if (lobby.lobbyIdentifier == socket.data.current_lobby) {
+        wordToCheck = lobby.words[0]
+      }
+    });
+
     if (data.word.toLowerCase() === wordToCheck.toLowerCase()) {
       socketIO.to(socket.id).emit('answer_result', {
         resultsMatch: true,
@@ -285,6 +307,25 @@ function joinLobby(socket, lobbyIdentifier) {
   sendUserList(lobbyIdentifier);
 }
 
+async function setLobbyWord(room) {
+  let word;
+  await axios
+    .get(laravelRoute + "getWord")
+    .then(function (response) {
+      word = response.data.wordToCheck
+      console.log(word);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  lobbies.forEach((lobby) => {
+    if (lobby.lobbyIdentifier == room) {
+      lobby.words.push(word);
+      socketIO.to(room).emit('game_data', lobby);
+    }
+  });
+}
+
 async function sendUserList(room) {
   var list = [];
 
@@ -315,16 +356,18 @@ async function sendBoardData() {
   });
 }
 
-function sendWordToCheck(socket = undefined) {
-  if (socket != undefined) {
-    socketIO.to(socket.id).emit("word_to_check", {
-      word: wordToCheck,
-    })
-  } else {
-    socketIO.emit("word_to_check", {
-      word: wordToCheck
-    })
-  }
+function sendWordToCheck(socket) {
+  let wordToCheck;
+  lobbies.forEach(lobby => {
+    if (lobby.lobbyIdentifier == socket.data.current_lobby) {
+      wordToCheck = lobby.words[0]
+    }
+  });
+
+  socketIO.to(socket.id).emit("word_to_check", {
+    word: wordToCheck,
+  })
+
 
 }
 
