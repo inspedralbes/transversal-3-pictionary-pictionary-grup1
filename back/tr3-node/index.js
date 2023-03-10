@@ -59,7 +59,7 @@ let players;
 let i = 0;
 let idDrawer = 0;
 let arrI = []
-const laravelRoute = "http://tr3-g1-api.alumnes.inspedralbes.cat/public/";
+const laravelRoute = "http://127.0.0.1:8000/index.php/";
 let lobbies = [];
 
 // ------------------------------------------------------------------
