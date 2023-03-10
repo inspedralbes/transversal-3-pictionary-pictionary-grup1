@@ -15,7 +15,7 @@ function Board({ socket }) {
   //Color picker
   const [currentColor, setCurrentColor] = useState("#000");
   //Tamaño de brocha
-  const [brushRadius, setBrushRadius] = useState(0);
+  const [brushRadius, setBrushRadius] = useState(1);
 
 
   const handleChangeComplete = (color) => {
@@ -40,9 +40,9 @@ function Board({ socket }) {
     //   setContador(contador + 1);
     //   console.log(contador);
     //   sendBoardDataToSocketIo();
-    // }, 1000);    
+    // }, 1000); 
     socket.emit("give_me_the_board");
-    
+
     socket.on("pintor", (data) => {
       setPintor(data.pintor);
       console.log(data.pintor)
@@ -57,7 +57,6 @@ function Board({ socket }) {
 
   const keydown = (e) => {
     if (e.ctrlKey && e.key === "z" && pintor) {
-        
       firstCanvas.current.undo();
       sendBoardDataToSocketIo();
     }
@@ -80,7 +79,7 @@ function Board({ socket }) {
           color={currentColor}
           onChangeComplete={(color) => setCurrentColor(color.hex)}
         ></CirclePicker>
-        <input id="brushRadius" type={"range"} min="1" max="50" step={1} value={brushRadius} onChange={(e) => setBrushRadius(e.target.value)} ></input>
+        <input id="brushRadius" type={"range"} min="1" max="50" step={0} value={brushRadius} onChange={(e) => setBrushRadius(e.target.value)} ></input>
         <CanvasDraw
           className="Board__draw"
           canvasWidth={700}
@@ -94,7 +93,7 @@ function Board({ socket }) {
           style={{ border: "4px solid #000" }}
           ref={firstCanvas}
           onChange={sendBoardDataToSocketIo}
-          // onMouseDown={sendBoardDataToSocketIo}
+        // onMouseDown={sendBoardDataToSocketIo}
         />
       </div>
     );
