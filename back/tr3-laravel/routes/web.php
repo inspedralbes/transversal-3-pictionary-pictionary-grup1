@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\WordController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,4 +16,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+Route::group(['middleware' => ['web']], function () {
+    Route::get('/getWord', [WordController::class, 'getWord']);
+
+    // Route::post('/checkWord', [WordController::class, 'checkWord']);
 });
