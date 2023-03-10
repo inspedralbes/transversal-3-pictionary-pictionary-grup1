@@ -21,5 +21,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('/getWord', [WordController::class, 'getWord']);
 
-Route::post('/checkWord', [WordController::class, 'checkWord']);
+// Route::post('/checkWord', [WordController::class, 'checkWord']);
 
