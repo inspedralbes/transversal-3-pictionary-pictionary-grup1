@@ -20,6 +20,7 @@ function App({ socket }) {
 
   function handleFormSubmit(word) {
     if (word.trim() !== "") {
+      console.log(word);
       socket.emit("try_word_attempt", {
         word: word,
       });
