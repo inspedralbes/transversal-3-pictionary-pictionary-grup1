@@ -75,7 +75,7 @@ function App({ socket }) {
           <div style={{ marginRight: "20px" }}>
             {wordToCheck && <p>{wordToCheck}</p>}
             {result && <p>{result}</p>}
-            <Board socket={socket}></Board>
+            <Board socket={socket} pintor={pintor}></Board>
           </div>
           {userMessages.length > 0 && (
             <div>
