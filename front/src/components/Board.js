@@ -15,7 +15,7 @@ function Board({ socket }) {
   //Color picker
   const [currentColor, setCurrentColor] = useState("#000");
   //Tamaño de brocha
-  const [brushRadius, setBrushRadius] = useState(1);
+  const [brushRadius, setBrushRadius] = useState(0);
 
 
   const handleChangeComplete = (color) => {
@@ -80,7 +80,7 @@ function Board({ socket }) {
           color={currentColor}
           onChangeComplete={(color) => setCurrentColor(color.hex)}
         ></CirclePicker>
-        <input id="brushRadius" type={"range"} min="1" max="50" step={0} value={brushRadius} onChange={(e) => setBrushRadius(e.target.value)} ></input>
+        <input id="brushRadius" type={"range"} min="1" max="50" step={1} value={brushRadius} onChange={(e) => setBrushRadius(e.target.value)} ></input>
         <CanvasDraw
           className="Board__draw"
           canvasWidth={700}
