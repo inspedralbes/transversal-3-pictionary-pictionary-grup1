@@ -14,7 +14,7 @@ function Board({ socket, pintor }) {
   //Color picker
   const [currentColor, setCurrentColor] = useState("#000");
   //Tamaño de brocha
-  const [brushRadius, setBrushRadius] = useState(0);
+  const [brushRadius, setBrushRadius] = useState(1);
 
 
   const handleChangeComplete = (color) => {
@@ -44,7 +44,6 @@ function Board({ socket, pintor }) {
 
   const keydown = (e) => {
     if (e.ctrlKey && e.key === "z" && pintor) {
-        
       firstCanvas.current.undo();
       sendBoardDataToSocketIo();
     }
@@ -81,7 +80,7 @@ function Board({ socket, pintor }) {
           style={{ border: "4px solid #000" }}
           ref={firstCanvas}
           onChange={sendBoardDataToSocketIo}
-          // onMouseDown={sendBoardDataToSocketIo}
+        // onMouseDown={sendBoardDataToSocketIo}
         />
       </div>
     );
