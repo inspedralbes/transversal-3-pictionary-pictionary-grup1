@@ -8,8 +8,7 @@ import CountdownTimer from "./CountdownTimer";
 
 //REFERENCIA: https://github.com/embiem/react-canvas-draw
 
-function Board({ socket }) {
-  const [pintor, setPintor] = useState(false);
+function Board({ socket, pintor }) {
   const firstCanvas = useRef(null); //Serveix per agafar un component com a referencia
   const secondCanvas = useRef(null);
   //Color picker
@@ -29,24 +28,12 @@ function Board({ socket }) {
   };
 
   const sendBoardDataToSocketIo = () => {
-    // poner control de si es pintor o no
-    //console.log("Estoy mandando datos");
     const data = firstCanvas.current.getSaveData(); //Dona totes les coordenades utilitzades en el CanvasDraw
     socket.emit("save_coord", data);
   };
 
-  useEffect(() => {
-    // const interval = setInterval(() => {
-    //   setContador(contador + 1);
-    //   console.log(contador);
-    //   sendBoardDataToSocketIo();
-    // }, 1000);    
+  useEffect(() => { 
     socket.emit("give_me_the_board");
-    
-    socket.on("pintor", (data) => {
-      setPintor(data.pintor);
-      console.log(data.pintor)
-    });
 
     socket.on("new_board_data", (data) => {
       if (!pintor) {
@@ -73,7 +60,7 @@ function Board({ socket }) {
   if (pintor) {
     return (
       <div className="Board">
-        <CountdownTimer />
+        <CountdownTimer socket={socket}/>
         <button onClick={clear}>Clear</button>
         <CirclePicker
           style={{ border: "4px solid #000" }}
@@ -101,7 +88,7 @@ function Board({ socket }) {
   } else {
     return (
       <div className="Board">
-        <CountdownTimer />
+        <CountdownTimer socket={socket}/>
         <CanvasDraw
           hideGrid={true}
           disabled={true}

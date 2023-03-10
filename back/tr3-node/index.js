@@ -73,20 +73,6 @@ socketIO.on('connection', socket => {
   idDrawer = Math.min.apply(Math, arrI)
   console.log(socket.data.id + " connected ");
 
-  if (i == 1) {
-    axios
-      .get(laravelRoute + "getWord")
-      .then(function (response) {
-        wordToCheck = response.data.wordToCheck;
-        sendWordToCheck()
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  }
-
-  enviarPintor()
-
   const random_hex_color_code = () => {
     let n = (Math.random() * 0xfffff * 1000000).toString(16);
     return n.slice(0, 6);
@@ -113,6 +99,10 @@ socketIO.on('connection', socket => {
         members: [],
         currentDrawer: "",
         words: [],
+        contadorMax: 60,
+        rounds: 0,
+        actualRound: 0,
+        ended: false
       }
       lobbies.push(lobbyData);
       joinLobby(socket, newLobbyIdentifier)
@@ -131,11 +121,20 @@ socketIO.on('connection', socket => {
 
   socket.on("start_game", (data) => {
     socketIO.to(data.lobbyIdentifier).emit('game_started');
+
+    lobbies.forEach(lobby => {
+      if (lobby.lobbyIdentifier == data.lobbyIdentifier) {
+        console.log("started", lobby.members);
+        lobby.rounds = lobby.members.length;
+        enviarPintor(data.lobbyIdentifier)
+        setCounter(data.lobbyIdentifier);
+      }
+    });
+
   });
 
   socket.on("get_game_data", () => {
     setLobbyWord(socket.data.current_lobby);
-    enviarPintor(socket.data.current_lobby)
     let data;
     lobbies.forEach(lobby => {
       if (lobby.lobbyIdentifier == socket.data.current_lobby) {
@@ -177,14 +176,47 @@ socketIO.on('connection', socket => {
   socket.on('disconnect', () => {
     console.log(socket.id + " disconnected " + i);
     leaveLobby(socket);
-    for (let index = 0; index < arrI.length; index++) {
-      if (arrI[index] === socket.data.id) {
-        arrI.splice(index, 1);
-        enviarPintor()
-      }
-    }
   })
 });
+
+function setCounter(lobbyId) {
+  let timer;
+  lobbies.forEach(lobby => {
+    if (lobby.lobbyIdentifier == lobbyId && !lobby.ended) {
+      lobby.contadorMax = 60
+      timer = setInterval(() => {
+        lobby.contadorMax--;
+        console.log(lobby.contadorMax);
+        socketIO.to(lobbyId).emit("counter_down", {
+          counter: lobby.contadorMax
+        })
+
+        if (lobby.contadorMax == 55) {
+          socketIO.to(lobbyId).emit("round_ended");
+          lobby.actualRound++;
+          acabarRonda(lobbyId);
+          clearInterval(timer)
+        }
+      }, 1000)
+    }
+  });
+}
+
+function acabarRonda(lobbyId) {
+  console.log("Final Ronda");
+  enviarPintor(lobbyId)
+  lobbies.forEach(lobby => {
+    if (lobby.lobbyIdentifier == lobbyId) {
+      if (!lobby.ended) {
+        setCounter(lobbyId);
+      } else {
+        socketIO.to(lobbyId).emit("game_ended")
+
+      }
+    }
+  });
+
+}
 
 function setLobbyWord(room) {
   lobbies.forEach((lobby) => {
@@ -237,6 +269,7 @@ function joinLobby(socket, lobbyIdentifier) {
       });
 
       if (disponible) {
+        // lobby.rounds++;
         lobby.members.push({
           // nom: socket.data.name,
           idUser: socket.data.id,
@@ -298,19 +331,28 @@ function sendWordToCheck(socket = undefined) {
 async function enviarPintor(room) {
   const sockets = await socketIO.in(room).fetchSockets();
 
-  lobbies.forEach((element) => {
-    if (element.lobbyIdentifier == room) {
-      sockets.forEach(user => {
-        if (user.data.id == element.members[0].idUser) {
-          socketIO.to(user.id).emit("pintor", {
-            pintor: true
-          })
-        } else {
-          socketIO.to(user.id).emit("pintor", {
-            pintor: false
-          })
-        }
-      });
+  lobbies.forEach((lobby) => {
+    if (lobby.lobbyIdentifier == room) {
+      if (lobby.actualRound < lobby.rounds - 1) {
+        console.log("Rondas max " + lobby.rounds);
+
+        sockets.forEach(user => {
+          if (user.data.id == lobby.members[lobby.actualRound].idUser) {
+            console.log("ronda: " + lobby.actualRound);
+            console.log(user.data.id, lobby.members[lobby.actualRound].idUser);
+
+            socketIO.to(user.id).emit("pintor", {
+              pintor: true
+            })
+          } else {
+            socketIO.to(user.id).emit("pintor", {
+              pintor: false
+            })
+          }
+        });
+      } else {
+        lobby.ended = true;
+      }
     }
   });
 

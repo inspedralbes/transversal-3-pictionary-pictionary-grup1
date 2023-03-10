@@ -73,7 +73,7 @@ function App({ socket }) {
         <div>
           {wordToCheck && <p>{wordToCheck}</p>}
           {result && <p>{result}</p>}
-          <Board socket={socket}></Board>
+          <Board socket={socket} pintor={pintor}></Board>
           {userMessages.length > 0 && (
             <div>
               <ul style={{ listStyle: "none" }}>
@@ -92,7 +92,7 @@ function App({ socket }) {
       <div>
         {result && <p>{result}</p>}
         <WordForm onSubmit={handleFormSubmit} socket={socket} /><br></br>
-        <Board socket={socket}></Board>
+        <Board socket={socket} pintor={pintor}></Board>
       </div>
     )
   }
