@@ -217,7 +217,9 @@ function setCounter(lobbyId) {
 
         if (cont == 55) {
           socketIO.to(lobbyId).emit("round_ended");
-          lobby.actualRound++;
+          if (lobby.actualRound < lobby.rounds) {
+            lobby.actualRound++;
+          }
           acabarRonda(lobbyId);
           clearInterval(timer)
         }
@@ -359,17 +361,19 @@ async function sendBoardData(room) {
 
   lobbies.forEach(lobby => {
     if (lobby.lobbyIdentifier == room) {
-      boardData = lobby.boardData;
+      if (lobby.actualRound < lobby.rounds) {
+        boardData = lobby.boardData;
 
-      sockets.forEach(user => {
-        if (user.data.id != lobby.members[lobby.actualRound].idUser) {
-          // console.log(user.data.id);
-          // console.log(lobby.members, lobby.actualRound);
-          socketIO.to(user.id).emit("new_board_data", {
-            board: boardData
-          })
-        }
-      });
+        sockets.forEach(user => {
+          if (user.data.id != lobby.members[lobby.actualRound].idUser) {
+            // console.log(user.data.id);
+            // console.log(lobby.members, lobby.actualRound);
+            socketIO.to(user.id).emit("new_board_data", {
+              board: boardData
+            })
+          }
+        });
+      }
     }
   });
 
