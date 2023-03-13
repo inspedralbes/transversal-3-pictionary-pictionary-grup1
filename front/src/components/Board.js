@@ -1,103 +1,121 @@
-import { useState, useEffect, useRef } from "react";
-import React from "react";
-import "../Board.css"
-import CanvasDraw from "react-canvas-draw";
-import heart from "../img/Heart_corazón.svg.png"
+import { useEffect, useRef, useState } from "react";
 import { CirclePicker } from "react-color";
-import CountdownTimer from "./CountdownTimer";
-
-//REFERENCIA: https://github.com/embiem/react-canvas-draw
+import "../Board.css";
+import React from "react";
 
 function Board({ socket, pintor }) {
-  const firstCanvas = useRef(null); //Serveix per agafar un component com a referencia
-  const secondCanvas = useRef(null);
-  //Color picker
+  const canvasRef = useRef(null);
+  const canvasRef2 = useRef(null);
   const [currentColor, setCurrentColor] = useState("#000");
-  //Tamaño de brocha
-  const [brushRadius, setBrushRadius] = useState(1);
-
-
-  const handleChangeComplete = (color) => {
-    setCurrentColor(color.hex);
-  };
-
-  const clear = () => {
-    // poner control de si es pintor o no
-    firstCanvas.current.clear();
-    sendBoardDataToSocketIo();
-  };
+  const [brushRadius, setBrushRadius] = useState(0);
+  let arrayDatos = [];
 
   const sendBoardDataToSocketIo = () => {
-    const data = firstCanvas.current.getSaveData(); //Dona totes les coordenades utilitzades en el CanvasDraw
+    const data = {arrayDatos, color: currentColor, radius: brushRadius };
+    console.log(data);
     socket.emit("save_coord", data);
   };
 
-  useEffect(() => { 
-    socket.emit("give_me_the_board");
-
-    socket.on("new_board_data", (data) => {
-      if (!pintor) {
-        secondCanvas.current.loadSaveData(data.board);
-      }
-    }, 0);
-  }, []);
-
-  const keydown = (e) => {
-    if (e.ctrlKey && e.key === "z" && pintor) {
-      firstCanvas.current.undo();
-      sendBoardDataToSocketIo();
-    }
-  }
-
   useEffect(() => {
-    window.addEventListener("keydown", keydown);
-    return () => {
-      window.removeEventListener("keydown", keydown);
+    if (pintor) {
+      socket.emit("give_me_the_board");
+      const canvas = canvasRef.current;
+      const context = canvas.getContext("2d");
+
+      let x;
+      let y;
+      let isDrawing = false;
+
+      function handleMouseDown(evt) {
+        isDrawing = true;
+        x = evt.offsetX;
+        y = evt.offsetY;
+      }
+
+      function handleMouseMove(evt) {
+        if (!isDrawing) return;
+        const newX = evt.offsetX;
+        const newY = evt.offsetY;
+        context.beginPath();
+        context.moveTo(x, y);
+        context.lineTo(newX, newY);
+        context.strokeStyle = currentColor;
+        context.lineCap = "round";
+        context.lineWidth = brushRadius;
+        context.stroke();
+        x = newX;
+        y = newY;
+        arrayDatos.push({ x, y });
+        sendBoardDataToSocketIo();
+      }
+
+      function handleMouseUp() {
+        isDrawing = false;
+        arrayDatos.push("nuevaLinea");
+      }
+      function handleMouseOut() {
+        isDrawing = false;
+      }
+
+      canvas.addEventListener("mousedown", handleMouseDown);
+      canvas.addEventListener("mousemove", handleMouseMove);
+      canvas.addEventListener("mouseup", handleMouseUp);
+      canvas.addEventListener("mouseout", handleMouseOut);
+
+      return () => {
+        canvas.removeEventListener("mousedown", handleMouseDown);
+        canvas.removeEventListener("mousemove", handleMouseMove);
+        canvas.removeEventListener("mouseup", handleMouseUp);
+        canvas.addEventListener("mouseout", handleMouseOut);
+      };
+
+    } else {
+      socket.on("new_board_data", (data) => {
+        const canvas = canvasRef2.current;
+        const context = canvas.getContext("2d");
+        context.beginPath();
+
+        context.moveTo(data.board.arrayDatos[0].x, data.board.arrayDatos[0].y);
+
+        for (let i = 1; i < data.board.arrayDatos.length; i++) {
+          if (data.board.arrayDatos[i] === "nuevaLinea") {
+            context.stroke();
+            context.beginPath();
+            context.moveTo(data.board.arrayDatos[i + 1].x, data.board.arrayDatos[i + 1].y);
+            i++;
+          } else {
+            context.lineTo(data.board.arrayDatos[i].x, data.board.arrayDatos[i].y);
+          }
+        }
+        context.strokeStyle = data.board.color;
+        context.lineCap = "round";
+        context.lineWidth = data.board.radius;
+        context.stroke();
+      });
     }
-  });
+  }, [pintor, currentColor, brushRadius]);
 
   if (pintor) {
     return (
       <div className="Board">
-        <CountdownTimer socket={socket}/>
-        <button onClick={clear}>Clear</button>
         <CirclePicker
           style={{ border: "4px solid #000" }}
           color={currentColor}
           onChangeComplete={(color) => setCurrentColor(color.hex)}
         ></CirclePicker>
-        <input id="brushRadius" type={"range"} min="1" max="50" step={0} value={brushRadius} onChange={(e) => setBrushRadius(e.target.value)} ></input>
-        <CanvasDraw
-          className="Board__draw"
-          canvasWidth={700}
-          canvasHeight={700}
-          brushRadius={brushRadius}
-          brushColor={currentColor}
-          hideGrid={true}
-          hideInterface={true}
-          loadTimeOffset={0}
-          lazyRadius={1}
-          style={{ border: "4px solid #000" }}
-          ref={firstCanvas}
-          onChange={sendBoardDataToSocketIo}
-        // onMouseDown={sendBoardDataToSocketIo}
-        />
+        <input id="brushRadius" type={"range"} min="1" max="50" step={1} value={brushRadius} onChange={(e) => setBrushRadius(e.target.value)} ></input>
+        <canvas id="myCanvas" ref={canvasRef} width={800} height={500} style={{ border: "1px solid black" }} />
       </div>
     );
-  } else {
+  }
+  else {
     return (
       <div className="Board">
-        <CountdownTimer socket={socket}/>
-        <CanvasDraw
-          hideGrid={true}
-          disabled={true}
-          immediateLoading={true}
-          ref={secondCanvas}
-          style={{ border: "4px solid #000" }}
-        />
+        <canvas id="myCanvas2" ref={canvasRef2} width={800} height={500} style={{ border: "1px solid black" }} />
       </div>
     );
   }
 }
+
 
 export default Board;

@@ -147,7 +147,6 @@ socketIO.on('connection', socket => {
 
   socket.on('save_coord', (arrayDatos) => {
     boardData = arrayDatos;
-
     sendBoardData();
   });
 
