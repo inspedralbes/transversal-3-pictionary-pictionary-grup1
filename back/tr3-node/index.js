@@ -328,10 +328,18 @@ async function sendUserList(room) {
 
   const sockets = await socketIO.in(room).fetchSockets();
 
-  sockets.forEach((element) => {
-    list.push({
-      name: element.data.id,
-    });
+  lobbies.forEach(lobby => {
+    if (lobby.lobbyIdentifier == room) {
+      boardData = lobby.boardData;
+
+      sockets.forEach((element) => {
+        if (element.data.id != lobby.ownerId) {
+          list.push({
+            name: element.data.id,
+          });
+        }
+      });
+    }
   });
 
   socketIO.to(room).emit("lobby_user_list", {
