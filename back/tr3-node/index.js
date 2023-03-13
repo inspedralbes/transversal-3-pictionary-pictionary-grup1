@@ -101,7 +101,8 @@ socketIO.on('connection', socket => {
         contadorMax: 60,
         rounds: 0,
         actualRound: 0,
-        ended: false
+        ended: false,
+        boardData: undefined,
       }
       lobbies.push(lobbyData);
       joinLobby(socket, newLobbyIdentifier)
@@ -146,14 +147,26 @@ socketIO.on('connection', socket => {
   });
 
   socket.on('save_coord', (arrayDatos) => {
-    boardData = arrayDatos;
+    lobbies.forEach(lobby => {
+      if (lobby.lobbyIdentifier == socket.data.current_lobby) {
+        lobby.boardData = arrayDatos;
+      }
+    });
+    // boardData = arrayDatos;
 
-    sendBoardData();
+    sendBoardData(socket.data.current_lobby);
   });
 
   socket.on('give_me_the_board', () => {
+    let boardData;
+    lobbies.forEach(lobby => {
+      if (lobby.lobbyIdentifier == socket.data.current_lobby) {
+        boardData = lobby.boardData;
+      }
+    });
+
     if (boardData != undefined) {
-      sendBoardData();
+      sendBoardData(socket.data.current_lobby);
     }
     sendWordToCheck(socket);
   });
@@ -315,10 +328,18 @@ async function sendUserList(room) {
 
   const sockets = await socketIO.in(room).fetchSockets();
 
-  sockets.forEach((element) => {
-    list.push({
-      name: element.data.id,
-    });
+  lobbies.forEach(lobby => {
+    if (lobby.lobbyIdentifier == room) {
+      boardData = lobby.boardData;
+
+      sockets.forEach((element) => {
+        if (element.data.id != lobby.ownerId) {
+          list.push({
+            name: element.data.id,
+          });
+        }
+      });
+    }
   });
 
   socketIO.to(room).emit("lobby_user_list", {
@@ -327,16 +348,28 @@ async function sendUserList(room) {
   });
 }
 
-async function sendBoardData() {
-  const sockets = await socketIO.fetchSockets();
+async function sendBoardData(room) {
+  const sockets = await socketIO.in(room).fetchSockets();
 
-  sockets.forEach(user => {
-    if (user.data.id != arrI[0]) {
-      socketIO.to(user.id).emit("new_board_data", {
-        board: boardData
-      })
+  let boardData;
+
+  lobbies.forEach(lobby => {
+    if (lobby.lobbyIdentifier == room) {
+      boardData = lobby.boardData;
+
+      sockets.forEach(user => {
+        if (user.data.id != lobby.members[lobby.actualRound].idUser) {
+          console.log(user.data.id);
+          console.log(lobby.members, lobby.actualRound);
+          socketIO.to(user.id).emit("new_board_data", {
+            board: boardData
+          })
+        }
+      });
     }
   });
+
+
 }
 
 function sendWordToCheck(socket) {
