@@ -32,14 +32,11 @@ function Board({ socket, pintor }) {
     socket.emit("save_coord", data);
   };
 
-  useEffect(() => { 
+  useEffect(() => {
     socket.emit("give_me_the_board");
 
     socket.on("new_board_data", (data) => {
-      if (!pintor) {
-        console.log("hola");
-        secondCanvas.current.loadSaveData(data.board);
-      }
+      secondCanvas.current.loadSaveData(data.board);
     }, 0);
   }, []);
 
@@ -60,7 +57,7 @@ function Board({ socket, pintor }) {
   if (pintor) {
     return (
       <div className="Board">
-        <CountdownTimer socket={socket}/>
+        <CountdownTimer socket={socket} />
         <button onClick={clear}>Clear</button>
         <CirclePicker
           style={{ border: "4px solid #000" }}
@@ -88,7 +85,7 @@ function Board({ socket, pintor }) {
   } else {
     return (
       <div className="Board">
-        <CountdownTimer socket={socket}/>
+        <CountdownTimer socket={socket} />
         <CanvasDraw
           hideGrid={true}
           disabled={true}

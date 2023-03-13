@@ -1,7 +1,7 @@
 // import "../normalize.css";
 import { useState, useEffect } from "react";
 
-function ConnectedUsers({ socket }) {
+function ConnectedUsersInGame({ socket }) {
     const [userList, setUserList] = useState([]);
     const [firstTime, setFirstTime] = useState(true);
 
@@ -36,4 +36,4 @@ function ConnectedUsers({ socket }) {
     );
 }
 
-export default ConnectedUsers;
+export default ConnectedUsersInGame;
