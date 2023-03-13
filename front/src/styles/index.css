@@ -1,3 +1,5 @@
+@import url(http://fxaeberhard.github.io/handdrawn.css/handdrawn.css);
+
 @font-face{
     font-family: comicAndy;
     src: url("../fonts/comic_andy/Comic_Andy.ttf");
@@ -32,12 +34,17 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   
-  background-color: #4158D0;
-  background-image: linear-gradient(43deg, #4158D0 0%, #C850C0 46%, #FFCC70 100%);
+  background: #F0F0D8;
   
 }
-html, body {
-  height: 100%;
+
+html,
+body {
+  min-height: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 code {

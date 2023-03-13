@@ -6,13 +6,13 @@ function LandingPage() {
   
 return (
   <div className='ldPage' >
-    <button className='ldPage__loginButton'>Login</button>
+    {/* <button className='ldPage__loginButton'>Login</button> */}
 
-    <h1 className='ldPage__title'>Pintur.io</h1>
+    <h1 className='ldPage__title'>Pintur.io </h1>
     
     <div className='ldPage__buttonsContainer'>
-      <Link to='/createlobby'><button className='ldPage__buttons cartoon-btn'>Create game</button></Link>
-      <Link to='/joinlobby'><button className='ldPage__buttons cartoon-btn'>Join game
+      <Link to='/createlobby'><button className='ldPage__buttons cartoon-btn'>Create game <i class="icon-edit"></i></button></Link>
+      <Link to='/joinlobby'><button className='ldPage__buttons cartoon-btn'>Join game <i class="icon-user-plus"></i>
       </button></Link>
     </div>
   </div>

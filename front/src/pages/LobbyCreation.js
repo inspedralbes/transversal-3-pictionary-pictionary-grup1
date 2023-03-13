@@ -43,13 +43,14 @@ function LobbyCreation({ socket }) {
     }, [])
     return (
         <div>
-            <button onClick={handleLeave}>Leave and delete lobby</button>
+            <button onClick={handleLeave}>Leave and delete lobby <i class="icon-eject"></i></button>
             {lobbyId && (
-                <h1>Identifier: {lobbyId}</h1>
+                <h1>Identifier <i class="icon-key"></i>:  {lobbyId}</h1>
+
             )}
             <ConnectedUsers socket={socket}></ConnectedUsers>
 
-            <button onClick={handleStartGame}>Start game</button>
+            <button onClick={handleStartGame}>Start game <i class="icon-play"></i></button>
         </div>
 
     );
