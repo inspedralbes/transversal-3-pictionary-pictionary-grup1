@@ -8,7 +8,7 @@ function Board({ socket, pintor }) {
   const canvasRef2 = useRef(null);
   const [currentColor, setCurrentColor] = useState("#000");
   const [brushRadius, setBrushRadius] = useState(0);
-  let arrayDatos = [];
+  const arrayDatos = [];
 
   const sendBoardDataToSocketIo = () => {
     const data = {arrayDatos, color: currentColor, radius: brushRadius };
@@ -20,8 +20,10 @@ function Board({ socket, pintor }) {
     if (pintor) {
       socket.emit("give_me_the_board");
       const canvas = canvasRef.current;
+      if (!canvas) {
+        return;
+      }
       const context = canvas.getContext("2d");
-
       let x;
       let y;
       let isDrawing = false;
@@ -67,14 +69,18 @@ function Board({ socket, pintor }) {
         canvas.removeEventListener("mousemove", handleMouseMove);
         canvas.removeEventListener("mouseup", handleMouseUp);
         canvas.addEventListener("mouseout", handleMouseOut);
+
       };
 
     } else {
       socket.on("new_board_data", (data) => {
         const canvas = canvasRef2.current;
+        console.log(data);
+        if (!canvas) {
+          return;
+        }
         const context = canvas.getContext("2d");
         context.beginPath();
-
         context.moveTo(data.board.arrayDatos[0].x, data.board.arrayDatos[0].y);
 
         for (let i = 1; i < data.board.arrayDatos.length; i++) {
@@ -104,18 +110,17 @@ function Board({ socket, pintor }) {
           onChangeComplete={(color) => setCurrentColor(color.hex)}
         ></CirclePicker>
         <input id="brushRadius" type={"range"} min="1" max="50" step={1} value={brushRadius} onChange={(e) => setBrushRadius(e.target.value)} ></input>
-        <canvas id="myCanvas" ref={canvasRef} width={800} height={500} style={{ border: "1px solid black" }} />
+        <canvas ref={canvasRef} width={800} height={500} style={{ border: "1px solid black" }} />
       </div>
     );
   }
   else {
     return (
       <div className="Board">
-        <canvas id="myCanvas2" ref={canvasRef2} width={800} height={500} style={{ border: "1px solid black" }} />
+        <canvas ref={canvasRef2} width={800} height={500} style={{ border: "1px solid black" }} />
       </div>
     );
   }
 }
-
 
 export default Board;
