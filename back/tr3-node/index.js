@@ -350,7 +350,9 @@ async function sendBoardData(room) {
       boardData = lobby.boardData;
 
       sockets.forEach(user => {
-        if (user.data.id != lobby.members[lobby.actualRound]) {
+        if (user.data.id != lobby.members[lobby.actualRound].idUser) {
+          console.log(user.data.id);
+          console.log(lobby.members, lobby.actualRound);
           socketIO.to(user.id).emit("new_board_data", {
             board: boardData
           })

@@ -37,6 +37,7 @@ function Board({ socket, pintor }) {
 
     socket.on("new_board_data", (data) => {
       if (!pintor) {
+        console.log("hola");
         secondCanvas.current.loadSaveData(data.board);
       }
     }, 0);
