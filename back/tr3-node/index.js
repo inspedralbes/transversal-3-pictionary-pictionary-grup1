@@ -340,6 +340,7 @@ async function sendUserList(room) {
         }
       });
     }
+    //
   });
 
   socketIO.to(room).emit("lobby_user_list", {
