@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from "react";
 import React from "react";
 import "../Board.css"
 import CanvasDraw from "react-canvas-draw";
-import heart from "../img/Heart_corazón.svg.png"
 import { CirclePicker } from "react-color";
 import CountdownTimer from "./CountdownTimer";
 
@@ -74,13 +73,14 @@ function Board({ socket }) {
     return (
       <div className="Board">
         <CountdownTimer />
-        <button onClick={clear}>Clear</button>
-        <CirclePicker
-          style={{ border: "4px solid #000" }}
-          color={currentColor}
-          onChangeComplete={(color) => setCurrentColor(color.hex)}
-        ></CirclePicker>
-        <input id="brushRadius" type={"range"} min="1" max="50" step={0} value={brushRadius} onChange={(e) => setBrushRadius(e.target.value)} ></input>
+        <div className="board__settings">
+          <button onClick={clear}>Clear</button>
+          <CirclePicker
+            style={{ border: "4px solid #000" }}
+            color={currentColor}
+            onChangeComplete={(color) => setCurrentColor(color.hex)}></CirclePicker>
+          <input id="brushRadius" type={"range"} min={1} max={25} step={0} value={brushRadius} onChange={(e) => setBrushRadius(e.target.value)} ></input>
+        </div>
         <CanvasDraw
           className="Board__draw"
           canvasWidth={700}
@@ -103,6 +103,9 @@ function Board({ socket }) {
       <div className="Board">
         <CountdownTimer />
         <CanvasDraw
+          className="Board__view"
+          canvasWidth={700}
+          canvasHeight={700}
           hideGrid={true}
           disabled={true}
           immediateLoading={true}

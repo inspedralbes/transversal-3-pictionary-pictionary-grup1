@@ -1,59 +1,18 @@
+body{
+  margin:0;
+  width: 100%;
+  height: 100vh;
+}
+
 .Board{
     background: rgb(226, 226, 226);
 }
 
 .Board__draw, .circle-picker{
     cursor: url("./img/cursor.cur") , pointer;
+    margin: 0 auto;
+    border-radius: 20px;
 }
-
-
-input[type=range] {
-    -webkit-appearance: none;
-    -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
-    width: 200px;
-    height: 20px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    border: none;
-    padding: 1px 2px;
-    border-radius: 14px;
-    background: #131319;
-    outline: none;
-  }
-  input[type=range]::-moz-range-track {
-    border: inherit;
-    background: transparent;
-  }
-  input[type=range]::-ms-track {
-    border: inherit;
-    color: transparent;
-    background: transparent;
-  }
-  input[type=range]::-ms-fill-lower, input[type=range]::-ms-fill-upper {
-    background: transparent;
-  }
-  input[type=range]::-ms-tooltip {
-    display: none;
-  }
-  input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 40px;
-    height: 18px;
-    border: none;
-    border-radius: 12px;
-    background: linear-gradient(45deg, #3bade3 0%, #576fe6 25%, #9844b7 51%, #ff357f 100%);
-  }
-  input[type=range]::-moz-range-thumb {
-    width: 40px;
-    height: 18px;
-    border: none;
-    border-radius: 12px;
-    background-image: linear-gradient(to bottom, #529de1 0, #245e8f 100%);
-  }
-  input[type=range]::-ms-thumb {
-    width: 40px;
-    height: 18px;
-    border-radius: 12px;
-    border: 0;
-    background-image: linear-gradient(to bottom, #529de1 0, #245e8f 100%);
-  }
+.board__settings{
+  float: right;
+}
