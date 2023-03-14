@@ -19,7 +19,5 @@ Route::get('/', function () {
 });
 
 Route::group(['middleware' => ['web']], function () {
-    Route::get('/getWord', [WordController::class, 'getWord']);
-
-    // Route::post('/checkWord', [WordController::class, 'checkWord']);
+    Route::post('/getWord', [WordController::class, 'getWord']);
 });

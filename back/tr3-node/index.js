@@ -243,7 +243,10 @@ function setLobbyWord(room) {
   lobbies.forEach((lobby) => {
     if (lobby.lobbyIdentifier == room) {
       axios
-        .get(laravelRoute + "getWord")
+        .post(laravelRoute + "getWord", {
+          catergory: "",
+          difficulty: ""
+        })
         .then(function (response) {
           lobby.words.push(response.data.wordToCheck);
         })
@@ -354,7 +357,7 @@ async function sendBoardData(room) {
   let boardData;
 
   lobbies.forEach(lobby => {
-    if (lobby.lobbyIdentifier == room) {
+    if (lobby.lobbyIdentifier == room && lobby.actualRound < lobby.rounds) {
       boardData = lobby.boardData;
 
       sockets.forEach(user => {
