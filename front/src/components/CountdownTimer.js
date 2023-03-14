@@ -7,18 +7,15 @@ function CountdownTimer({socket}) {
 
   useEffect(() => {
     socket.on("counter_down", (data) => {
-      console.log("llega el cont");
       setCounter(data.counter);
     })
 
     socket.on("round_ended", () => {
       setCounter(0);
-      console.log("acaba ronda");
     })
 
     socket.on("game_ended", () => {
-      setCounter(777);
-      console.log("acaba game");
+      setCounter(69);
     })
   }, [])
 
