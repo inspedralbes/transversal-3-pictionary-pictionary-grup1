@@ -32,15 +32,26 @@ function Board({ socket, pintor }) {
     socket.emit("save_coord", data);
   };
 
-  useEffect(() => { 
+  useEffect(() => {
     socket.emit("give_me_the_board");
 
     socket.on("new_board_data", (data) => {
-      if (!pintor) {
+      if (secondCanvas.current != null) {
         secondCanvas.current.loadSaveData(data.board);
       }
-    }, 0);
+    });
+
+    socket.on("round_change", () => {
+      if (secondCanvas.current != null)
+        secondCanvas.current.clear();
+    })
   }, []);
+
+  useEffect(() => {
+    if (!pintor) {
+      secondCanvas.current.clear();
+    }
+  }, [pintor])
 
   const keydown = (e) => {
     if (e.ctrlKey && e.key === "z" && pintor) {
@@ -56,48 +67,53 @@ function Board({ socket, pintor }) {
     }
   });
 
-  if (pintor) {
-    return (
-      <div className="Board">
-        <CountdownTimer socket={socket}/>
-        <button onClick={clear}>Clear</button>
-        <CirclePicker
-          style={{ border: "4px solid #000" }}
-          color={currentColor}
-          onChangeComplete={(color) => setCurrentColor(color.hex)}
-        ></CirclePicker>
-        <input id="brushRadius" type={"range"} min="1" max="50" step={0} value={brushRadius} onChange={(e) => setBrushRadius(e.target.value)} ></input>
-        <CanvasDraw
-          className="Board__draw"
-          canvasWidth={700}
-          canvasHeight={700}
-          brushRadius={brushRadius}
-          brushColor={currentColor}
-          hideGrid={true}
-          hideInterface={true}
-          loadTimeOffset={0}
-          lazyRadius={1}
-          style={{ border: "4px solid #000" }}
-          ref={firstCanvas}
-          onChange={sendBoardDataToSocketIo}
-        // onMouseDown={sendBoardDataToSocketIo}
-        />
-      </div>
-    );
-  } else {
-    return (
-      <div className="Board">
-        <CountdownTimer socket={socket}/>
-        <CanvasDraw
-          hideGrid={true}
-          disabled={true}
-          immediateLoading={true}
-          ref={secondCanvas}
-          style={{ border: "4px solid #000" }}
-        />
-      </div>
-    );
-  }
+  return (
+    <div className="Board">
+      {pintor ?
+        <>
+          <CountdownTimer socket={socket} />
+          <button onClick={clear}>Clear</button>
+          <CirclePicker
+            style={{ border: "4px solid #000" }}
+            color={currentColor}
+            onChangeComplete={(color) => setCurrentColor(color.hex)}
+          ></CirclePicker>
+          <input id="brushRadius" type={"range"} min="1" max="50" step={0} value={brushRadius} onChange={(e) => setBrushRadius(e.target.value)} ></input>
+          <CanvasDraw
+            className="Board__draw"
+            canvasWidth={700}
+            canvasHeight={700}
+            brushRadius={brushRadius}
+            brushColor={currentColor}
+            hideGrid={true}
+            hideInterface={true}
+            loadTimeOffset={0}
+            lazyRadius={1}
+            style={{ border: "4px solid #000" }}
+            ref={firstCanvas}
+            onChange={sendBoardDataToSocketIo}
+          // onMouseDown={sendBoardDataToSocketIo}
+          />
+        </>
+        :
+        <>
+          <div className="Board">
+            <CountdownTimer socket={socket} />
+            <CanvasDraw
+              canvasWidth={700}
+              canvasHeight={700}
+              hideGrid={true}
+              disabled={true}
+              immediateLoading={true}
+              ref={secondCanvas}
+              style={{ border: "4px solid #000" }}
+            />
+          </div>
+        </>
+      }
+
+    </div>
+  );
 }
 
 export default Board;

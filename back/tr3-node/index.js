@@ -53,14 +53,13 @@ app.use(
   })
 );
 
-let boardData = undefined;
-
-let players;
 let i = 0;
-let idDrawer = 0;
-let arrI = []
 const laravelRoute = "http://127.0.0.1:8000/index.php/";
 let lobbies = [];
+const measurements = {
+  width: "700",
+  height:"700"
+}
 
 // ------------------------------------------------------------------
 
@@ -68,8 +67,6 @@ socketIO.on('connection', socket => {
 
   i++
   socket.data.id = i;
-  arrI.push(socket.data.id);
-  idDrawer = Math.min.apply(Math, arrI)
   console.log(socket.data.id + " connected ");
 
   const random_hex_color_code = () => {
@@ -98,16 +95,26 @@ socketIO.on('connection', socket => {
         members: [],
         currentDrawer: "",
         words: [],
-        contadorMax: 60,
         rounds: 0,
         actualRound: 0,
-        ended: false
+        ended: false,
+        boardData: undefined,
+        settings: {
+          contadorMax: 60,
+          ownerPlay: false
+        }
       }
       lobbies.push(lobbyData);
-      joinLobby(socket, newLobbyIdentifier)
+      socketIO.to(socket.id).emit("lobby_info", lobbyData)
+      socket.join(newLobbyIdentifier);
+      socket.data.current_lobby = newLobbyIdentifier;
     }
 
   });
+
+  socket.on("lobby_data", () => {
+    sendUserList(socket.data.current_lobby)
+  })
 
   socket.on("join_room", (data) => {
     joinLobby(socket, data.lobbyIdentifier)
@@ -126,6 +133,7 @@ socketIO.on('connection', socket => {
         console.log("started", lobby.members);
         lobby.rounds = lobby.members.length;
         enviarPintor(data.lobbyIdentifier)
+        sendUserList(data.lobbyIdentifier);
         setCounter(data.lobbyIdentifier);
       }
     });
@@ -134,7 +142,6 @@ socketIO.on('connection', socket => {
   });
 
   socket.on("get_game_data", () => {
-    setLobbyWord(socket.data.current_lobby);
     enviarPintor(socket.data.current_lobby)
     let data;
     lobbies.forEach(lobby => {
@@ -146,14 +153,26 @@ socketIO.on('connection', socket => {
   });
 
   socket.on('save_coord', (arrayDatos) => {
-    boardData = arrayDatos;
+    lobbies.forEach(lobby => {
+      if (lobby.lobbyIdentifier == socket.data.current_lobby) {
+        lobby.boardData = arrayDatos;
+      }
+    });
+    // boardData = arrayDatos;
 
-    sendBoardData();
+    sendBoardData(socket.data.current_lobby);
   });
 
   socket.on('give_me_the_board', () => {
+    let boardData;
+    lobbies.forEach(lobby => {
+      if (lobby.lobbyIdentifier == socket.data.current_lobby) {
+        boardData = lobby.boardData;
+      }
+    });
+
     if (boardData != undefined) {
-      sendBoardData();
+      sendBoardData(socket.data.current_lobby);
     }
     sendWordToCheck(socket);
   });
@@ -182,7 +201,7 @@ socketIO.on('connection', socket => {
   });
 
   socket.on('disconnect', () => {
-    console.log(socket.id + " disconnected " + i);
+    console.log(socket.data.id + " disconnected");
     leaveLobby(socket);
   })
 });
@@ -191,17 +210,19 @@ function setCounter(lobbyId) {
   let timer;
   lobbies.forEach(lobby => {
     if (lobby.lobbyIdentifier == lobbyId && !lobby.ended) {
-      lobby.contadorMax = 60
+      let cont = lobby.settings.contadorMax
       timer = setInterval(() => {
-        lobby.contadorMax--;
-        console.log(lobby.contadorMax);
+        cont--;
         socketIO.to(lobbyId).emit("counter_down", {
-          counter: lobby.contadorMax
+          counter: cont
         })
 
-        if (lobby.contadorMax == 55) {
+        if (cont == 55) {
           socketIO.to(lobbyId).emit("round_ended");
-          lobby.actualRound++;
+          if (lobby.actualRound < lobby.rounds) {
+            lobby.actualRound++;
+          }
+          enviarPintor(lobbyId);
           acabarRonda(lobbyId);
           clearInterval(timer)
         }
@@ -211,11 +232,11 @@ function setCounter(lobbyId) {
 }
 
 function acabarRonda(lobbyId) {
-  console.log("Final Ronda");
-  enviarPintor(lobbyId)
   lobbies.forEach(lobby => {
     if (lobby.lobbyIdentifier == lobbyId) {
       if (!lobby.ended) {
+        lobby.boardData = `{\"lines\":[],\"width\":${measurements.width},\"height\":${measurements.height}}`;
+        sendBoardData(lobbyId)
         setCounter(lobbyId);
       } else {
         socketIO.to(lobbyId).emit("game_ended")
@@ -239,6 +260,33 @@ function setLobbyWord(room) {
         });
     }
   });
+}
+
+function joinLobby(socket, lobbyIdentifier) {
+  lobbies.forEach((lobby) => {
+    if (lobby.lobbyIdentifier == lobbyIdentifier) {
+      var disponible = true;
+
+      lobby.members.forEach(member => {
+        if (member.idUser == socket.data.id || lobby.ownerId == socket.data.id) {
+          console.log("hola");
+          disponible = false;
+        }
+      });
+
+      if (disponible) {
+        lobby.members.push({
+          idUser: socket.data.id,
+        });
+
+        socketIO.to(socket.id).emit("lobby_info", lobby)
+      }
+    }
+  });
+  socket.join(lobbyIdentifier);
+  socket.data.current_lobby = lobbyIdentifier;
+
+  sendUserList(lobbyIdentifier);
 }
 
 function leaveLobby(socket) {
@@ -265,32 +313,6 @@ function leaveLobby(socket) {
   socketIO.to(socket.id).emit("YOU_LEFT_LOBBY")
 }
 
-function joinLobby(socket, lobbyIdentifier) {
-  lobbies.forEach((lobby) => {
-    if (lobby.lobbyIdentifier == lobbyIdentifier) {
-      var disponible = true;
-
-      lobby.members.forEach(member => {
-        if (member.idUser == socket.data.id) {
-          disponible = false;
-        }
-      });
-
-      if (disponible) {
-        lobby.members.push({
-          idUser: socket.data.id,
-        });
-
-        socketIO.to(socket.id).emit("lobby_info", lobby)
-      }
-    }
-  });
-  socket.join(lobbyIdentifier);
-  socket.data.current_lobby = lobbyIdentifier;
-
-  sendUserList(lobbyIdentifier);
-}
-
 async function setLobbyWord(room) {
   let word;
   await axios
@@ -315,28 +337,50 @@ async function sendUserList(room) {
 
   const sockets = await socketIO.in(room).fetchSockets();
 
-  sockets.forEach((element) => {
-    list.push({
-      name: element.data.id,
-    });
+  lobbies.forEach(lobby => {
+    if (lobby.lobbyIdentifier == room) {
+
+      sockets.forEach((element) => {
+        if (element.data.id != lobby.ownerId) {
+          list.push({
+            name: element.data.id,
+          });
+        }
+      });
+    }
   });
 
+  console.log("");
   socketIO.to(room).emit("lobby_user_list", {
     list: list,
     message: "user list",
   });
 }
 
-async function sendBoardData() {
-  const sockets = await socketIO.fetchSockets();
+async function sendBoardData(room) {
+  const sockets = await socketIO.in(room).fetchSockets();
 
-  sockets.forEach(user => {
-    if (user.data.id != arrI[0]) {
-      socketIO.to(user.id).emit("new_board_data", {
-        board: boardData
-      })
+  let boardData;
+
+  lobbies.forEach(lobby => {
+    if (lobby.lobbyIdentifier == room) {
+      if (lobby.actualRound < lobby.rounds) {
+        boardData = lobby.boardData;
+
+        sockets.forEach(user => {
+          if (user.data.id != lobby.members[lobby.actualRound].idUser) {
+            // console.log(user.data.id);
+            // console.log(lobby.members, lobby.actualRound);
+            socketIO.to(user.id).emit("new_board_data", {
+              board: boardData
+            })
+          }
+        });
+      }
     }
   });
+
+
 }
 
 function sendWordToCheck(socket) {
@@ -359,23 +403,29 @@ async function enviarPintor(room) {
 
   lobbies.forEach((lobby) => {
     if (lobby.lobbyIdentifier == room) {
-      if (lobby.actualRound < lobby.rounds - 1) {
-        console.log("Rondas max " + lobby.rounds);
+      if (lobby.actualRound < lobby.rounds) {
 
         sockets.forEach(user => {
           if (user.data.id == lobby.members[lobby.actualRound].idUser) {
             console.log("ronda: " + lobby.actualRound);
-            console.log(user.data.id, lobby.members[lobby.actualRound].idUser);
 
             socketIO.to(user.id).emit("pintor", {
               pintor: true
             })
           } else {
-            socketIO.to(user.id).emit("pintor", {
-              pintor: false
-            })
+            if (user.data.id != lobby.ownerId) {
+              socketIO.to(user.id).emit("pintor", {
+                pintor: false
+              })
+            } else {
+              socketIO.to(user.id).emit("spectator", {
+                spectator: true
+              })
+            }
+
           }
         });
+        socketIO.to(room).emit("round_change");
       } else {
         lobby.ended = true;
       }
