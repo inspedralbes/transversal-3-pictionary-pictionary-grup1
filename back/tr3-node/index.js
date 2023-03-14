@@ -219,7 +219,7 @@ function setCounter(lobbyId) {
 
         if (cont == 55) {
           socketIO.to(lobbyId).emit("round_ended");
-          if (lobby.actualRound < lobby.rounds) {
+          if (lobby.actualRound < lobby.rounds - 1) {
             lobby.actualRound++;
           }
           enviarPintor(lobbyId);
@@ -403,7 +403,7 @@ async function enviarPintor(room) {
 
   lobbies.forEach((lobby) => {
     if (lobby.lobbyIdentifier == room) {
-      if (lobby.actualRound < lobby.rounds) {
+      if (lobby.actualRound < lobby.rounds - 1) {
 
         sockets.forEach(user => {
           if (user.data.id == lobby.members[lobby.actualRound].idUser) {
