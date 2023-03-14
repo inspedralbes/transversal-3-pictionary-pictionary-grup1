@@ -53,12 +53,7 @@ app.use(
   })
 );
 
-let boardData = undefined;
-
-let players;
 let i = 0;
-let idDrawer = 0;
-let arrI = []
 const laravelRoute = "http://127.0.0.1:8000/index.php/";
 let lobbies = [];
 const measurements = {
@@ -72,8 +67,6 @@ socketIO.on('connection', socket => {
 
   i++
   socket.data.id = i;
-  arrI.push(socket.data.id);
-  idDrawer = Math.min.apply(Math, arrI)
   console.log(socket.data.id + " connected ");
 
   const random_hex_color_code = () => {
@@ -119,6 +112,10 @@ socketIO.on('connection', socket => {
 
   });
 
+  socket.on("lobby_data_pls", () => {
+    sendUserList(socket.data.current_lobby)
+  })
+
   socket.on("join_room", (data) => {
     joinLobby(socket, data.lobbyIdentifier)
   });
@@ -136,6 +133,7 @@ socketIO.on('connection', socket => {
         console.log("started", lobby.members);
         lobby.rounds = lobby.members.length;
         enviarPintor(data.lobbyIdentifier)
+        sendUserList(data.lobbyIdentifier);
         setCounter(data.lobbyIdentifier);
       }
     });
@@ -203,7 +201,7 @@ socketIO.on('connection', socket => {
   });
 
   socket.on('disconnect', () => {
-    console.log(socket.id + " disconnected " + i);
+    console.log(socket.data.id + " disconnected");
     leaveLobby(socket);
   })
 });
@@ -234,7 +232,6 @@ function setCounter(lobbyId) {
 }
 
 function acabarRonda(lobbyId) {
-  console.log("Final Ronda");
   lobbies.forEach(lobby => {
     if (lobby.lobbyIdentifier == lobbyId) {
       if (!lobby.ended) {
@@ -342,7 +339,6 @@ async function sendUserList(room) {
 
   lobbies.forEach(lobby => {
     if (lobby.lobbyIdentifier == room) {
-      boardData = lobby.boardData;
 
       sockets.forEach((element) => {
         if (element.data.id != lobby.ownerId) {
@@ -354,6 +350,7 @@ async function sendUserList(room) {
     }
   });
 
+  console.log("");
   socketIO.to(room).emit("lobby_user_list", {
     list: list,
     message: "user list",
@@ -407,12 +404,10 @@ async function enviarPintor(room) {
   lobbies.forEach((lobby) => {
     if (lobby.lobbyIdentifier == room) {
       if (lobby.actualRound < lobby.rounds) {
-        console.log("Rondas max " + lobby.rounds);
 
         sockets.forEach(user => {
           if (user.data.id == lobby.members[lobby.actualRound].idUser) {
             console.log("ronda: " + lobby.actualRound);
-            console.log(user.data.id, lobby.members[lobby.actualRound].idUser);
 
             socketIO.to(user.id).emit("pintor", {
               pintor: true

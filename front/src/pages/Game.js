@@ -21,7 +21,6 @@ function Game({ socket }) {
 
   function handleFormSubmit(word) {
     if (word.trim() !== "") {
-      console.log(word);
       socket.emit("try_word_attempt", {
         word: word,
       });
@@ -54,7 +53,6 @@ function Game({ socket }) {
 
     socket.on('pintor', (data) => {
       setPintor(data.pintor);
-      console.log("CAMBIO PINTOR");
     });
 
     socket.on('spectator', (data) => {
@@ -62,8 +60,8 @@ function Game({ socket }) {
     });
 
     socket.on('game_data', (data) => {
-      console.log(data);
       setWordToCheck(data.words[0]);
+      console.log("startea");
     });
 
     return () => {
@@ -74,11 +72,16 @@ function Game({ socket }) {
     };
   }, []);
 
-  if (!spectator) {
-    if (pintor) {
-      return (
-        <div>
-          <div style={{ display: "flex" }}>
+
+  return (
+    <>
+      <ConnectedUsersInGame socket={socket}></ConnectedUsersInGame>
+      {spectator ?
+        <>
+          <Board socket={socket} pintor={pintor}></Board>
+        </> :
+        <>
+          {pintor ? <div style={{ display: "flex" }}>
             <div style={{ marginRight: "20px" }}>
               {wordToCheck && <p>{wordToCheck}</p>}
               {result && <p>{result}</p>}
@@ -93,27 +96,14 @@ function Game({ socket }) {
                 </ul>
               </div>
             )}
-          </div>
-        </div>
-      )
-    }
-    else {
-      return (
-        <div>
-          {result && <p>{result}</p>}
-          <WordForm onSubmit={handleFormSubmit} socket={socket} /><br></br>
-          <Board socket={socket} pintor={pintor}></Board>
-        </div>
-      )
-    }
-  } else {
-    return (
-      <div>
-        <Board socket={socket} pintor={pintor}></Board>
-        <ConnectedUsersInGame socket={socket}></ConnectedUsersInGame>
-      </div>
-    )
-  }
+          </div> : <>
+            {result && <p>{result}</p>}
+            <WordForm onSubmit={handleFormSubmit} socket={socket} /><br></br>
+            <Board socket={socket} pintor={pintor}></Board>
+          </>}
+        </>}
+    </>
+  )
 
 }
 

@@ -7,12 +7,11 @@ function ConnectedUsersInGame({ socket }) {
 
     useEffect(() => {
         if (firstTime) {
-            socket.emit("lobby_data_pls");
+            socket.emit("lobby_data");
             setFirstTime(false)
         }
         socket.on("lobby_user_list", (data) => {
-            setUserList(data.list);
-            // console.log(data);
+            setUserList(data);
         });
     }, [])
 
@@ -21,15 +20,17 @@ function ConnectedUsersInGame({ socket }) {
         <div className="game__connectedUsers">
             <h1 className="connectedUsers_title">Connected users</h1>
             <ul id="userList" className="connectedUsers__userList userList">
-                {userList.map((user, index) => {
-                    return (
-                        <li id="bgColor" className="userList__item item" key={index}>
-                            <div className="item__name">
-                                <p>{user.name}</p>
-                            </div>
-                        </li>
-                    );
-                })}
+                {Array.isArray(userList.list)
+                    ? userList.list.map((user, index) => {
+                        return (
+                            <li id="bgColor" className="userList__item item" key={index}>
+                                <div className="item__name">
+                                    <p>{user.name}</p>
+                                </div>
+                            </li>
+                        );
+                    })
+                    : null}
             </ul>
         </div>
 
