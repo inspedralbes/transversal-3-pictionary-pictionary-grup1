@@ -32,9 +32,9 @@ function Game({ socket }) {
       socket.emit('get_game_data')
     }
 
-    socket.on('word_to_check', (data) => {
-      setWordToCheck(data.word);
-    });
+    // socket.on('word_to_check', (data) => {
+    //   setWordToCheck(data.words[1].name);
+    // });
 
     socket.on('send_guessed_word', (data) => {
       const userId = data.id;
@@ -60,8 +60,8 @@ function Game({ socket }) {
     });
 
     socket.on('game_data', (data) => {
-      setWordToCheck(data.words[0]);
-      console.log("startea");
+      setWordToCheck(data.words[1].name);
+      console.log(data);
     });
 
     return () => {
@@ -83,7 +83,7 @@ function Game({ socket }) {
         <>
           {pintor ? <div style={{ display: "flex" }}>
             <div style={{ marginRight: "20px" }}>
-              {wordToCheck && <p>{wordToCheck}</p>}
+              {wordToCheck != "" && <p>{wordToCheck}</p>}
               {result && <p>{result}</p>}
               <Board socket={socket} pintor={pintor}></Board>
             </div>
