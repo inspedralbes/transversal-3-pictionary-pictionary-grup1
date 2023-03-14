@@ -18,8 +18,8 @@ return new class extends Migration
 
             $table->bigInteger('category_id')->unsigned()->index();
 
-            $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
-            $table->enum('difficulty', ['easy', 'medium', 'hard']);
+            $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade')->default(1);
+            $table->enum('difficulty', ['easy', 'medium', 'hard']) -> nullable();
 
             $table->timestamps();
         });
