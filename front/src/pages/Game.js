@@ -54,6 +54,7 @@ function Game({ socket }) {
 
     socket.on('pintor', (data) => {
       setPintor(data.pintor);
+      console.log("CAMBIO PINTOR");
     });
 
     socket.on('spectator', (data) => {

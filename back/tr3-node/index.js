@@ -61,6 +61,10 @@ let idDrawer = 0;
 let arrI = []
 const laravelRoute = "http://127.0.0.1:8000/index.php/";
 let lobbies = [];
+const measurements = {
+  width: "700",
+  height:"700"
+}
 
 // ------------------------------------------------------------------
 
@@ -220,6 +224,7 @@ function setCounter(lobbyId) {
           if (lobby.actualRound < lobby.rounds) {
             lobby.actualRound++;
           }
+          enviarPintor(lobbyId);
           acabarRonda(lobbyId);
           clearInterval(timer)
         }
@@ -230,10 +235,11 @@ function setCounter(lobbyId) {
 
 function acabarRonda(lobbyId) {
   console.log("Final Ronda");
-  enviarPintor(lobbyId)
   lobbies.forEach(lobby => {
     if (lobby.lobbyIdentifier == lobbyId) {
       if (!lobby.ended) {
+        lobby.boardData = `{\"lines\":[],\"width\":${measurements.width},\"height\":${measurements.height}}`;
+        sendBoardData(lobbyId)
         setCounter(lobbyId);
       } else {
         socketIO.to(lobbyId).emit("game_ended")
@@ -400,7 +406,7 @@ async function enviarPintor(room) {
 
   lobbies.forEach((lobby) => {
     if (lobby.lobbyIdentifier == room) {
-      if (lobby.actualRound < lobby.rounds - 1) {
+      if (lobby.actualRound < lobby.rounds) {
         console.log("Rondas max " + lobby.rounds);
 
         sockets.forEach(user => {
@@ -424,6 +430,7 @@ async function enviarPintor(room) {
 
           }
         });
+        socketIO.to(room).emit("round_change");
       } else {
         lobby.ended = true;
       }
