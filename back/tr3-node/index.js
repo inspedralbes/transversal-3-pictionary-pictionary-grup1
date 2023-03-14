@@ -112,7 +112,7 @@ socketIO.on('connection', socket => {
 
   });
 
-  socket.on("lobby_data_pls", () => {
+  socket.on("lobby_data", () => {
     sendUserList(socket.data.current_lobby)
   })
 
@@ -339,10 +339,6 @@ async function sendUserList(room) {
 
   lobbies.forEach(lobby => {
     if (lobby.lobbyIdentifier == room) {
-<<<<<<< HEAD
-      boardData = lobby.boardData;
-=======
->>>>>>> rounds
 
       sockets.forEach((element) => {
         if (element.data.id != lobby.ownerId) {
