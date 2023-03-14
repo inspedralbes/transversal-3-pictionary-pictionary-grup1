@@ -247,21 +247,6 @@ function acabarRonda(lobbyId) {
 
 }
 
-function setLobbyWord(room) {
-  lobbies.forEach((lobby) => {
-    if (lobby.lobbyIdentifier == room) {
-      axios
-        .get(laravelRoute + "getWord")
-        .then(function (response) {
-          lobby.words.push(response.data.wordToCheck);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    }
-  });
-}
-
 function joinLobby(socket, lobbyIdentifier) {
   lobbies.forEach((lobby) => {
     if (lobby.lobbyIdentifier == lobbyIdentifier) {
@@ -315,8 +300,13 @@ function leaveLobby(socket) {
 
 async function setLobbyWord(room) {
   let word;
+  let category = "null";
+  let difficulty = "null";
   await axios
-    .get(laravelRoute + "getWord")
+    .post(laravelRoute + "getWord", {
+      category: category,
+      difficulty: difficulty,
+    })
     .then(function (response) {
       word = response.data.wordToCheck
       console.log(word);
@@ -326,7 +316,7 @@ async function setLobbyWord(room) {
     });
   lobbies.forEach((lobby) => {
     if (lobby.lobbyIdentifier == room) {
-      lobby.words.push(word);
+      lobby.words.push(word.name);
       socketIO.to(room).emit('game_data', lobby);
     }
   });
