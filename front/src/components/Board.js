@@ -73,14 +73,19 @@ function Board({ socket }) {
     return (
       <div className="Board">
         <CountdownTimer />
-        <div className="board__settings">
-          <button onClick={clear}>Clear</button>
-          <CirclePicker
-            style={{ border: "4px solid #000" }}
-            color={currentColor}
-            onChangeComplete={(color) => setCurrentColor(color.hex)}></CirclePicker>
-          <input id="brushRadius" type={"range"} min={1} max={25} step={0} value={brushRadius} onChange={(e) => setBrushRadius(e.target.value)} ></input>
-        </div>
+        <div class="dropdown">
+          <button class="dropbtn">Board settings<i class="icon-arrow-down"></i></button>
+          <div class="dropdown-content">
+            <div className="board__settings">
+              <button onClick={clear}>Clear</button>
+              <CirclePicker
+                style={{ border: "4px solid #000" }}
+                color={currentColor}
+                onChangeComplete={(color) => setCurrentColor(color.hex)}></CirclePicker>
+              <input id="brushRadius" type={"range"} min={1} max={25} step={0} value={brushRadius} onChange={(e) => setBrushRadius(e.target.value)} ></input>
+            </div>
+            </div>
+          </div>
         <CanvasDraw
           className="Board__draw"
           canvasWidth={700}
