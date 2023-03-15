@@ -16,12 +16,25 @@ function LobbyCreation({ socket }) {
         });
     }
 
+    function copyId() {
+        let id = lobbyId;
+        console.log(lobbyId);
+        navigator.clipboard.writeText(lobbyId);
+    }
+
     function handleStartGame(e) {
         e.preventDefault();
         //
         socket.emit("start_game", {
             lobbyIdentifier: lobbyId
         });
+    }
+
+    function changeColor() {
+        let colors = ["#70a1da", "#70da92", "#cada70", "#858cb7", "#f6a39e", "#ab605c", "#70ab5c", "#ed96f1", "#e05b8c", "#e0ce5b", "#997490", "#9dff4e", "#ffd64e", "#e24eff", "#4ebeff", "#b2b5dc", "#20bf55", "#bf97ff", "#ff9797", "#97e5ff"];
+        let color = colors[Math.floor(Math.random() * 21)];
+        console.log(colors.length);
+        document.getElementById("copyId").style.color = color;
     }
 
     useEffect(() => {
@@ -46,7 +59,7 @@ function LobbyCreation({ socket }) {
         <div className="createGame">
             <button className="createGame__leaveButton" onClick={handleLeave}>Leave and delete lobby</button>
             {lobbyId && (
-                <h1 className="identifier"><span>I</span><span>D</span><span>E</span><span>N</span><span>T</span><span>I</span><span>F</span><span>I</span><span>E</span><span>R</span>: {lobbyId}</h1>
+                <h1 className="identifier"><span>I</span><span>D</span><span>E</span><span>N</span><span>T</span><span>I</span><span>F</span><span>I</span><span>E</span><span>R</span>: <span id="copyId" onClick={copyId} onMouseOver={changeColor}><p>CLICK TO COPY THE ID</p>{lobbyId}</span></h1>
             )}
             <ConnectedUsers socket={socket}></ConnectedUsers>
             <div className="createGame__startButtonDiv">
