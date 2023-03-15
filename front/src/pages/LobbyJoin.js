@@ -53,7 +53,9 @@ function LobbyJoin({ socket }) {
             <div>
                 {error != "" && (<h1 className="error">{error}</h1>)}
                 <form onSubmit={handleSubmit}>
-                    <input type="text" value={lobbyId} onChange={handleChange} placeholder="Enter lobby identifier" />
+                    <label>Enter lobby Identifier
+                        <input type="text" value={lobbyId} onChange={handleChange} placeholder = "code..."/>
+                    </label>
                     <button type="submit">Join</button>
                 </form>
             </div>
