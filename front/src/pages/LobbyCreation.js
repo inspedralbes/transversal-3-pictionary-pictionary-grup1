@@ -36,6 +36,10 @@ function LobbyCreation({ socket }) {
             let color = colors[Math.floor(Math.random() * 21)];
             document.getElementById("copyId").style.color = color;
         });
+
+        document.getElementById("copyId").addEventListener('mouseout', function () {
+            document.getElementById("copyId").style.color = '#5c5b5b';
+        });
     }
 
     useEffect(() => {

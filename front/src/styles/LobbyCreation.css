@@ -138,9 +138,10 @@ span:nth-child(11):hover {
 #copyId p {
     display: none;
     font-size: 15px;
-    color: #031e2e;
+    color: #000000;
     opacity: 0.0;
     transition: all 0.05 ease-in-out;
+    text-shadow: 0 0 5px #FFF, 0 0 10px #FFF, 0 0 15px #FFF;
 }
 
 #copyId:hover p {
