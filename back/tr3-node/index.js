@@ -126,7 +126,6 @@ socketIO.on('connection', socket => {
   });
 
   socket.on("start_game", (data) => {
-    socketIO.to(data.lobbyIdentifier).emit('game_started');
     let amountOfRounds;
 
     lobbies.forEach(lobby => {
@@ -141,6 +140,7 @@ socketIO.on('connection', socket => {
     });
 
     setLobbyWord(socket.data.current_lobby, amountOfRounds);
+    
   });
 
   socket.on("get_game_data", () => {
@@ -326,6 +326,7 @@ async function setLobbyWord(room, amount) {
   lobbies.forEach((lobby) => {
     if (lobby.lobbyIdentifier == room) {
       lobby.words = words;
+      socketIO.to(room).emit('game_started');
       socketIO.to(room).emit('game_data', lobby);
     }
   });
