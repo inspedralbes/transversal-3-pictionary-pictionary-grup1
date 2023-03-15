@@ -19,63 +19,14 @@ function Board({ socket, pintor }) {
   };
 
   const clearBoard = () => {
-    const canvas = canvasRef.current;
-    const context = canvas.getContext("2d");
-    context.clearRect(0, 0, canvas.width, canvas.height);
-    arrayDatos = [];
-    sendBoardDataToSocketIo();
+    if (canvasRef.current != null) {
+      const canvas = canvasRef.current;
+      const context = canvas.getContext("2d");
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      arrayDatos = [];
+      sendBoardDataToSocketIo();
+    }
   };
-
-  // const keydown = (e) => {
-  //   const canvas = canvasRef.current;
-  //   const context = canvas.getContext("2d");
-  //   let endLine = false;
-  //   let auxNum = 0;
-
-  //   if (e.ctrlKey && e.key === "z" && pintor) {
-  //     console.log("Before slice", arrayDatos,);
-  //     let i = arrayDatos.length;
-  //     for (i; i >= 0; i--) {
-  //       if (arrayDatos[i] != "nuevaLinea" && endLine == false) {
-  //         console.log("index", i);
-  //         arrayDatos.splice(i, 1);
-  //       }
-  //       else {
-  //         if (auxNum == 1) {
-  //           endLine = true;
-  //         }
-  //         else {
-  //           arrayDatos.splice(i, 1);
-  //           auxNum++;
-  //         }
-  //         console.log("Nueva linea");
-  //       }
-  //     }
-  //     setAux(arrayDatos);
-
-  //     console.log("After slice", arrayDatos);
-  //     setDeshacer(true); 
-  //     console.log("After deshacer true: ", arrayDatos);
-  //     context.clearRect(0, 0, canvas.width, canvas.height);
-  //     context.beginPath();
-  //     context.moveTo(arrayDatos[0].x, arrayDatos[0].y);
-
-  //     for (let i = 1; i < arrayDatos.length; i++) {
-  //       if (arrayDatos[i] === "nuevaLinea") {
-  //         context.stroke();
-  //         context.beginPath();
-  //         context.moveTo(arrayDatos[i + 1].x, arrayDatos[i + 1].y);
-  //         i++;
-  //       } else {
-  //         context.lineTo(arrayDatos[i].x, arrayDatos[i].y);
-  //       }
-  //       context.lineWidth = arrayDatos[i].brushRadius;
-  //       context.strokeStyle = arrayDatos[i].currentColor;
-  //       context.lineCap = "round";
-  //     }
-  //     context.stroke();  
-  //   }
-  // }
 
   useEffect(() => {
     if (limpiarTodo) {
@@ -171,6 +122,7 @@ function Board({ socket, pintor }) {
           }
           context.stroke();
         }
+
       });
     }
   }, [pintor, currentColor, brushRadius]);
@@ -195,8 +147,6 @@ function Board({ socket, pintor }) {
     return (
       <div className="Board">
         <CountDownTimer socket={socket} />
-
-        {sendBoardDataToSocketIo()}
         <canvas ref={canvasRef2} width={800} height={500} style={{ border: "1px solid black" }} />
       </div>
     );
