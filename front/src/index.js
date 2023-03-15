@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
+import App from './pages/Game';
 import reportWebVitals from './reportWebVitals';
 import LandingPage from './pages/LandingPage';
 import Game from './pages/Game';
@@ -13,10 +13,11 @@ import { BrowserRouter, HashRouter, Routes, Route } from "react-router-dom";
 import socketIO from "socket.io-client";
 
 const routes = {
-  fetchLaravel: "http://localhost:8000/api/",
+  fetchLaravel: "http://localhost:8000/index.php/",
   // fetchNode: "http://localhost:7500",
-  wsNode: "ws://localhost:7500",
+  wsNode: "ws://localhost:7878",
 };
+
 
 var socket = socketIO(routes.wsNode, {
   withCredentials: true,
@@ -29,7 +30,7 @@ var socket = socketIO(routes.wsNode, {
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <HashRouter>
       <Routes>
         <Route path="/" element={<LandingPage />} />
@@ -41,7 +42,7 @@ root.render(
       </Routes>
     </HashRouter>
 
-  </React.StrictMode>
+  // {/* </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function
