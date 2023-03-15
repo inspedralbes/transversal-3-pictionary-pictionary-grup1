@@ -5,6 +5,7 @@ import Board from "../components/Board";
 import WordForm from '../components/WordForm';
 import React from 'react';
 import ConnectedUsersInGame from "../components/ConnectedUsersInGame";
+import WordGuess from "../components/WordGuess";
 
 function Game({ socket }) {
   const [result, setResult] = useState(null);
@@ -32,10 +33,6 @@ function Game({ socket }) {
       socket.emit('get_game_data')
     }
 
-    socket.on('word_to_check', (data) => {
-      setWordToCheck(data.word);
-    });
-
     socket.on('send_guessed_word', (data) => {
       const userId = data.id;
       const userMessage = data.wordGuessed;
@@ -59,13 +56,7 @@ function Game({ socket }) {
       setSpectator(data.spectator);
     });
 
-    socket.on('game_data', (data) => {
-      setWordToCheck(data.words[0]);
-      console.log("startea");
-    });
-
     return () => {
-      socket.off('word_to_check');
       socket.off('send_guessed_word');
       socket.off('answer_result');
       socket.off('pintor');
@@ -83,7 +74,7 @@ function Game({ socket }) {
         <>
           {pintor ? <div style={{ display: "flex" }}>
             <div style={{ marginRight: "20px" }}>
-              {wordToCheck && <p>{wordToCheck}</p>}
+              <WordGuess socket={socket}></WordGuess>
               {result && <p>{result}</p>}
               <Board socket={socket} pintor={pintor}></Board>
             </div>
