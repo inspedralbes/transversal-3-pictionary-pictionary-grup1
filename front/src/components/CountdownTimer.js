@@ -1,24 +1,23 @@
-import * as React from "react";
+import { useState, useEffect, useRef } from "react";
 import { render } from "react-dom";
 
 
-function CountdownTimer() {
-  const [counter, setCounter] = React.useState(60);
-  let timer;
+function CountdownTimer({socket}) {
+  const [counter, setCounter] = useState(60);
 
-  
-  React.useEffect(() => {
-    timer = counter > 0 && setTimeout(() => setCounter(counter - 1), 1000);
-    if (counter === 0) {
-      console.log("0 segundos");
-    }
-    else if (counter === 30){
-        console.log("30 segundons");
-        //clearTimeout(timer);
-        
-    }
-    
-}, [counter]);
+  useEffect(() => {
+    socket.on("counter_down", (data) => {
+      setCounter(data.counter);
+    })
+
+    socket.on("round_ended", () => {
+      setCounter(0);
+    })
+
+    socket.on("game_ended", () => {
+      setCounter(69);
+    })
+  }, [])
 
   return (
     <div>

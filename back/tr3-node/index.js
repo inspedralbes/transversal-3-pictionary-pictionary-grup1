@@ -5,7 +5,7 @@ var cookieParser = require("cookie-parser");
 const app = express();
 const http = require('http');
 const server = http.createServer(app);
-const PORT = 7500;
+const PORT = 7878;
 const host = '0.0.0.0';
 const axios = require("axios");
 
@@ -53,15 +53,13 @@ app.use(
   })
 );
 
-let boardData = undefined;
-
-let players;
 let i = 0;
-let idDrawer = 0;
-let arrI = []
-const laravelRoute = "http://127.0.0.1:8000/api/";
-let wordToCheck = "";
+const laravelRoute = "http://127.0.0.1:8000/index.php/";
 let lobbies = [];
+const measurements = {
+  width: "700",
+  height: "700"
+}
 
 // ------------------------------------------------------------------
 
@@ -69,23 +67,7 @@ socketIO.on('connection', socket => {
 
   i++
   socket.data.id = i;
-  arrI.push(socket.data.id);
-  idDrawer = Math.min.apply(Math, arrI)
   console.log(socket.data.id + " connected ");
-
-  if (i == 1) {
-    axios
-      .get(laravelRoute + "getWord")
-      .then(function (response) {
-        wordToCheck = response.data.wordToCheck;
-        sendWordToCheck()
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  }
-
-  enviarPintor()
 
   const random_hex_color_code = () => {
     let n = (Math.random() * 0xfffff * 1000000).toString(16);
@@ -113,12 +95,26 @@ socketIO.on('connection', socket => {
         members: [],
         currentDrawer: "",
         words: [],
+        rounds: 0,
+        actualRound: 0,
+        ended: false,
+        boardData: undefined,
+        settings: {
+          contadorMax: 60,
+          ownerPlay: false
+        }
       }
       lobbies.push(lobbyData);
-      joinLobby(socket, newLobbyIdentifier)
+      socketIO.to(socket.id).emit("lobby_info", lobbyData)
+      socket.join(newLobbyIdentifier);
+      socket.data.current_lobby = newLobbyIdentifier;
     }
 
   });
+
+  socket.on("lobby_data", () => {
+    sendUserList(socket.data.current_lobby)
+  })
 
   socket.on("join_room", (data) => {
     joinLobby(socket, data.lobbyIdentifier)
@@ -131,10 +127,23 @@ socketIO.on('connection', socket => {
 
   socket.on("start_game", (data) => {
     socketIO.to(data.lobbyIdentifier).emit('game_started');
+    let amountOfRounds;
+
+    lobbies.forEach(lobby => {
+      if (lobby.lobbyIdentifier == data.lobbyIdentifier) {
+        console.log("started", lobby.members);
+        lobby.rounds = lobby.members.length;
+        amountOfRounds = lobby.rounds;
+        enviarPintor(data.lobbyIdentifier)
+        sendUserList(data.lobbyIdentifier);
+        setCounter(data.lobbyIdentifier);
+      }
+    });
+
+    setLobbyWord(socket.data.current_lobby, amountOfRounds);
   });
 
   socket.on("get_game_data", () => {
-    setLobbyWord(socket.data.current_lobby);
     enviarPintor(socket.data.current_lobby)
     let data;
     lobbies.forEach(lobby => {
@@ -146,19 +155,37 @@ socketIO.on('connection', socket => {
   });
 
   socket.on('save_coord', (arrayDatos) => {
-    boardData = arrayDatos;
+    lobbies.forEach(lobby => {
+      if (lobby.lobbyIdentifier == socket.data.current_lobby) {
+        lobby.boardData = arrayDatos;
+      }
+    });
+    // boardData = arrayDatos;
 
-    sendBoardData();
+    sendBoardData(socket.data.current_lobby);
   });
 
   socket.on('give_me_the_board', () => {
+    let boardData;
+    lobbies.forEach(lobby => {
+      if (lobby.lobbyIdentifier == socket.data.current_lobby) {
+        boardData = lobby.boardData;
+      }
+    });
+
     if (boardData != undefined) {
-      sendBoardData();
+      sendBoardData(socket.data.current_lobby);
     }
-    sendWordToCheck(socket);
   });
 
   socket.on('try_word_attempt', (data) => {
+    let wordToCheck;
+    lobbies.forEach(lobby => {
+      if (lobby.lobbyIdentifier == socket.data.current_lobby) {
+        wordToCheck = lobby.words[0].name
+      }
+    });
+
     if (data.word.toLowerCase() === wordToCheck.toLowerCase()) {
       socketIO.to(socket.id).emit('answer_result', {
         resultsMatch: true,
@@ -175,30 +202,86 @@ socketIO.on('connection', socket => {
   });
 
   socket.on('disconnect', () => {
-    console.log(socket.id + " disconnected " + i);
+    console.log(socket.data.id + " disconnected");
     leaveLobby(socket);
-    for (let index = 0; index < arrI.length; index++) {
-      if (arrI[index] === socket.data.id) {
-        arrI.splice(index, 1);
-        enviarPintor()
-      }
-    }
   })
 });
 
-function setLobbyWord(room) {
-  lobbies.forEach((lobby) => {
-    if (lobby.lobbyIdentifier == room) {
-      axios
-        .get(laravelRoute + "getWord")
-        .then(function (response) {
-          lobby.words.push(response.data.wordToCheck);
+function setCounter(lobbyId) {
+  let timer;
+  lobbies.forEach(lobby => {
+    if (lobby.lobbyIdentifier == lobbyId && !lobby.ended) {
+      let cont = lobby.settings.contadorMax
+      timer = setInterval(() => {
+        cont--;
+        socketIO.to(lobbyId).emit("counter_down", {
+          counter: cont
         })
-        .catch(function (error) {
-          console.log(error);
-        });
+
+        if (cont == 55) {
+          if (lobby.actualRound < lobby.rounds) {
+            lobby.actualRound++;
+          }
+
+          if (lobby.actualRound == lobby.rounds) {
+            lobby.ended = true;
+          } else {
+            socketIO.to(lobbyId).emit("round_ended", {roundIndex: lobby.actualRound});
+          }
+
+          enviarPintor(lobbyId);
+          acabarRonda(lobbyId);
+          clearInterval(timer)
+        }
+      }, 1000)
     }
   });
+}
+
+function acabarRonda(lobbyId) {
+  lobbies.forEach(lobby => {
+    if (lobby.lobbyIdentifier == lobbyId) {
+      if (!lobby.ended) {
+        lobby.boardData = {
+          arrayDatos: [],
+          limpiar: true,
+          cambioDeRonda: true
+        };
+        sendBoardData(lobbyId)
+        setCounter(lobbyId);
+      } else {
+        socketIO.to(lobbyId).emit("game_ended")
+      }
+    }
+  });
+
+}
+
+function joinLobby(socket, lobbyIdentifier) {
+  lobbies.forEach((lobby) => {
+    if (lobby.lobbyIdentifier == lobbyIdentifier) {
+      var disponible = true;
+
+      lobby.members.forEach(member => {
+        if (member.idUser == socket.data.id || lobby.ownerId == socket.data.id) {
+          console.log("hola");
+          disponible = false;
+        }
+      });
+
+      if (disponible) {
+        lobby.members.push({
+          idUser: socket.data.id,
+        });
+
+        socketIO.to(socket.id).emit("lobby_info", lobby)
+      }
+    }
+  });
+  socket.join(lobbyIdentifier);
+  socket.data.current_lobby = lobbyIdentifier;
+
+  sendUserList(lobbyIdentifier);
 }
 
 function leaveLobby(socket) {
@@ -225,31 +308,30 @@ function leaveLobby(socket) {
   socketIO.to(socket.id).emit("YOU_LEFT_LOBBY")
 }
 
-function joinLobby(socket, lobbyIdentifier) {
+async function setLobbyWord(room, amount) {
+  let words;
+  let category = "null";
+  let difficulty = "null";
+  await axios
+
+    .post(laravelRoute + "getWords", {
+      category: category,
+      difficulty: difficulty,
+      amount: amount
+    })
+    .then(function (response) {
+      words = response.data.wordsToCheck
+      console.log(words);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
   lobbies.forEach((lobby) => {
-    if (lobby.lobbyIdentifier == lobbyIdentifier) {
-      var disponible = true;
-
-      lobby.members.forEach(member => {
-        if (member.idUser == socket.data.id) {
-          disponible = false;
-        }
-      });
-
-      if (disponible) {
-        lobby.members.push({
-          // nom: socket.data.name,
-          idUser: socket.data.id,
-        });
-
-        socketIO.to(socket.id).emit("lobby_info", lobby)
-      }
+    if (lobby.lobbyIdentifier == room) {
+      lobby.words = words;
+      socketIO.to(room).emit('game_data', lobby);
     }
   });
-  socket.join(lobbyIdentifier);
-  socket.data.current_lobby = lobbyIdentifier;
-
-  sendUserList(lobbyIdentifier);
 }
 
 async function sendUserList(room) {
@@ -257,60 +339,96 @@ async function sendUserList(room) {
 
   const sockets = await socketIO.in(room).fetchSockets();
 
-  sockets.forEach((element) => {
-    // console.log(socketIO.sockets.sockets.get(element.id).data.name);
-    list.push({
-      name: element.data.id,
-    });
+  lobbies.forEach(lobby => {
+    if (lobby.lobbyIdentifier == room) {
+
+      sockets.forEach((element) => {
+        if (element.data.id != lobby.ownerId) {
+          list.push({
+            name: element.data.id,
+          });
+        }
+      });
+    }
   });
 
+  console.log("");
   socketIO.to(room).emit("lobby_user_list", {
     list: list,
     message: "user list",
   });
 }
 
-async function sendBoardData() {
-  const sockets = await socketIO.fetchSockets();
+async function sendBoardData(room) {
+  const sockets = await socketIO.in(room).fetchSockets();
 
-  sockets.forEach(user => {
-    if (user.data.id != arrI[0]) {
-      socketIO.to(user.id).emit("new_board_data", {
-        board: boardData
-      })
+  let boardData;
+
+  lobbies.forEach(lobby => {
+    if (lobby.lobbyIdentifier == room) {
+      if (lobby.actualRound < lobby.rounds) {
+        boardData = lobby.boardData;
+
+        sockets.forEach(user => {
+          if (user.data.id != lobby.members[lobby.actualRound].idUser) {
+            socketIO.to(user.id).emit("new_board_data", {
+              board: boardData
+            })
+          }
+        });
+      }
     }
   });
-}
 
-function sendWordToCheck(socket = undefined) {
-  if (socket != undefined) {
-    socketIO.to(socket.id).emit("word_to_check", {
-      word: wordToCheck,
-    })
-  } else {
-    socketIO.emit("word_to_check", {
-      word: wordToCheck
-    })
-  }
 
 }
+
+// function sendWordToCheck(socket) {
+//   let wordToCheck;
+//   lobbies.forEach(lobby => {
+//     if (lobby.lobbyIdentifier == socket.data.current_lobby) {
+//       wordToCheck = lobby.words[0]
+//     }
+//   });
+
+//   socketIO.to(socket.id).emit("word_to_check", {
+//     word: wordToCheck,
+//   })
+
+
+// }
 
 async function enviarPintor(room) {
   const sockets = await socketIO.in(room).fetchSockets();
 
-  lobbies.forEach((element) => {
-    if (element.lobbyIdentifier == room) {
-      sockets.forEach(user => {
-        if (user.data.id == element.members[0].idUser) {
-          socketIO.to(user.id).emit("pintor", {
-            pintor: true
-          })
-        } else {
-          socketIO.to(user.id).emit("pintor", {
-            pintor: false
-          })
-        }
-      });
+  lobbies.forEach((lobby) => {
+    if (lobby.lobbyIdentifier == room) {
+      if (lobby.actualRound < lobby.rounds && !lobby.ended) {
+
+        sockets.forEach(user => {
+          if (user.data.id == lobby.members[lobby.actualRound].idUser) {
+            console.log("ronda: " + lobby.actualRound);
+
+            socketIO.to(user.id).emit("pintor", {
+              pintor: true
+            })
+          } else {
+            if (user.data.id != lobby.ownerId) {
+              socketIO.to(user.id).emit("pintor", {
+                pintor: false
+              })
+            } else {
+              socketIO.to(user.id).emit("spectator", {
+                spectator: true
+              })
+            }
+
+          }
+        });
+        socketIO.to(room).emit("round_change");
+      } else {
+        lobby.ended = true;
+      }
     }
   });
 

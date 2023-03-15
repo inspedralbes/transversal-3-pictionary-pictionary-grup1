@@ -2,7 +2,7 @@
 import "../styles/ConnectedUsers.css"
 import { useState, useEffect } from "react";
 
-function ConnectedUsers({ socket }, u) {
+function ConnectedUsers({ socket }) {
     const [userList, setUserList] = useState([]);
     const [firstTime, setFirstTime] = useState(true);
 
