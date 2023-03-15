@@ -6,10 +6,10 @@ import WordForm from '../components/WordForm';
 import React from 'react';
 import ConnectedUsersInGame from "../components/ConnectedUsersInGame";
 import WordGuess from "../components/WordGuess";
+import Description from "../components/Description";
 
 function Game({ socket }) {
   const [result, setResult] = useState(null);
-  const [wordToCheck, setWordToCheck] = useState("");
   const [pintor, setPintor] = useState(false);
   const [spectator, setSpectator] = useState(false);
   const [firstTime, setFirstTime] = useState(true);
@@ -67,6 +67,7 @@ function Game({ socket }) {
           {pintor ? <div style={{ display: "flex" }}>
             <div style={{ marginRight: "20px" }}>
               <WordGuess socket={socket}></WordGuess>
+              <Description socket={socket}></Description>
               {result && <p>{result}</p>}
               <Board socket={socket} pintor={pintor}></Board>
             </div>
