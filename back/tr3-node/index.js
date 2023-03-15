@@ -242,12 +242,15 @@ function acabarRonda(lobbyId) {
   lobbies.forEach(lobby => {
     if (lobby.lobbyIdentifier == lobbyId) {
       if (!lobby.ended) {
-        lobby.boardData = `{\"lines\":[],\"width\":${measurements.width},\"height\":${measurements.height}}`;
+        lobby.boardData = {
+          arrayDatos: [],
+          limpiar: true,
+          cambioDeRonda: true
+        };
         sendBoardData(lobbyId)
         setCounter(lobbyId);
       } else {
         socketIO.to(lobbyId).emit("game_ended")
-
       }
     }
   });
@@ -368,8 +371,6 @@ async function sendBoardData(room) {
 
         sockets.forEach(user => {
           if (user.data.id != lobby.members[lobby.actualRound].idUser) {
-            // console.log(user.data.id);
-            // console.log(lobby.members, lobby.actualRound);
             socketIO.to(user.id).emit("new_board_data", {
               board: boardData
             })
