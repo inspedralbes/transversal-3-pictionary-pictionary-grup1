@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import ConnectedUsers from "../components/ConnectedUsers";
 import { useNavigate } from "react-router-dom";
+import "../styles/LobbyCreation.css"
 
 function LobbyCreation({ socket }) {
     const [lobbyId, setLobbyId] = useState("");
@@ -42,14 +43,15 @@ function LobbyCreation({ socket }) {
         })
     }, [])
     return (
-        <div>
-            <button onClick={handleLeave}>Leave and delete lobby</button>
+        <div className="createGame">
+            <button className="createGame__leaveButton" onClick={handleLeave}>Leave and delete lobby</button>
             {lobbyId && (
-                <h1>Identifier: {lobbyId}</h1>
+                <h1 className="identifier"><span>I</span><span>D</span><span>E</span><span>N</span><span>T</span><span>I</span><span>F</span><span>I</span><span>E</span><span>R</span>: {lobbyId}</h1>
             )}
             <ConnectedUsers socket={socket}></ConnectedUsers>
-
-            <button onClick={handleStartGame}>Start game</button>
+            <div className="createGame__startButtonDiv">
+                <button className="createGame__startButton" onClick={handleStartGame}>Start game</button>
+            </div>
         </div>
 
     );
