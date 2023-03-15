@@ -220,13 +220,14 @@ function setCounter(lobbyId) {
         })
 
         if (cont == 55) {
-          socketIO.to(lobbyId).emit("round_ended");
           if (lobby.actualRound < lobby.rounds) {
             lobby.actualRound++;
           }
 
           if (lobby.actualRound == lobby.rounds) {
             lobby.ended = true;
+          } else {
+            socketIO.to(lobbyId).emit("round_ended", {roundIndex: lobby.actualRound});
           }
 
           enviarPintor(lobbyId);
