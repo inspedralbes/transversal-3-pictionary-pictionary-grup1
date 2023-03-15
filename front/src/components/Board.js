@@ -10,7 +10,7 @@ function Board({ socket, pintor }) {
   const canvasRef = useRef(null);
   const canvasRef2 = useRef(null);
   const [currentColor, setCurrentColor] = useState("#000");
-  const [brushRadius, setBrushRadius] = useState(0);
+  const [brushRadius, setBrushRadius] = useState(1);
   const [limpiarTodo, setLimpiarTodo] = useState(false);
 
   const sendBoardDataToSocketIo = () => {
