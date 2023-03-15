@@ -88,12 +88,10 @@ function Board({ socket, pintor }) {
     if (pintor) {
       socket.emit("give_me_the_board");
       const canvas = canvasRef.current;
-
       if (!canvas) {
         return;
       }
       const context = canvas.getContext("2d");
-
       let x;
       let y;
       let isDrawing = false;
@@ -139,6 +137,7 @@ function Board({ socket, pintor }) {
         canvas.removeEventListener("mousemove", handleMouseMove);
         canvas.removeEventListener("mouseup", handleMouseUp);
         canvas.addEventListener("mouseout", handleMouseOut);
+
       };
 
     } else {
