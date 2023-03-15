@@ -31,10 +31,11 @@ function LobbyCreation({ socket }) {
     }
 
     function changeColor() {
-        let colors = ["#70a1da", "#70da92", "#cada70", "#858cb7", "#f6a39e", "#ab605c", "#70ab5c", "#ed96f1", "#e05b8c", "#e0ce5b", "#997490", "#9dff4e", "#ffd64e", "#e24eff", "#4ebeff", "#b2b5dc", "#20bf55", "#bf97ff", "#ff9797", "#97e5ff"];
-        let color = colors[Math.floor(Math.random() * 21)];
-        console.log(colors.length);
-        document.getElementById("copyId").style.color = color;
+        document.getElementById("copyId").addEventListener('mouseover', function () {
+            let colors = ["#70a1da", "#70da92", "#cada70", "#858cb7", "#f6a39e", "#ab605c", "#70ab5c", "#ed96f1", "#e05b8c", "#e0ce5b", "#997490", "#9dff4e", "#ffd64e", "#e24eff", "#4ebeff", "#b2b5dc", "#20bf55", "#bf97ff", "#ff9797", "#97e5ff"];
+            let color = colors[Math.floor(Math.random() * 21)];
+            document.getElementById("copyId").style.color = color;
+        });
     }
 
     useEffect(() => {
