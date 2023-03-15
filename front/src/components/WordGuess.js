@@ -7,11 +7,11 @@ function WordGuess({ socket }) {
 
   useEffect(() => {
     socket.on('word_to_check', (data) => {
-      setWordToCheck(data.word);
+      setWordToCheck(data.words[0].name);
     });
 
     socket.on('game_data', (data) => {
-      setWordToCheck(data.words[0]);
+      setWordToCheck(data.words[0].name);
       console.log("startea");
     });
 
