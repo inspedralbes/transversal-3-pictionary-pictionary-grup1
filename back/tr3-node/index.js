@@ -58,7 +58,7 @@ const laravelRoute = "http://127.0.0.1:8000/index.php/";
 let lobbies = [];
 const measurements = {
   width: "700",
-  height:"700"
+  height: "700"
 }
 
 // ------------------------------------------------------------------
@@ -221,9 +221,14 @@ function setCounter(lobbyId) {
 
         if (cont == 55) {
           socketIO.to(lobbyId).emit("round_ended");
-          if (lobby.actualRound < lobby.rounds - 1) {
+          if (lobby.actualRound < lobby.rounds) {
             lobby.actualRound++;
           }
+
+          if (lobby.actualRound == lobby.rounds) {
+            lobby.ended = true;
+          }
+
           enviarPintor(lobbyId);
           acabarRonda(lobbyId);
           clearInterval(timer)
@@ -320,7 +325,7 @@ async function setLobbyWord(room, amount) {
     });
   lobbies.forEach((lobby) => {
     if (lobby.lobbyIdentifier == room) {
-      lobby.words= words;
+      lobby.words = words;
       socketIO.to(room).emit('game_data', lobby);
     }
   });
@@ -397,7 +402,7 @@ async function enviarPintor(room) {
 
   lobbies.forEach((lobby) => {
     if (lobby.lobbyIdentifier == room) {
-      if (lobby.actualRound < lobby.rounds - 1) {
+      if (lobby.actualRound < lobby.rounds && !lobby.ended) {
 
         sockets.forEach(user => {
           if (user.data.id == lobby.members[lobby.actualRound].idUser) {
