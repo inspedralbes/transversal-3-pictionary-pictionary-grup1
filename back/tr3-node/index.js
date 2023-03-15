@@ -54,7 +54,7 @@ app.use(
 );
 
 let i = 0;
-const laravelRoute = "http://127.0.0.1:8000/index.php/";
+const laravelRoute = "http://144.24.200.186:8000/index.php/";
 let lobbies = [];
 const measurements = {
   width: "700",
