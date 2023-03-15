@@ -311,13 +311,13 @@ async function setLobbyWord(room, amount) {
   let difficulty = "null";
   await axios
 
-    .post(laravelRoute + "getWord", {
+    .post(laravelRoute + "getWords", {
       category: category,
       difficulty: difficulty,
       amount: amount
     })
     .then(function (response) {
-      words = response.data.wordToCheck
+      words = response.data.wordsToCheck
       console.log(words);
     })
     .catch(function (error) {
