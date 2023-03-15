@@ -28,6 +28,10 @@ function Board({ socket, pintor }) {
     }
   };
 
+  const eraser = () => {
+    setCurrentColor("#FFF");
+  }
+
   useEffect(() => {
     if (limpiarTodo) {
       sendBoardDataToSocketIo();
@@ -138,6 +142,8 @@ function Board({ socket, pintor }) {
           onChangeComplete={(color) => setCurrentColor(color.hex)}
         ></CirclePicker>
         <button onClick={clearBoard}>Clear</button>
+        <button onClick={eraser}>Eraser</button>
+
         <input id="brushRadius" type={"range"} min="1" max="50" step={1} value={brushRadius} onChange={(e) => setBrushRadius(e.target.value)} ></input>
         <canvas ref={canvasRef} width={800} height={500} style={{ border: "1px solid black" }} />
       </div>

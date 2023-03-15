@@ -1,5 +1,5 @@
 .Board{
-    background: rgb(226, 226, 226);
+    background: white;
 }
 
 .Board__draw, .circle-picker{
