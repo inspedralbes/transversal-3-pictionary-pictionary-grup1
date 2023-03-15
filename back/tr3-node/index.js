@@ -58,7 +58,7 @@ const laravelRoute = "http://127.0.0.1:8000/index.php/";
 let lobbies = [];
 const measurements = {
   width: "700",
-  height:"700"
+  height: "700"
 }
 
 // ------------------------------------------------------------------
@@ -127,18 +127,20 @@ socketIO.on('connection', socket => {
 
   socket.on("start_game", (data) => {
     socketIO.to(data.lobbyIdentifier).emit('game_started');
+    let amountOfRounds;
 
     lobbies.forEach(lobby => {
       if (lobby.lobbyIdentifier == data.lobbyIdentifier) {
         console.log("started", lobby.members);
         lobby.rounds = lobby.members.length;
+        amountOfRounds = lobby.rounds;
         enviarPintor(data.lobbyIdentifier)
         sendUserList(data.lobbyIdentifier);
         setCounter(data.lobbyIdentifier);
       }
     });
 
-    setLobbyWord(socket.data.current_lobby);
+    setLobbyWord(socket.data.current_lobby, amountOfRounds);
   });
 
   socket.on("get_game_data", () => {
@@ -218,10 +220,16 @@ function setCounter(lobbyId) {
         })
 
         if (cont == 55) {
-          socketIO.to(lobbyId).emit("round_ended");
           if (lobby.actualRound < lobby.rounds) {
             lobby.actualRound++;
           }
+
+          if (lobby.actualRound == lobby.rounds) {
+            lobby.ended = true;
+          } else {
+            socketIO.to(lobbyId).emit("round_ended", {roundIndex: lobby.actualRound});
+          }
+
           enviarPintor(lobbyId);
           acabarRonda(lobbyId);
           clearInterval(timer)
@@ -298,25 +306,27 @@ function leaveLobby(socket) {
   socketIO.to(socket.id).emit("YOU_LEFT_LOBBY")
 }
 
-async function setLobbyWord(room) {
-  let word;
+async function setLobbyWord(room, amount) {
+  let words;
   let category = "null";
   let difficulty = "null";
   await axios
-    .post(laravelRoute + "getWord", {
+
+    .post(laravelRoute + "getWords", {
       category: category,
       difficulty: difficulty,
+      amount: amount
     })
     .then(function (response) {
-      word = response.data.wordToCheck
-      console.log(word);
+      words = response.data.wordsToCheck
+      console.log(words);
     })
     .catch(function (error) {
       console.log(error);
     });
   lobbies.forEach((lobby) => {
     if (lobby.lobbyIdentifier == room) {
-      lobby.words.push(word.name);
+      lobby.words = words;
       socketIO.to(room).emit('game_data', lobby);
     }
   });
@@ -377,7 +387,7 @@ function sendWordToCheck(socket) {
   let wordToCheck;
   lobbies.forEach(lobby => {
     if (lobby.lobbyIdentifier == socket.data.current_lobby) {
-      wordToCheck = lobby.words[0]
+      wordToCheck = lobby.words
     }
   });
 
@@ -393,7 +403,7 @@ async function enviarPintor(room) {
 
   lobbies.forEach((lobby) => {
     if (lobby.lobbyIdentifier == room) {
-      if (lobby.actualRound < lobby.rounds) {
+      if (lobby.actualRound < lobby.rounds && !lobby.ended) {
 
         sockets.forEach(user => {
           if (user.data.id == lobby.members[lobby.actualRound].idUser) {
