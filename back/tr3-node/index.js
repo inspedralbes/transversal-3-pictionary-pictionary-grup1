@@ -176,14 +176,13 @@ socketIO.on('connection', socket => {
     if (boardData != undefined) {
       sendBoardData(socket.data.current_lobby);
     }
-    sendWordToCheck(socket);
   });
 
   socket.on('try_word_attempt', (data) => {
     let wordToCheck;
     lobbies.forEach(lobby => {
       if (lobby.lobbyIdentifier == socket.data.current_lobby) {
-        wordToCheck = lobby.words[0]
+        wordToCheck = lobby.words[0].name
       }
     });
 
@@ -383,20 +382,20 @@ async function sendBoardData(room) {
 
 }
 
-function sendWordToCheck(socket) {
-  let wordToCheck;
-  lobbies.forEach(lobby => {
-    if (lobby.lobbyIdentifier == socket.data.current_lobby) {
-      wordToCheck = lobby.words
-    }
-  });
+// function sendWordToCheck(socket) {
+//   let wordToCheck;
+//   lobbies.forEach(lobby => {
+//     if (lobby.lobbyIdentifier == socket.data.current_lobby) {
+//       wordToCheck = lobby.words[0]
+//     }
+//   });
 
-  socketIO.to(socket.id).emit("word_to_check", {
-    word: wordToCheck,
-  })
+//   socketIO.to(socket.id).emit("word_to_check", {
+//     word: wordToCheck,
+//   })
 
 
-}
+// }
 
 async function enviarPintor(room) {
   const sockets = await socketIO.in(room).fetchSockets();

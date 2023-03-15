@@ -20,14 +20,6 @@ function Game({ socket }) {
     wordAttemptSuccess: "Well done! You're the best!"
   }
 
-  function handleFormSubmit(word) {
-    if (word.trim() !== "") {
-      socket.emit("try_word_attempt", {
-        word: word,
-      });
-    }
-  }
-
   useEffect(() => {
     if (firstTime) {
       socket.emit('get_game_data')
@@ -89,7 +81,7 @@ function Game({ socket }) {
             )}
           </div> : <>
             {result && <p>{result}</p>}
-            <WordForm onSubmit={handleFormSubmit} socket={socket} /><br></br>
+            <WordForm socket={socket} /><br></br>
             <Board socket={socket} pintor={pintor}></Board>
           </>}
         </>}

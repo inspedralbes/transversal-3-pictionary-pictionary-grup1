@@ -6,9 +6,9 @@ function WordGuess({ socket }) {
   const [wordToCheck, setWordToCheck] = useState("");
 
   useEffect(() => {
-    socket.on('word_to_check', (data) => {
-      setWordToCheck(data.words[0].name);
-    });
+    // socket.on('word_to_check', (data) => {
+    //   setWordToCheck(data.words[0].name);
+    // });
 
     socket.on('game_data', (data) => {
       setWordToCheck(data.words[0].name);
