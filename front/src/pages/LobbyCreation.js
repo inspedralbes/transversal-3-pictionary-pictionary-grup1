@@ -17,8 +17,6 @@ function LobbyCreation({ socket }) {
     }
 
     function copyId() {
-        let id = lobbyId;
-        console.log(lobbyId);
         navigator.clipboard.writeText(lobbyId);
     }
 
@@ -68,7 +66,7 @@ function LobbyCreation({ socket }) {
             )}
             <ConnectedUsers socket={socket}></ConnectedUsers>
             <div className="createGame__startButtonDiv">
-                <button className="createGame__startButton" onClick={handleStartGame}>Start game</button>
+                <button className="createGame__startButton" onClick={handleStartGame}>Start game  <i class="icon-paint-brush"></i></button>
             </div>
         </div>
 
