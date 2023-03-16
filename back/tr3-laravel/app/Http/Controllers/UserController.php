@@ -12,7 +12,7 @@ use Laravel\Sanctum\NewAccessToken;
 use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\PersonalAccessToken;
 
-class AuthController extends Controller
+class UserController extends Controller
 {
     public function checkUserDuplicated($userData)
     {
@@ -55,7 +55,6 @@ class AuthController extends Controller
                 'regex:/[a-z]/',      // must contain at least one lowercase letter
                 'regex:/[A-Z]/',      // must contain at least one uppercase letter
                 'regex:/[0-9]/',      // must contain at least one digit
-                'regex:/[@$!%*#?&;.]/', // must contain a special character
                 'confirmed'
             ],
         ]);
