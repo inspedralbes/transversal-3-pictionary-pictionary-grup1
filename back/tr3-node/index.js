@@ -133,14 +133,13 @@ socketIO.on('connection', socket => {
         console.log("started", lobby.members);
         lobby.rounds = lobby.members.length;
         amountOfRounds = lobby.rounds;
+        socketIO.to(data.lobbyIdentifier).emit('game_started');
+        setLobbyWord(socket.data.current_lobby, amountOfRounds);
         enviarPintor(data.lobbyIdentifier)
         sendUserList(data.lobbyIdentifier);
         setCounter(data.lobbyIdentifier);
       }
     });
-
-    setLobbyWord(socket.data.current_lobby, amountOfRounds);
-    
   });
 
   socket.on("get_game_data", () => {
@@ -226,7 +225,7 @@ function setCounter(lobbyId) {
           if (lobby.actualRound == lobby.rounds) {
             lobby.ended = true;
           } else {
-            socketIO.to(lobbyId).emit("round_ended", {roundIndex: lobby.actualRound});
+            socketIO.to(lobbyId).emit("round_ended", { roundIndex: lobby.actualRound });
           }
 
           enviarPintor(lobbyId);
@@ -329,7 +328,7 @@ async function setLobbyWord(room, amount) {
   lobbies.forEach((lobby) => {
     if (lobby.lobbyIdentifier == room) {
       lobby.words = words;
-      socketIO.to(room).emit('game_started');
+      socketIO.to(room).emit('started');
       socketIO.to(room).emit('game_data', lobby);
     }
   });
