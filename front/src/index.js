@@ -15,7 +15,7 @@ import socketIO from "socket.io-client";
 const routes = {
   fetchLaravel: "http://144.24.200.186:8000/index.php/",
   // fetchNode: "http://localhost:7500",
-  wsNode: "ws://144.24.200.186:7878",
+  wsNode: "wss://144.24.200.186:7777",
 };
 
 
