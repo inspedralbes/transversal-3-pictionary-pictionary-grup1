@@ -6,10 +6,10 @@ import WordForm from '../components/WordForm';
 import React from 'react';
 import ConnectedUsersInGame from "../components/ConnectedUsersInGame";
 import WordGuess from "../components/WordGuess";
+import Description from "../components/Description";
 
 function Game({ socket }) {
   const [result, setResult] = useState(null);
-  const [wordToCheck, setWordToCheck] = useState("");
   const [pintor, setPintor] = useState(false);
   const [spectator, setSpectator] = useState(false);
   const [firstTime, setFirstTime] = useState(true);
@@ -18,14 +18,6 @@ function Game({ socket }) {
   const messageResponses = {
     wordAttemptError: "You failed the attempt!",
     wordAttemptSuccess: "Well done! You're the best!"
-  }
-
-  function handleFormSubmit(word) {
-    if (word.trim() !== "") {
-      socket.emit("try_word_attempt", {
-        word: word,
-      });
-    }
   }
 
   useEffect(() => {
@@ -66,7 +58,6 @@ function Game({ socket }) {
 
   return (
     <>
-      <ConnectedUsersInGame socket={socket}></ConnectedUsersInGame>
       {spectator ?
         <>
           <Board socket={socket} pintor={pintor}></Board>
@@ -75,6 +66,7 @@ function Game({ socket }) {
           {pintor ? <div style={{ display: "flex" }}>
             <div style={{ marginRight: "20px" }}>
               <WordGuess socket={socket}></WordGuess>
+              <Description socket={socket}></Description>
               {result && <p>{result}</p>}
               <Board socket={socket} pintor={pintor}></Board>
             </div>
@@ -89,10 +81,11 @@ function Game({ socket }) {
             )}
           </div> : <>
             {result && <p>{result}</p>}
-            <WordForm onSubmit={handleFormSubmit} socket={socket} /><br></br>
+            <WordForm socket={socket} /><br></br>
             <Board socket={socket} pintor={pintor}></Board>
           </>}
         </>}
+      <ConnectedUsersInGame socket={socket}></ConnectedUsersInGame>
     </>
   )
 

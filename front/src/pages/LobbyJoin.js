@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import ConnectedUsers from "../components/ConnectedUsers";
 import { useNavigate } from "react-router-dom";
+import "../styles/LobbyCreation.css"
 
 function LobbyJoin({ socket }) {
     const [lobbyId, setLobbyId] = useState("");
@@ -53,24 +54,26 @@ function LobbyJoin({ socket }) {
             <div>
                 {error != "" && (<h1 className="error">{error}</h1>)}
                 <form onSubmit={handleSubmit}>
-                    <input type="text" value={lobbyId} onChange={handleChange} placeholder="Enter lobby identifier" />
+                    <label>Enter lobby Identifier
+                        <input type="text" value={lobbyId} onChange={handleChange} placeholder="code..." />
+                    </label>
                     <button type="submit">Join</button>
                 </form>
             </div>
-    
+
         );
     } else {
         return (
             <div>
-                <button onClick={handleLeave}>Leave lobby</button>
+                <button className="createGame__leaveButton" onClick={handleLeave}>Leave lobby</button>
                 {error != "" && (<h1 className="error">{error}</h1>)}
-                <h1>Identifier: {lobbyId}</h1>
+                <h1 className="identifier"><span>I</span><span>D</span><span>E</span><span>N</span><span>T</span><span>I</span><span>F</span><span>I</span><span>E</span><span>R</span>: {lobbyId}</h1>
                 <ConnectedUsers socket={socket}></ConnectedUsers>
             </div>
-    
+
         );
     }
-    
+
 }
 
 export default LobbyJoin;

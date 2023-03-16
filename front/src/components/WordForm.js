@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
 
-function WordForm(props) {
+function WordForm({socket}) {
   const [word, setWord] = useState('');
 
-  function handleSubmit(e) {
+  function handleFormSubmit(e) {
     e.preventDefault();
-    props.onSubmit(word);
+    if (word.trim() !== "") {
+      socket.emit("try_word_attempt", {
+        word: word,
+      });
+    }
   }
 
   function handleChange(e) {
@@ -14,7 +18,7 @@ function WordForm(props) {
 
   return (
     <div>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleFormSubmit}>
         <input type="text" value={word} onChange={handleChange} placeholder="Enter a word" />
         <button type="submit">Check</button>
       </form>

@@ -3,29 +3,27 @@ import { useState, useEffect } from "react";
 import React from 'react';
 
 function WordGuess({ socket }) {
-  const [wordToCheck, setWordToCheck] = useState("");
+    const [wordToCheck, setWordToCheck] = useState("");
 
-  useEffect(() => {
-    socket.on('word_to_check', (data) => {
-      setWordToCheck(data.words[0].name);
-    });
+    useEffect(() => {
+        socket.on('game_data', (data) => {
+            console.log(data);
+            if (data.words != undefined) {
+                setWordToCheck(data.words[0].name);
+            }
+        });
 
-    socket.on('game_data', (data) => {
-      setWordToCheck(data.words[0].name);
-      console.log("startea");
-    });
-
-    return () => {
-      socket.off('word_to_check');
-    };
-  }, []);
+        return () => {
+            socket.off('word_to_check');
+        };
+    }, []);
 
 
-  return (
-    <>
-      <p>{wordToCheck}</p>
-    </>
-  )
+    return (
+        <>
+            <p>{wordToCheck}</p>
+        </>
+    )
 
 }
 
