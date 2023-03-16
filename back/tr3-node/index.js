@@ -186,7 +186,7 @@ socketIO.on('connection', socket => {
     let wordToCheck;
     lobbies.forEach(lobby => {
       if (lobby.lobbyIdentifier == socket.data.current_lobby) {
-        wordToCheck = lobby.words[0].name
+        wordToCheck = lobby.words[lobby.actualRound].name
       }
     });
 
@@ -222,7 +222,7 @@ function setCounter(lobbyId) {
           counter: cont
         })
 
-        if (cont == 55) {
+        if (cont == 45) {
           if (lobby.actualRound < lobby.rounds) {
             lobby.actualRound++;
           }
