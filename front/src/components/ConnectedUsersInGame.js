@@ -17,13 +17,13 @@ function ConnectedUsersInGame({ socket }) {
 
 
     return (
-        <div className="game__connectedUsers">
-            <h1 className="connectedUsers_title">Connected users</h1>
-            <ul id="userList" className="connectedUsers__userList userList">
+        <div className="game__connectedUsersInGame">
+            <h1 className="connectedUsersInGame_title">Connected users</h1>
+            <ul id="userList" className="connectedUsersInGame__userList userList">
                 {Array.isArray(userList.list)
                     ? userList.list.map((user, index) => {
                         return (
-                            <li id="bgColor" className="userList__item item" key={index}>
+                            <li id="bgColor" className="userListInGame__item game_item" key={index}>
                                 <div className="item__name">
                                     <p>{user.name}</p>
                                 </div>

@@ -58,7 +58,6 @@ function Game({ socket }) {
 
   return (
     <>
-      <ConnectedUsersInGame socket={socket}></ConnectedUsersInGame>
       {spectator ?
         <>
           <Board socket={socket} pintor={pintor}></Board>
@@ -86,6 +85,7 @@ function Game({ socket }) {
             <Board socket={socket} pintor={pintor}></Board>
           </>}
         </>}
+      <ConnectedUsersInGame socket={socket}></ConnectedUsersInGame>
     </>
   )
 
