@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 import LandingPage from './pages/LandingPage';
+import Login from './pages/Login';
+import Register from './pages/Register';
 import Game from './pages/Game';
 import LobbyCreation from './pages/LobbyCreation';
 import LobbyJoin from './pages/LobbyJoin';
@@ -33,6 +35,8 @@ root.render(
     <Routes>
       <Route path='/'>
         <Route index element={<LandingPage />} />
+        <Route path="/login" element={<Login socket={socket} />} />
+        <Route path="/register" element={<Register socket={socket} />} />
         <Route path="/game" element={<Game socket={socket} />} />
         <Route path="/createlobby" element={<LobbyCreation socket={socket} />} />
         <Route path="/joinlobby" element={<LobbyJoin socket={socket} />} />
