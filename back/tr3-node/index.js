@@ -145,12 +145,17 @@ socketIO.on('connection', socket => {
   socket.on("get_game_data", () => {
     enviarPintor(socket.data.current_lobby)
     let data;
+    let word;
     lobbies.forEach(lobby => {
       if (lobby.lobbyIdentifier == socket.data.current_lobby) {
         data = lobby
+        word = lobby.words[lobby.actualRound];
       }
     });
     socketIO.to(socket.id).emit('game_data', data);
+    socketIO.to(socket.id).emit('current_word', {
+      word: word
+    });
   });
 
   socket.on('save_coord', (arrayDatos) => {
@@ -382,21 +387,6 @@ async function sendBoardData(room) {
 
 
 }
-
-// function sendWordToCheck(socket) {
-//   let wordToCheck;
-//   lobbies.forEach(lobby => {
-//     if (lobby.lobbyIdentifier == socket.data.current_lobby) {
-//       wordToCheck = lobby.words[0]
-//     }
-//   });
-
-//   socketIO.to(socket.id).emit("word_to_check", {
-//     word: wordToCheck,
-//   })
-
-
-// }
 
 async function enviarPintor(room) {
   const sockets = await socketIO.in(room).fetchSockets();

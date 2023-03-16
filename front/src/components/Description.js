@@ -6,8 +6,9 @@ function Description({ socket }) {
     const [description, setDescription] = useState("");
 
     useEffect(() => {
-        socket.on('game_data', (data) => {
-            fetch('https://api.dictionaryapi.dev/api/v2/entries/en/' + data.words[0].name).then((response) => response.json())
+        socket.on('current_word', (data) => {
+            if (data != undefined) {
+                fetch('https://api.dictionaryapi.dev/api/v2/entries/en/' + data.word.name).then((response) => response.json())
                 .then((data) => {
                     try {
                         setDescription(data[0].meanings[0].definitions[0].definition);
@@ -16,8 +17,7 @@ function Description({ socket }) {
                     }
                     
                 });
-
-
+            }
         });
 
         return () => {
