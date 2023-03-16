@@ -38,6 +38,7 @@ function Game({ socket }) {
 
     socket.on('pintor', (data) => {
       setPintor(data.pintor);
+      setResult("")
     });
 
     socket.on('spectator', (data) => {
