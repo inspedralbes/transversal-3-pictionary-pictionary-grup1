@@ -17,8 +17,6 @@ function LobbyCreation({ socket }) {
     }
 
     function copyId() {
-        let id = lobbyId;
-        console.log(lobbyId);
         navigator.clipboard.writeText(lobbyId);
     }
 
@@ -55,7 +53,7 @@ function LobbyCreation({ socket }) {
         socket.on("YOU_LEFT_LOBBY", () => {
             navigate("/")
         })
-    }, [])
+    }, [navigate, socket, firstTime])
     return (
         <div className="createGame">
             <button className="createGame__leaveButton" onClick={handleLeave}>Leave and delete lobby</button>

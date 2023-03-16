@@ -22,7 +22,7 @@ function ConnectedUsers({ socket }) {
             setUserList(data.list);
             // console.log(data);
         });
-    }, [])
+    }, [firstTime, socket])
 
 
     return (
