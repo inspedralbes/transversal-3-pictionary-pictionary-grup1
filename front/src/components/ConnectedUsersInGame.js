@@ -12,6 +12,7 @@ function ConnectedUsersInGame({ socket }) {
         }
         socket.on("lobby_user_list", (data) => {
             setUserList(data);
+            console.log(data);
         });
     }, [])
 

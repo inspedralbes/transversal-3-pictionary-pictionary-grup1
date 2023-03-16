@@ -196,6 +196,7 @@ socketIO.on('connection', socket => {
           lobby.members.forEach(member => {
             if (member.idUser == socket.data.id) {
               member.lastAnswerCorrect = true;
+              console.log(member.lastAnswerCorrect);
             }
           });
           sendUserList(socket.data.current_lobby)
@@ -289,6 +290,7 @@ function joinLobby(socket, lobbyIdentifier) {
       if (disponible) {
         lobby.members.push({
           idUser: socket.data.id,
+          lastAnswerCorrect: false
         });
 
         socketIO.to(socket.id).emit("lobby_info", lobby)
@@ -352,18 +354,16 @@ async function setLobbyWord(room, amount) {
   });
 }
 
-async function sendUserList(room) {
+function sendUserList(room) {
   var list = [];
-
-  const sockets = await socketIO.in(room).fetchSockets();
 
   lobbies.forEach(lobby => {
     if (lobby.lobbyIdentifier == room) {
-
-      sockets.forEach((element) => {
-        if (element.data.id != lobby.ownerId) {
+      lobby.members.forEach(member => {
+        if (member.idUser != lobby.ownerId) {
           list.push({
-            name: element.data.id,
+            name: member.idUser,
+            lastAnswerCorrect: member.lastAnswerCorrect
           });
         }
       });
