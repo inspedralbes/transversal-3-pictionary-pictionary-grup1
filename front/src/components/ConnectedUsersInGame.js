@@ -23,7 +23,7 @@ function ConnectedUsersInGame({ socket }) {
                 {Array.isArray(userList.list)
                     ? userList.list.map((user, index) => {
                         return (
-                            <li id="bgColor" className="userListInGame__item game_item" key={index}>
+                            <li id="bgColor" className={`game_item ${user.lastAnswerCorrect ? 'userListInGame__item--correct' : "userListInGame__item "}`} key={index}>
                                 <div className="item__name">
                                     <p>{user.name}</p>
                                 </div>
