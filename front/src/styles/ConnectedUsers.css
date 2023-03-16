@@ -36,6 +36,10 @@
     display: none;
 }
 
+.userListInGame__item--correct{
+    color: #20bf55;
+}
+
 
 
 @keyframes draw {

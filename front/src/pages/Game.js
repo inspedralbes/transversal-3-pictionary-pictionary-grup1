@@ -9,10 +9,10 @@ import WordGuess from "../components/WordGuess";
 import Description from "../components/Description";
 
 function Game({ socket }) {
+  const [starting, setStarting] = useState(true);
   const [result, setResult] = useState(null);
   const [pintor, setPintor] = useState(false);
   const [spectator, setSpectator] = useState(false);
-  const [firstTime, setFirstTime] = useState(true);
   const [userMessages, setUserMessages] = useState([]);
 
   const messageResponses = {
@@ -21,10 +21,6 @@ function Game({ socket }) {
   }
 
   useEffect(() => {
-    if (firstTime) {
-      socket.emit('get_game_data')
-    }
-
     socket.on('send_guessed_word', (data) => {
       const userId = data.id;
       const userMessage = data.wordGuessed;
@@ -48,43 +44,52 @@ function Game({ socket }) {
       setSpectator(data.spectator);
     });
 
+    socket.on('started', () => {
+      console.log("STARTED");
+      setStarting(false);
+    })
+
     return () => {
       socket.off('send_guessed_word');
       socket.off('answer_result');
       socket.off('pintor');
+      socket.off('started');
     };
   }, []);
 
 
   return (
     <>
-      {spectator ?
-        <>
-          <Board socket={socket} pintor={pintor}></Board>
-        </> :
-        <>
-          {pintor ? <div style={{ display: "flex" }}>
-            <div style={{ marginRight: "20px" }}>
-              <WordGuess socket={socket}></WordGuess>
-              <Description socket={socket}></Description>
-              {result && <p>{result}</p>}
-              <Board socket={socket} pintor={pintor}></Board>
-            </div>
-            {userMessages.length > 0 && (
-              <div>
-                <ul style={{ listStyle: "none" }}>
-                  {userMessages.map((message, index) => (
-                    <li key={index}>User {message.userId}: {message.userMessage}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div> : <>
-            {result && <p>{result}</p>}
-            <WordForm socket={socket} /><br></br>
+      {!starting ? <>
+        {spectator ?
+          <>
             <Board socket={socket} pintor={pintor}></Board>
+          </> :
+          <>
+            {pintor ? <div style={{ display: "flex" }}>
+              <div style={{ marginRight: "20px" }}>
+                <WordGuess socket={socket}></WordGuess>
+                <Description socket={socket}></Description>
+                {result && <p>{result}</p>}
+                <Board socket={socket} pintor={pintor}></Board>
+              </div>
+              {userMessages.length > 0 && (
+                <div>
+                  <ul style={{ listStyle: "none" }}>
+                    {userMessages.map((message, index) => (
+                      <li key={index}>User {message.userId}: {message.userMessage}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div> : <>
+              {result && <p>{result}</p>}
+              <WordForm socket={socket} /><br></br>
+              <Board socket={socket} pintor={pintor}></Board>
+            </>}
           </>}
-        </>}
+      </> : <><p>Loading...</p></>}
+
       <ConnectedUsersInGame socket={socket}></ConnectedUsersInGame>
     </>
   )
