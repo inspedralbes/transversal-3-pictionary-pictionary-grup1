@@ -187,22 +187,30 @@ socketIO.on('connection', socket => {
     lobbies.forEach(lobby => {
       if (lobby.lobbyIdentifier == socket.data.current_lobby) {
         wordToCheck = lobby.words[lobby.actualRound].name
+
+        if (data.word.toLowerCase() === wordToCheck.toLowerCase()) {
+          socketIO.to(socket.id).emit('answer_result', {
+            resultsMatch: true,
+          })
+
+          lobby.members.forEach(member => {
+            if (member.idUser == socket.data.id) {
+              member.lastAnswerCorrect = true;
+            }
+          });
+          sendUserList(socket.data.current_lobby)
+        } else {
+          socketIO.to(socket.id).emit('answer_result', {
+            resultsMatch: false,
+          })
+
+          socketIO.emit('send_guessed_word', {
+            wordGuessed: data.word,
+            id: socket.id
+          })
+        }
       }
     });
-
-    if (data.word.toLowerCase() === wordToCheck.toLowerCase()) {
-      socketIO.to(socket.id).emit('answer_result', {
-        resultsMatch: true,
-      })
-    } else {
-      socketIO.to(socket.id).emit('answer_result', {
-        resultsMatch: false,
-      })
-      socketIO.emit('send_guessed_word', {
-        wordGuessed: data.word,
-        id: socket.id
-      })
-    }
   });
 
   socket.on('disconnect', () => {
@@ -246,12 +254,17 @@ function acabarRonda(lobbyId) {
   lobbies.forEach(lobby => {
     if (lobby.lobbyIdentifier == lobbyId) {
       if (!lobby.ended) {
+        lobby.members.forEach(member => {
+          member.lastAnswerCorrect = false;
+        });
+
         lobby.boardData = {
           arrayDatos: [],
           limpiar: true,
           cambioDeRonda: true
         };
-        sendBoardData(lobbyId)
+        sendBoardData(lobbyId);
+        sendUserList(lobbyId);
         setCounter(lobbyId);
       } else {
         socketIO.to(lobbyId).emit("game_ended")
