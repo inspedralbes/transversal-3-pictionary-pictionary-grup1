@@ -6,10 +6,10 @@ function ConnectedUsers({ socket }) {
     const [userList, setUserList] = useState([]);
     const [firstTime, setFirstTime] = useState(true);
 
-    function changeColor() {
+    function changeColor(e) {
         let colors = ["#129228", "#581292", "#b3a402", "#b34302", "#b30202", "#026fb3", "#b30255", "#40b302", "#b37b02", "#45037e", "#f30202", "#3db72f", "#f80088", "#5ba3a8", "#6b1846", "#efa105", "#107a49", "#7b7b32", "#643c87", "#324f7b", "#52403d", "#7d9415", "#045b04", "#088076", "#2c0880", "#ae53ca", "#ca5369", "#f25e01", "#b73838", "#009376"];
         let color = colors[Math.floor(Math.random() * 31)];
-        document.getElementById("list").style.color = color;
+        e.target.style.color = color;
     }
 
 
@@ -22,7 +22,7 @@ function ConnectedUsers({ socket }) {
             setUserList(data.list);
             // console.log(data);
         });
-    }, [])
+    }, [firstTime, socket])
 
 
     return (

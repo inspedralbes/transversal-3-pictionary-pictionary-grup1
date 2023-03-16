@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { CirclePicker } from "react-color";
-import "../Board.css";
+import "../styles/Board.css";
 import React from "react";
 import CountDownTimer from "./CountdownTimer";
 

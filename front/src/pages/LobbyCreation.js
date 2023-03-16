@@ -17,8 +17,6 @@ function LobbyCreation({ socket }) {
     }
 
     function copyId() {
-        let id = lobbyId;
-        console.log(lobbyId);
         navigator.clipboard.writeText(lobbyId);
     }
 
@@ -35,6 +33,10 @@ function LobbyCreation({ socket }) {
             let colors = ["#70a1da", "#70da92", "#cada70", "#858cb7", "#f6a39e", "#ab605c", "#70ab5c", "#ed96f1", "#e05b8c", "#e0ce5b", "#997490", "#9dff4e", "#ffd64e", "#e24eff", "#4ebeff", "#b2b5dc", "#20bf55", "#bf97ff", "#ff9797", "#97e5ff"];
             let color = colors[Math.floor(Math.random() * 21)];
             document.getElementById("copyId").style.color = color;
+        });
+
+        document.getElementById("copyId").addEventListener('mouseout', function () {
+            document.getElementById("copyId").style.color = '#5c5b5b';
         });
     }
 
@@ -55,7 +57,7 @@ function LobbyCreation({ socket }) {
         socket.on("YOU_LEFT_LOBBY", () => {
             navigate("/")
         })
-    }, [])
+    }, [navigate, socket, firstTime])
     return (
         <div className="createGame">
             <button className="createGame__leaveButton" onClick={handleLeave}>Leave and delete lobby</button>
@@ -64,7 +66,7 @@ function LobbyCreation({ socket }) {
             )}
             <ConnectedUsers socket={socket}></ConnectedUsers>
             <div className="createGame__startButtonDiv">
-                <button className="createGame__startButton" onClick={handleStartGame}>Start game</button>
+                <button className="createGame__startButton" onClick={handleStartGame}>Start game  <i class="icon-paint-brush"></i></button>
             </div>
         </div>
 

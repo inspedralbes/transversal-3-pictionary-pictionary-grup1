@@ -1,6 +1,7 @@
 import "../App.css";
 import { useState, useEffect } from "react";
 import React from 'react';
+//DOCUMENTACIÓ DE DESCRIPCIO: https://dictionaryapi.dev/
 
 function Description({ socket }) {
     const [description, setDescription] = useState("");
@@ -23,7 +24,7 @@ function Description({ socket }) {
         return () => {
             socket.off('word_to_check');
         };
-    }, []);
+    }, [socket]);
 
 
     return (
