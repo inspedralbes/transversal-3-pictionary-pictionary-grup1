@@ -44,19 +44,22 @@ function Board({ socket, pintor }) {
       sendBoardDataToSocketIo();
 
       context.beginPath();
-      context.moveTo(arrayDatos[0].x, arrayDatos[0].y);
+      if (arrayDatos.length != 0) {
+        context.moveTo(arrayDatos[0].x, arrayDatos[0].y);
+      } else {
+        return
+      }
 
       for (let i = 1; i < arrayDatos.length; i++) {
         if (arrayDatos[i] === "nuevaLinea") {
           context.stroke();
           context.beginPath();
-          context.moveTo(arrayDatos[i + 1].x, arrayDatos[i + 1].y);
           i++;
         } else {
           context.lineTo(arrayDatos[i].x, arrayDatos[i].y);
+          context.lineWidth = arrayDatos[i].brushRadius;
+          context.strokeStyle = arrayDatos[i].currentColor;
         }
-        context.lineWidth = arrayDatos[i].brushRadius;
-        context.strokeStyle = arrayDatos[i].currentColor;
       }
       context.stroke();
     }
