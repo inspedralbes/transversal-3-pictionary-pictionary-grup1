@@ -47,12 +47,12 @@ function LobbyJoin({ socket }) {
         socket.on("YOU_LEFT_LOBBY", () => {
             setInsideLobby(false)
         })
-    }, [])
+    }, [navigate, socket])
 
     if (!insideLobby) {
         return (
             <div>
-                {error != "" && (<h1 className="error">{error}</h1>)}
+                {error !== "" && (<h1 className="error">{error}</h1>)}
                 <form onSubmit={handleSubmit}>
                     <label>Enter lobby Identifier
                         <input type="text" value={lobbyId} onChange={handleChange} placeholder="code..." />
@@ -66,7 +66,7 @@ function LobbyJoin({ socket }) {
         return (
             <div>
                 <button className="createGame__leaveButton" onClick={handleLeave}>Leave lobby</button>
-                {error != "" && (<h1 className="error">{error}</h1>)}
+                {error !== "" && (<h1 className="error">{error}</h1>)}
                 <h1 className="identifier"><span>I</span><span>D</span><span>E</span><span>N</span><span>T</span><span>I</span><span>F</span><span>I</span><span>E</span><span>R</span>: {lobbyId}</h1>
                 <ConnectedUsers socket={socket}></ConnectedUsers>
             </div>

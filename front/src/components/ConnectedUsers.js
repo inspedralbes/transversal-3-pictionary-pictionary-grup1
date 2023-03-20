@@ -22,11 +22,11 @@ function ConnectedUsers({ socket }) {
             setUserList(data.list);
             // console.log(data);
         });
-    }, [])
+    }, [firstTime, socket])
 
 
     return (
-        <div className="game__connectedUsers">
+        <div className="lobby__connectedUsers">
             <h2 className="connectedUsers_title">Connected users</h2>
             <ul id="userList" className="connectedUsers__userList userList">
                 {userList.map((user, index) => {

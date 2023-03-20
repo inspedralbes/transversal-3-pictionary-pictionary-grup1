@@ -57,7 +57,7 @@ function LobbyCreation({ socket }) {
         socket.on("YOU_LEFT_LOBBY", () => {
             navigate("/")
         })
-    }, [])
+    }, [navigate, socket, firstTime])
     return (
         <div className="createGame">
             <button className="createGame__leaveButton" onClick={handleLeave}>Leave and delete lobby</button>
