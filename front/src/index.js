@@ -1,15 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './pages/Game';
 import reportWebVitals from './reportWebVitals';
 import LandingPage from './pages/LandingPage';
+import Login from './pages/Login';
+import Register from './pages/Register';
 import Game from './pages/Game';
-import Lobby from './pages/Lobby';
 import LobbyCreation from './pages/LobbyCreation';
 import LobbyJoin from './pages/LobbyJoin';
 import EndGame from './pages/EndGame';
-import { BrowserRouter, HashRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import socketIO from "socket.io-client";
 
 const routes = {
@@ -31,16 +31,19 @@ var socket = socketIO(routes.wsNode, {
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   // <React.StrictMode>
-    <HashRouter>
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
+  <BrowserRouter>
+    <Routes>
+      <Route path='/'>
+        <Route index element={<LandingPage />} />
+        <Route path="/login" element={<Login socket={socket} />} />
+        <Route path="/register" element={<Register socket={socket} />} />
         <Route path="/game" element={<Game socket={socket} />} />
-        <Route path="/lobby" element={<Lobby socket={socket} />} />
         <Route path="/createlobby" element={<LobbyCreation socket={socket} />} />
         <Route path="/joinlobby" element={<LobbyJoin socket={socket} />} />
         <Route path="/endGame" element={<EndGame />} />
-      </Routes>
-    </HashRouter>
+      </Route>
+    </Routes>
+  </BrowserRouter>
 
   // {/* </React.StrictMode>
 );

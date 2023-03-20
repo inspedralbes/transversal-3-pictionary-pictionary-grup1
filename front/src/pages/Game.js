@@ -5,13 +5,14 @@ import Board from "../components/Board";
 import WordForm from '../components/WordForm';
 import React from 'react';
 import ConnectedUsersInGame from "../components/ConnectedUsersInGame";
+import WordGuess from "../components/WordGuess";
+import Description from "../components/Description";
 
 function Game({ socket }) {
+  const [starting, setStarting] = useState(true);
   const [result, setResult] = useState(null);
-  const [wordToCheck, setWordToCheck] = useState("");
   const [pintor, setPintor] = useState(false);
   const [spectator, setSpectator] = useState(false);
-  const [firstTime, setFirstTime] = useState(true);
   const [userMessages, setUserMessages] = useState([]);
 
   const messageResponses = {
@@ -19,23 +20,7 @@ function Game({ socket }) {
     wordAttemptSuccess: "Well done! You're the best!"
   }
 
-  function handleFormSubmit(word) {
-    if (word.trim() !== "") {
-      socket.emit("try_word_attempt", {
-        word: word,
-      });
-    }
-  }
-
   useEffect(() => {
-    if (firstTime) {
-      socket.emit('get_game_data')
-    }
-
-    socket.on('word_to_check', (data) => {
-      setWordToCheck(data.word);
-    });
-
     socket.on('send_guessed_word', (data) => {
       const userId = data.id;
       const userMessage = data.wordGuessed;
@@ -59,49 +44,53 @@ function Game({ socket }) {
       setSpectator(data.spectator);
     });
 
-    socket.on('game_data', (data) => {
-      setWordToCheck(data.words[0]);
-      console.log("startea");
-    });
+    socket.on('started', () => {
+      console.log("STARTED");
+      setStarting(false);
+    })
 
     return () => {
-      socket.off('word_to_check');
       socket.off('send_guessed_word');
       socket.off('answer_result');
       socket.off('pintor');
+      socket.off('started');
     };
   }, []);
 
 
   return (
     <>
-      <ConnectedUsersInGame socket={socket}></ConnectedUsersInGame>
-      {spectator ?
-        <>
-          <Board socket={socket} pintor={pintor}></Board>
-        </> :
-        <>
-          {pintor ? <div style={{ display: "flex" }}>
-            <div style={{ marginRight: "20px" }}>
-              {wordToCheck && <p>{wordToCheck}</p>}
-              {result && <p>{result}</p>}
-              <Board socket={socket} pintor={pintor}></Board>
-            </div>
-            {userMessages.length > 0 && (
-              <div>
-                <ul style={{ listStyle: "none" }}>
-                  {userMessages.map((message, index) => (
-                    <li key={index}>User {message.userId}: {message.userMessage}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div> : <>
-            {result && <p>{result}</p>}
-            <WordForm onSubmit={handleFormSubmit} socket={socket} /><br></br>
+      {!starting ? <>
+        {spectator ?
+          <>
             <Board socket={socket} pintor={pintor}></Board>
+          </> :
+          <>
+            {pintor ? <div style={{ display: "flex" }}>
+              <div style={{ marginRight: "20px" }}>
+                <WordGuess socket={socket}></WordGuess>
+                <Description socket={socket}></Description>
+                {result && <p>{result}</p>}
+                <Board socket={socket} pintor={pintor}></Board>
+              </div>
+              {userMessages.length > 0 && (
+                <div>
+                  <ul style={{ listStyle: "none" }}>
+                    {userMessages.map((message, index) => (
+                      <li key={index}>User {message.userId}: {message.userMessage}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div> : <>
+              {result && <p>{result}</p>}
+              <WordForm socket={socket} /><br></br>
+              <Board socket={socket} pintor={pintor}></Board>
+            </>}
           </>}
-        </>}
+      </> : <><p>Loading...</p></>}
+
+      <ConnectedUsersInGame socket={socket}></ConnectedUsersInGame>
     </>
   )
 
