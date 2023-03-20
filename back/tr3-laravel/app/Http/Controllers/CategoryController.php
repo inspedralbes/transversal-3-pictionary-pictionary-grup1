@@ -12,25 +12,11 @@ class CategoryController extends Controller
     public function checkCategoryDuplicated($categoryData)
     {
         $canCreate = true;
-        $userId = null;
-        $findDuplicated = -1;
-
-        //Check if the user is logged.
-        [$id, $token] = explode('|', $categoryData -> token, 2);
-        $accessToken = PersonalAccessToken::find($id);
-
-        if (hash_equals($accessToken->token, hash('sha256', $token))) {
-            $userId = $accessToken -> tokenable_id;
-        }
 
         //If the user is logged we continue to check if the category is duplicated.
-        if ($userId != null) {
-            $findDuplicated = Category::where('name', strtoupper($categoryData -> name))
-            ->where('creator_id', $userId)
-            ->count();
-        } else {
-            $canCreate = false;
-        }
+        $findDuplicated = Category::where('name', strtoupper($categoryData -> name))
+        ->where('creator_id', $request->session()->get('userId'))
+        ->count();
 
         //If the category is duplicated or -1 we can't create the category.
         if ($findDuplicated != 0) {
@@ -38,6 +24,22 @@ class CategoryController extends Controller
         }
 
         return $canCreate;
+    }
+
+    public function checkUserLogged($categoryData)
+    {
+        $userId = null;
+
+        //Check if the user is logged.
+        [$id, $token] = explode('|', $categoryData -> token, 2);
+        $accessToken = PersonalAccessToken::find($id);
+
+        if (hash_equals($accessToken->token, hash('sha256', $token))) {
+            $userId = $accessToken -> tokenable_id;
+            $request->session()->put('userId', $user -> id);
+        }
+
+        return $userId;
     }
 
     public function register(Request $request)
@@ -52,12 +54,22 @@ class CategoryController extends Controller
             'message' => "Validation errors."
             ];
         } else {
-            $createCategory = $this->checkCategoryDuplicated($request);
+            $userId = $this->checkUserLogged($request);
+            $createCategory = false;
 
+            if ($userId != null) {
+                $createCategory = $this->checkCategoryDuplicated($request);
+            } else {
+                $sendCategory = (object) 
+                ["valid" => false,
+                'message' => 'User is not logged in.',
+                ];
+            }
+            
             if ($createCategory) {
                 $category = new Category;
                 $category -> name = strtoupper($request -> name);
-                $category -> creator_id = $request -> creator_id;
+                $category -> creator_id = $request->session()->get('userId');
                 $category -> save();
 
                 $sendCategory = (object) 
