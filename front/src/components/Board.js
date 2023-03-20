@@ -11,65 +11,58 @@ function Board({ socket, pintor }) {
   const canvasRef2 = useRef(null);
   const [currentColor, setCurrentColor] = useState("#000");
   const [brushRadius, setBrushRadius] = useState(5);
-  const [limpiarTodo, setLimpiarTodo] = useState(false);
-
 
   const sendBoardDataToSocketIo = () => {
-    const data = { arrayDatos, limpiar: limpiarTodo, };
+    const data = { arrayDatos };
     socket.emit("save_coord", data);
   };
 
- 
   const keydown = (e) => {
     let endLine = false;
     let auxNum = 0;
-      if (e.ctrlKey && e.key === "z" && pintor) {
-        console.log("Before slice", arrayDatos);
-        let i =  arrayDatos.length;
-        for (i; i >= 0; i--){
-          if (arrayDatos[i] != "nuevaLinea" && endLine == false){
-            console.log("index", i);
-
-            arrayDatos.splice(i, 1);
+    if (e.ctrlKey && e.key === "z" && pintor) {
+      let i = arrayDatos.length;
+      for (i; i >= 0; i--) {
+        if (arrayDatos[i] != "nuevaLinea" && endLine == false) {
+          arrayDatos.splice(i, 1);
+        }
+        else {
+          if (auxNum == 1) {
+            endLine = true;
           }
-          else{
-            if (auxNum == 1){
-              endLine = true;
-
-            }
-            else{
-              arrayDatos.splice(i, 1);
-              auxNum++;
-
-            }
-            console.log("Nueva linea");
+          else {
+            arrayDatos.splice(i, 1);
+            auxNum++;
           }
         }
-        console.log("After slice", arrayDatos);
+      }
 
-        const canvas = canvasRef.current;
+      const canvas = canvasRef.current;
       const context = canvas.getContext("2d");
       context.lineCap = "round";
       context.clearRect(0, 0, canvas.width, canvas.height);
       sendBoardDataToSocketIo();
 
       context.beginPath();
-          context.moveTo(arrayDatos[0].x, arrayDatos[0].y);
-
-          for (let i = 1; i < arrayDatos.length; i++) {
-            if (arrayDatos[i] === "nuevaLinea") {
-              context.stroke();
-              context.beginPath();
-              context.moveTo(arrayDatos[i + 1].x, arrayDatos[i + 1].y);
-              i++;
-            } else {
-              context.lineTo(arrayDatos[i].x, arrayDatos[i].y);
-            }
-            context.lineWidth = arrayDatos[i].brushRadius;
-            context.strokeStyle = arrayDatos[i].currentColor;
-          }
-          context.stroke();
+      if (arrayDatos.length != 0) {
+        context.moveTo(arrayDatos[0].x, arrayDatos[0].y);
+      } else {
+        return
       }
+
+      for (let i = 1; i < arrayDatos.length; i++) {
+        if (arrayDatos[i] === "nuevaLinea") {
+          context.stroke();
+          context.beginPath();
+          i++;
+        } else {
+          context.lineTo(arrayDatos[i].x, arrayDatos[i].y);
+          context.lineWidth = arrayDatos[i].brushRadius;
+          context.strokeStyle = arrayDatos[i].currentColor;
+        }
+      }
+      context.stroke();
+    }
   }
 
   const clearBoard = () => {
@@ -87,13 +80,6 @@ function Board({ socket, pintor }) {
   const eraser = () => {
     setCurrentColor("#FFF");
   }
-
-  // useEffect(() => {
-  //   if (limpiarTodo) {
-  //     sendBoardDataToSocketIo();
-  //     setLimpiarTodo(false);
-  //   }
-  // }, [limpiarTodo]);
 
   useEffect(() => {
     if (pintor) {
@@ -146,19 +132,15 @@ function Board({ socket, pintor }) {
       canvas.addEventListener("mouseout", handleMouseOut);
       window.addEventListener("keydown", keydown);
 
-
       return () => {
         canvas.removeEventListener("mousedown", handleMouseDown);
         canvas.removeEventListener("mousemove", handleMouseMove);
         canvas.removeEventListener("mouseup", handleMouseUp);
         canvas.addEventListener("mouseout", handleMouseOut);
         window.removeEventListener("keydown", keydown);
-
       };
-
     } else {
       socket.on("new_board_data", (data) => {
-        console.log("arrayDatos", data.board.arrayDatos);
         const canvas = canvasRef2.current;
         if (!canvas) {
           return;
@@ -166,19 +148,15 @@ function Board({ socket, pintor }) {
         const context = canvas.getContext("2d");
         context.lineCap = "round";
 
-
         if (data.board.arrayDatos.length == 0) {
           const canvas = canvasRef2.current;
           const context = canvas.getContext("2d");
           context.lineCap = "round";
-
           context.clearRect(0, 0, canvas.width, canvas.height);
         } else {
           context.clearRect(0, 0, canvas.width, canvas.height);
-
           context.beginPath();
           context.moveTo(data.board.arrayDatos[0].x, data.board.arrayDatos[0].y);
-
           for (let i = 1; i < data.board.arrayDatos.length; i++) {
             if (data.board.arrayDatos[i] === "nuevaLinea") {
               context.lineCap = "round";
@@ -195,7 +173,6 @@ function Board({ socket, pintor }) {
           }
           context.stroke();
         }
-
       });
     }
   }, [pintor, currentColor, brushRadius]);
