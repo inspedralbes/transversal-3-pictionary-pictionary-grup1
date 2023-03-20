@@ -42,7 +42,7 @@ class PrivateCategoryController extends Controller
         return $userId;
     }
 
-    public function register(Request $request)
+    public function addCategory(Request $request)
     {
         $validator =  Validator::make($request->all(), [
             'name' => 'required|string|min:3|max:25'
