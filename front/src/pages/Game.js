@@ -23,16 +23,12 @@ function Game({ socket }) {
   useEffect(() => {
 
     socket.on('answer_result', (data) => {
-      if (data.resultsMatch) {
-        setResult(messageResponses.wordAttemptSuccess)
-      } else {
-        setResult(messageResponses.wordAttemptError)
-      }
+      setResult(data.resultsMatch);
     });
 
     socket.on('pintor', (data) => {
       setPintor(data.pintor);
-      setResult("")
+      setResult(null)
     });
 
     socket.on('spectator', (data) => {
@@ -66,12 +62,16 @@ function Game({ socket }) {
                 <div style={{ marginRight: "20px" }}>
                   <WordGuess socket={socket}></WordGuess>
                   <Description socket={socket}></Description>
-                  {result && <p>{result}</p>}
                   <Board socket={socket} pintor={pintor}></Board>
                 </div>
               </div> : <>
-                {result && <p>{result}</p>}
-                <WordForm socket={socket} /><br></br>
+                {result != null &&
+                  <>
+                    {result ?
+                      <p>{messageResponses.wordAttemptSuccess}</p> :
+                      <p>{messageResponses.wordAttemptError}</p>}
+                  </>}
+                <WordForm socket={socket} answerCorrect={result} /><br></br>
                 <Board socket={socket} pintor={pintor}></Board>
               </>}
           </>}

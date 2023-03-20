@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-function WordForm({socket}) {
+function WordForm({ socket, answerCorrect }) {
   const [word, setWord] = useState('');
 
   function handleFormSubmit(e) {
@@ -16,14 +16,21 @@ function WordForm({socket}) {
     setWord(e.target.value);
   }
 
-  return (
-    <div>
-      <form onSubmit={handleFormSubmit}>
-        <input type="text" value={word} onChange={handleChange} placeholder="Enter a word" />
-        <button type="submit">Check</button>
-      </form>
-    </div>
-  );
+  if (answerCorrect) {
+    return (
+      <></>
+    )
+  } else {
+    return (
+      <div>
+        <form onSubmit={handleFormSubmit}>
+          <input type="text" value={word} onChange={handleChange} placeholder="Enter a word" />
+          <button type="submit">Check</button>
+        </form>
+      </div>
+    );
+  }
+
 }
 
 export default WordForm;
