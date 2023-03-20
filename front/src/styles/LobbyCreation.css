@@ -55,83 +55,83 @@
     transition: all 0.7s;
 }
 
-span {
+.span {
     margin-right: 3px;
     color: #5c5b5b;
     margin-left: 3px;
 }
 
-span:nth-child(1):hover {
+.span:nth-child(1):hover {
     color: cornflowerblue;
     transform: translate(0px, -10px);
     display: inline-block;
     transition: all 0.01s ease-in-out;
 }
 
-span:nth-child(2):hover {
+.span:nth-child(2):hover {
     color: #d8d86a;
     transform: translate(0px, -10px);
     display: inline-block;
     transition: all 0.01s ease-in-out;
 }
 
-span:nth-child(3):hover {
+.span:nth-child(3):hover {
     color: #71a071;
     transform: translate(0px, -10px);
     display: inline-block;
     transition: all 0.01s ease-in-out;
 }
 
-span:nth-child(4):hover {
+.span:nth-child(4):hover {
     color: #ff8fc3;
     transform: translate(0px, -10px);
     display: inline-block;
     transition: all 0.01s ease-in-out;
 }
 
-span:nth-child(5):hover {
+.span:nth-child(5):hover {
     color: #c23535;
     transform: translate(0px, -10px);
     display: inline-block;
     transition: all 0.01s ease-in-out;
 }
 
-span:nth-child(6):hover {
+.span:nth-child(6):hover {
     color: #ff7b00;
     transform: translate(0px, -10px);
     display: inline-block;
     transition: all 0.01s ease-in-out;
 }
 
-span:nth-child(7):hover {
+.span:nth-child(7):hover {
     color: #39aa9b;
     transform: translate(0px, -10px);
     display: inline-block;
     transition: all 0.01s ease-in-out;
 }
 
-span:nth-child(8):hover {
+.span:nth-child(8):hover {
     color: #6666e2;
     transform: translate(0px, -10px);
     display: inline-block;
     transition: all 0.01s ease-in-out;
 }
 
-span:nth-child(9):hover {
+.span:nth-child(9):hover {
     color: #7fd457;
     transform: translate(0px, -10px);
     display: inline-block;
     transition: all 0.01s ease-in-out;
 }
 
-span:nth-child(10):hover {
+.span:nth-child(10):hover {
     color: #d066fa;
     transform: translate(0px, -10px);
     display: inline-block;
     transition: all 0.01s ease-in-out;
 }
 
-span:nth-child(11):hover {
+.span:nth-child(11):hover {
     color: #9afa66;
     display: inline-block;
     transition: all 0.03s ease-in-out;
