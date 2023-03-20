@@ -1,22 +1,32 @@
 import { useState, useEffect } from "react";
 
 function Settings({ socket }) {
-    const [roundDuration, setRoundDuration] = useState("");
-    const [ownerPlay, setOwnerPlay] = useState("");
+    const [roundDuration, setRoundDuration] = useState(0);
+    const [ownerPlay, setOwnerPlay] = useState(false);
+    const [nickname, setNickname] = useState("");
     const [error, setError] = useState("");
 
     function handleFormSubmit(e) {
         e.preventDefault();
 
         setError("")
-        socket.emit("save_settings", {
-            roundDuration: roundDuration,
-            ownerPlay: ownerPlay
-        });
+        if (ownerPlay && nickname == "") {
+            setError("You need to choose a nickname in order to play!")
+        } else {
+            socket.emit("save_settings", {
+                roundDuration: roundDuration,
+                ownerPlay: ownerPlay,
+                nickname: nickname
+            });
+        }
     }
 
-    function handleChangeOwnerPlay(e) {
-        setOwnerPlay(e.target.value);
+    function handleChangeOwnerPlay() {
+        setOwnerPlay(!ownerPlay);
+    }
+
+    function handleChangeNickname(e) {
+        setNickname(e.target.value);
     }
 
     function handleChangeRoundDuration(e) {
@@ -39,6 +49,10 @@ function Settings({ socket }) {
         socket.on("INVALID_SETTINGS", () => {
             setError(`Can't start the game with invalid settings`)
         })
+
+        socket.on("USER_ALR_CHOSEN_ERROR", () => {
+            setError("The chosen username is already on use")
+        })
     }, [])
 
     return (
@@ -47,6 +61,14 @@ function Settings({ socket }) {
             <form onSubmit={handleFormSubmit}>
                 <label>{"Round duration (seconds)"} <input type="number" value={roundDuration} onChange={handleChangeRoundDuration} /></label><br />
                 <label>{"Will the lobby creator play? "} <input type="checkbox" value={ownerPlay} onChange={handleChangeOwnerPlay} /></label><br />
+                {ownerPlay ?
+                    <>
+                        <label>{"Enter your nickname:"} 
+                            <input type="text" value={nickname} onChange={handleChangeNickname} />
+                        </label><br />
+                    </> :
+                    <>
+                    </>}
                 <button type="submit">Save settings</button>
             </form>
         </div>
