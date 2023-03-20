@@ -39,7 +39,6 @@ function Board({ socket, pintor }) {
 
       const canvas = canvasRef.current;
       const context = canvas.getContext("2d");
-      context.lineCap = "round";
       context.clearRect(0, 0, canvas.width, canvas.height);
       sendBoardDataToSocketIo();
 
@@ -69,8 +68,6 @@ function Board({ socket, pintor }) {
     if (canvasRef.current != null) {
       const canvas = canvasRef.current;
       const context = canvas.getContext("2d");
-      context.lineCap = "round";
-
       context.clearRect(0, 0, canvas.width, canvas.height);
       arrayDatos = [];
       sendBoardDataToSocketIo();
@@ -89,7 +86,6 @@ function Board({ socket, pintor }) {
         return;
       }
       const context = canvas.getContext("2d");
-      context.lineCap = "round";
 
       let x;
       let y;
@@ -108,8 +104,9 @@ function Board({ socket, pintor }) {
         context.beginPath();
         context.moveTo(x, y);
         context.lineTo(newX, newY);
-        context.strokeStyle = currentColor;
         context.lineCap = "round";
+        context.lineJoin = 'round';
+        context.strokeStyle = currentColor;
         context.lineWidth = brushRadius;
         context.stroke();
         x = newX;
@@ -122,6 +119,7 @@ function Board({ socket, pintor }) {
         isDrawing = false;
         arrayDatos.push("nuevaLinea");
       }
+      
       function handleMouseOut() {
         isDrawing = false;
       }
@@ -147,11 +145,12 @@ function Board({ socket, pintor }) {
         }
         const context = canvas.getContext("2d");
         context.lineCap = "round";
+        context.lineJoin = 'round';
 
         if (data.board.arrayDatos.length == 0) {
           const canvas = canvasRef2.current;
           const context = canvas.getContext("2d");
-          context.lineCap = "round";
+
           context.clearRect(0, 0, canvas.width, canvas.height);
         } else {
           context.clearRect(0, 0, canvas.width, canvas.height);
@@ -159,7 +158,6 @@ function Board({ socket, pintor }) {
           context.moveTo(data.board.arrayDatos[0].x, data.board.arrayDatos[0].y);
           for (let i = 1; i < data.board.arrayDatos.length; i++) {
             if (data.board.arrayDatos[i] === "nuevaLinea") {
-              context.lineCap = "round";
               context.stroke();
               context.beginPath();
               context.moveTo(data.board.arrayDatos[i + 1].x, data.board.arrayDatos[i + 1].y);
@@ -169,7 +167,6 @@ function Board({ socket, pintor }) {
             }
             context.lineWidth = data.board.arrayDatos[i].brushRadius;
             context.strokeStyle = data.board.arrayDatos[i].currentColor;
-            context.lineCap = "round";
           }
           context.stroke();
         }
@@ -181,7 +178,6 @@ function Board({ socket, pintor }) {
     return (
       <div className="Board">
         <CountDownTimer socket={socket} />
-        {/* {arrayDatos = []} */}
         <CirclePicker
           style={{ border: "4px solid #000" }}
           color={currentColor}
