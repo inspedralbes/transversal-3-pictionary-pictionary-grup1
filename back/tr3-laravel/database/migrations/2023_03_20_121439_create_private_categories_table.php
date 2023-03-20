@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('categories', function (Blueprint $table) {
+        Schema::create('private_categories', function (Blueprint $table) {
             $table->id();
             $table->string('name') -> unique();
             $table->bigInteger('creator_id')->unsigned()->index()->nullable();
-
+            
             $table->foreign('creator_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('categories');
+        Schema::dropIfExists('private_categories');
     }
 };
