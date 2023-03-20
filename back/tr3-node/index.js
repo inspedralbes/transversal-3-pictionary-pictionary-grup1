@@ -196,6 +196,7 @@ socketIO.on('connection', socket => {
             lobby.members.forEach(member => {
               if (member.idUser == socket.data.id) {
                 member.lastAnswerCorrect = true;
+                member.lastAnswer = data.word;
               }
             });
             sendUserList(socket.data.current_lobby)
@@ -204,10 +205,13 @@ socketIO.on('connection', socket => {
               resultsMatch: false,
             })
 
-            socketIO.emit('send_guessed_word', {
-              wordGuessed: data.word,
-              id: socket.id
-            })
+            lobby.members.forEach(member => {
+              if (member.idUser == socket.data.id) {
+                member.lastAnswerCorrect = false;
+                member.lastAnswer = data.word;
+              }
+            });
+            sendUserList(socket.data.current_lobby)
           }
         }
       }
@@ -257,6 +261,7 @@ function acabarRonda(lobbyId) {
       if (!lobby.ended) {
         lobby.members.forEach(member => {
           member.lastAnswerCorrect = false;
+          member.lastAnswer = "";
         });
 
         lobby.boardData = {
@@ -289,7 +294,8 @@ function joinLobby(socket, lobbyIdentifier) {
       if (disponible) {
         lobby.members.push({
           idUser: socket.data.id,
-          lastAnswerCorrect: false
+          lastAnswerCorrect: false,
+          lastAnswer: ""
         });
 
         socketIO.to(socket.id).emit("lobby_info", lobby)
@@ -362,13 +368,16 @@ function sendUserList(room) {
         if (member.idUser != lobby.ownerId) {
           list.push({
             name: member.idUser,
-            lastAnswerCorrect: member.lastAnswerCorrect
+            lastAnswerCorrect: member.lastAnswerCorrect,
+            lastAnswer: member.lastAnswer,
+            painting: member.painting
           });
         }
       });
     }
   });
-  
+
+  console.log("");
   socketIO.to(room).emit("lobby_user_list", {
     list: list,
     message: "user list",
@@ -411,15 +420,33 @@ async function enviarPintor(room) {
             socketIO.to(user.id).emit("pintor", {
               pintor: true
             })
+
+            lobby.members.forEach(member => {
+              if (member.idUser == user.data.id) {
+                member.painting = true;
+              }
+            });
           } else {
             if (user.data.id != lobby.ownerId) {
               socketIO.to(user.id).emit("pintor", {
                 pintor: false
               })
+
+              lobby.members.forEach(member => {
+                if (member.idUser == user.data.id) {
+                  member.painting = false;
+                }
+              });
             } else {
               socketIO.to(user.id).emit("spectator", {
                 spectator: true
               })
+
+              lobby.members.forEach(member => {
+                if (member.idUser == user.data.id) {
+                  member.painting = false;
+                }
+              });
             }
 
           }
