@@ -56,9 +56,9 @@ app.use(
 let i = 0;
 const laravelRoute = "http://127.0.0.1:8000/index.php/";
 let lobbies = [];
-const measurements = {
-  width: "700",
-  height: "700"
+const maxSettings = {
+  maxTime: 120,
+  minTime: 30
 }
 
 // ------------------------------------------------------------------
@@ -100,7 +100,7 @@ socketIO.on('connection', socket => {
         ended: false,
         boardData: undefined,
         settings: {
-          contadorMax: 60,
+          roundDuration: 60,
           ownerPlay: false
         }
       }
@@ -121,23 +121,28 @@ socketIO.on('connection', socket => {
     joinLobby(socket, data.lobbyIdentifier, socket.data.username)
   });
 
-  socket.on("leave_lobby", (data) => {
+  socket.on("leave_lobby", () => {
     leaveLobby(socket);
-    sendUserList(data.lobbyIdentifier);
+    sendUserList(socket.data.current_lobby);
   });
 
-  socket.on("start_game", (data) => {
+  socket.on("start_game", () => {
     let amountOfRounds;
 
     lobbies.forEach(lobby => {
-      if (lobby.lobbyIdentifier == data.lobbyIdentifier) {
-        lobby.rounds = lobby.members.length;
-        amountOfRounds = lobby.rounds;
-        socketIO.to(data.lobbyIdentifier).emit('game_started');
-        setLobbyWord(socket.data.current_lobby, amountOfRounds);
-        enviarPintor(data.lobbyIdentifier)
-        sendUserList(data.lobbyIdentifier);
-        setCounter(data.lobbyIdentifier);
+      if (lobby.lobbyIdentifier == socket.data.current_lobby) {
+        if (lobby.settings.roundDuration > maxSettings.minTime && lobby.settings.roundDuration < maxSettings.maxTime) {
+          lobby.rounds = lobby.members.length;
+          amountOfRounds = lobby.rounds;
+          socketIO.to(socket.data.current_lobby).emit('game_started');
+          setLobbyWord(socket.data.current_lobby, amountOfRounds);
+          enviarPintor(socket.data.current_lobby)
+          sendUserList(socket.data.current_lobby);
+          setCounter(socket.data.current_lobby);
+        } else {
+          socketIO.to(socket.id).emit('INVALID_SETTINGS');
+        }
+
       }
     });
   });
@@ -157,6 +162,44 @@ socketIO.on('connection', socket => {
       word: word
     });
   });
+
+  socket.on("get_lobby_settings", () => {
+    let data;
+    lobbies.forEach(lobby => {
+      if (lobby.lobbyIdentifier == socket.data.current_lobby) {
+        data = lobby.settings
+      }
+    });
+
+    if (data != null) {
+      socketIO.to(socket.id).emit('lobby_settings', data);
+    }
+  });
+
+  socket.on("save_settings", (data) => {
+    let valid = true;
+    lobbies.forEach(lobby => {
+      if (lobby.lobbyIdentifier == socket.data.current_lobby && lobby.ownerId == socket.data.id) {
+        if (data.roundDuration < maxSettings.minTime) {
+          socketIO.to(socket.id).emit('ROUND_TIME_UNDER_MIN', {
+            min: maxSettings.minTime
+          });
+
+          valid = false;
+        } else if (data.roundDuration > maxSettings.maxTime) {
+          socketIO.to(socket.id).emit('ROUND_TIME_ABOVE_MAX', {
+            max: maxSettings.maxTime
+          });
+
+          valid = false;
+        }
+
+        if (valid) {
+          lobby.settings = data
+        }
+      }
+    });
+  })
 
   socket.on('save_coord', (arrayDatos) => {
     lobbies.forEach(lobby => {
@@ -229,14 +272,14 @@ function setCounter(lobbyId) {
   let timer;
   lobbies.forEach(lobby => {
     if (lobby.lobbyIdentifier == lobbyId && !lobby.ended) {
-      let cont = lobby.settings.contadorMax
+      let cont = lobby.settings.roundDuration + 1
       timer = setInterval(() => {
         cont--;
         socketIO.to(lobbyId).emit("counter_down", {
           counter: cont
         })
 
-        if (cont == 45) {
+        if (cont == lobby.settings.roundDuration - 15) {
           if (lobby.actualRound < lobby.rounds) {
             lobby.actualRound++;
           }
