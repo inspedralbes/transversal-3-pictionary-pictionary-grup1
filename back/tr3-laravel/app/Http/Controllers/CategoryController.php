@@ -3,17 +3,36 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Category;
+use App\Models\User;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class CategoryController extends Controller
 {
-    public function checkCategoryDuplicated($userData)
+    public function checkCategoryDuplicated($categoryData)
     {
         $canCreate = true;
+        $userId = null;
+        $findDuplicated = -1;
 
-        $findDuplicated = User::where('email', strtolower($userData -> email))
-        ->orwhere('name', strtolower($userData -> name))
-        ->count();
+        //Check if the user is logged.
+        [$id, $token] = explode('|', $categoryData -> token, 2);
+        $accessToken = PersonalAccessToken::find($id);
 
+        if (hash_equals($accessToken->token, hash('sha256', $token))) {
+            $userId = $accessToken -> tokenable_id;
+        }
+
+        //If the user is logged we continue to check if the category is duplicated.
+        if ($userId != null) {
+            $findDuplicated = Category::where('name', strtoupper($categoryData -> name))
+            ->where('creator_id', $userId)
+            ->count();
+        } else {
+            $canCreate = false;
+        }
+
+        //If the category is duplicated or -1 we can't create the category.
         if ($findDuplicated != 0) {
             $canCreate = false;
         }
@@ -36,34 +55,20 @@ class CategoryController extends Controller
             $createCategory = $this->checkCategoryDuplicated($request);
 
             if ($createCategory) {
-                $user = new User;
-                $user -> name = strtolower($request -> name);
-                $user -> email = strtolower($request -> email);
-                $user -> password = Hash::make($request -> password);
-                $user -> save();
+                $category = new Category;
+                $category -> name = strtoupper($request -> name);
+                $category -> creator_id = $request -> creator_id;
+                $category -> save();
 
-                $request->session()->put('userId', $user -> id);
-                $request->session()->save();
-                $token = $user->createToken('token')->plainTextToken;
                 $sendCategory = (object) 
                 ["valid" => true,
-                'message' => $request->session()->get("userId"),
-                'token' => $token
+                'message' => $category,
                 ];
             } else {
-                $duplicated = $this->findWhatIsDuplicated($request);
                 $sendCategory = (object) 
                 ["valid" => false,
-                'message' => "Name already in use."
+                'message' => "Category already created."
                 ];
-                
-                if ($duplicated == 'email') {
-                    $sendCategory = (object) 
-                    ["valid" => false,
-                    'message' => "Email already registered."
-                    ];
-                }
-                
             }
         } 
 
