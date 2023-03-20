@@ -58,7 +58,9 @@ const laravelRoute = "http://127.0.0.1:8000/index.php/";
 let lobbies = [];
 const maxSettings = {
   maxTime: 120,
-  minTime: 30
+  minTime: 30,
+  minAmountOfTurns: 1,
+  maxAmountOfTurns:5
 }
 
 // ------------------------------------------------------------------
