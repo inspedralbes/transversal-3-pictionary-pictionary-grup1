@@ -71,10 +71,10 @@ socketIO.on('connection', socket => {
   socket.data.id = i;
   socket.data.username = "guest"
   console.log(socket.data.id + " connected ");
-
+  
   const random_hex_color_code = () => {
-    let n = (Math.random() * 0xfffff * 1000000).toString(16);
-    return n.slice(0, 6);
+    let n = Math.floor(Math.random() * 999999);
+    return n.toString();
   };
 
   socket.on("new_lobby", () => {
