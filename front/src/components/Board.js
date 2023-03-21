@@ -13,6 +13,7 @@ function Board({ socket, pintor }) {
   const [brushRadius, setBrushRadius] = useState(1);
   const [limpiarTodo, setLimpiarTodo] = useState(false);
 
+
   const sendBoardDataToSocketIo = () => {
     const data = { arrayDatos, limpiar: limpiarTodo };
     socket.emit("save_coord", data);
@@ -40,6 +41,7 @@ function Board({ socket, pintor }) {
   }, [limpiarTodo]);
 
   useEffect(() => {
+
     if (pintor) {
       socket.emit("give_me_the_board");
       const canvas = canvasRef.current;
@@ -137,15 +139,14 @@ function Board({ socket, pintor }) {
         <CountDownTimer socket={socket} />
         {arrayDatos = []}
         <CirclePicker
-          style={{ border: "4px solid #000" }}
           color={currentColor}
           onChangeComplete={(color) => setCurrentColor(color.hex)}
         ></CirclePicker>
         <button onClick={clearBoard}>Clear</button>
-        <button onClick={eraser}>Eraser</button>
+        <button id='eraser' onClick={eraser}>Eraser</button>
 
         <input id="brushRadius" type={"range"} min="1" max="50" step={1} value={brushRadius} onChange={(e) => setBrushRadius(e.target.value)} ></input>
-        <canvas ref={canvasRef} width={800} height={500} style={{ border: "1px solid black" }} />
+        <canvas id="board" className="Board__draw" ref={canvasRef} width={800} height={500} style={{ border: "6px solid black" }} />
       </div>
     );
   }
@@ -153,7 +154,7 @@ function Board({ socket, pintor }) {
     return (
       <div className="Board">
         <CountDownTimer socket={socket} />
-        <canvas ref={canvasRef2} width={800} height={500} style={{ border: "1px solid black" }} />
+        <canvas className="Board__view" ref={canvasRef2} width={800} height={500} style={{ border: "6px solid black" }} />
       </div>
     );
   }

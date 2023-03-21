@@ -10,11 +10,7 @@ body{
 }
 
 .Board__draw, .Board__view{
-    cursor: url("../img/cursor.cur") , pointer;
     margin: 0 auto;
-    border-radius: 10px;
-    height: 70vh;
-    padding: 10px;
     background: #fff;
     border: solid black;
     border-color: black;
@@ -23,6 +19,15 @@ body{
     transform: rotate(-2deg);
     overflow: hidden;
   }
+
+  .Board__draw{
+    cursor: url("../img/brush.cur") , pointer;
+  }
+
+  .Board__draw:active{
+    cursor: url("../img/brush-click.cur") , pointer;
+  }
+
 .board__settings{
   float: right;
 }

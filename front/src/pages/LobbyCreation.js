@@ -60,13 +60,13 @@ function LobbyCreation({ socket }) {
     }, [navigate, socket, firstTime])
     return (
         <div className="createGame">
-            <button className="createGame__leaveButton" onClick={handleLeave}>Leave and delete lobby</button>
+            <button className="createGame__leaveButton" onClick={handleLeave}>Leave and delete lobby </button>
             {lobbyId && (
                 <h1 className="identifier"><span className='span'>I</span><span className='span'>D</span><span className='span'>E</span><span className='span'>N</span><span className='span'>T</span><span className='span'>I</span><span className='span'>F</span><span className='span'>I</span><span className='span'>E</span><span className='span'>R</span>: <span className='span' id="copyId" onClick={copyId} onMouseOver={changeColor}><p>CLICK TO COPY THE ID</p>{lobbyId}</span></h1>
             )}
             <ConnectedUsers socket={socket}></ConnectedUsers>
             <div className="createGame__startButtonDiv">
-                <button className="createGame__startButton" onClick={handleStartGame}>Start game  <i class="icon-paint-brush"></i></button>
+                <button className="createGame__startButton" onClick={handleStartGame}>Start game </button>
             </div>
         </div>
 
