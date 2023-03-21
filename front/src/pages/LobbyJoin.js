@@ -83,20 +83,34 @@ function LobbyJoin({ socket }) {
 
     if (!insideLobby) {
         return (
-            <div>
+            <div className="JoinLobby">
                 {error !== "" && (<h1 className="error">{error}</h1>)}
-                <form onSubmit={handleSubmit}>
-                    <label>Enter your nickname
-                        <input type="text" value={username} onChange={handleChangeUsername} placeholder="nickname..." />
+                <form className="JoinLobby__form--grid" onSubmit={handleSubmit}>
+                    <label className="JoinLobby__nickname--grid">
+                            <div className="form__inputGroup">
+                            <input
+                                id="nickname"
+                                value={username}
+                                className="form__input"
+                                onChange={handleChangeUsername}
+                                placeholder=" "
+                                type="text"
+                                required
+                            ></input>
+                            <span className="form__inputBar"></span>
+                            <label className="form__inputlabel">Introduce your nickname</label>
+                            </div>
                     </label>
-
-                    <br />
-
-                    <label>Enter lobby Identifier
-                        <input type="text" value={lobbyId} onChange={handleChangeLobbyId} placeholder="code..." />
+                        <label className="JoinLobby__id--grid">
+                        <div className="form__inputGroup">
+                            <input className="form__input"  value={lobbyId} onChange={handleChangeLobbyId}placeholder=" " type="text" required></input>
+                            <span className="form__inputBar"></span>
+                            <label className="form__inputlabel">Introduce lobby ID</label>
+                        </div>
                     </label>
-
-                    <button type="submit">Join</button>
+                    <div className="JoinLobby__button--grid">
+                        <button className="JoinLobby__button" type="submit">Join lobby</button>
+                    </div>
                 </form>
             </div>
 
