@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\WordController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,5 +20,19 @@ Route::get('/', function () {
 });
 
 Route::group(['middleware' => ['web']], function () {
-    Route::post('/getWord', [WordController::class, 'getWord']);
+    Route::post('/getWords', [WordController::class, 'getWords']);
+
+    Route::post('/register', [UserController::class, 'register']);
+
+    Route::post('/login', [UserController::class, 'login']);
+
+    Route::post('/logout', [UserController::class, 'logout']);
+
+    Route::post('/isUserLogged', [UserController::class, 'isUserLogged']);
+    
+    Route::post('/getProfile', [UserController::class, 'getProfile']);
+
+    Route::post('/getUserId', [UserController::class, 'getUserId']);
+
+    Route::post('/getUserInfo', [UserController::class, 'getUserInfo']);    
 });

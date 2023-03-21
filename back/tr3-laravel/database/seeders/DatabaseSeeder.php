@@ -426,61 +426,61 @@ class DatabaseSeeder extends Seeder
         //Computer Science
         {
             $word = new Word;
-            $word -> name = "monitor";
+            $word -> name = "Monitor";
             $word -> description = "Display device used to visually the output of a computer";
             $word -> category_id = 7;
             $word -> save();
 
             $word = new Word;
-            $word -> name = "keyboard";
+            $word -> name = "Keyboard";
             $word -> description = "Input device that allows the user to input characters into the computer by pressing keys";
             $word -> category_id = 7;
             $word -> save();
 
             $word = new Word;
-            $word -> name = "mouse";
+            $word -> name = "Mouse";
             $word -> description = "A pointing device that allows the user to control the movement of the cursor on the computer screen";
             $word -> category_id = 7;
             $word -> save();
 
             $word = new Word;
-            $word -> name = "printer";
+            $word -> name = "Printer";
             $word -> description = "Device that produces a physical copy of electronic documents or images";
             $word -> category_id = 7;
             $word -> save();
             
             $word = new Word;
-            $word -> name = "scanner";
+            $word -> name = "Scanner";
             $word -> description = "Input device that captures images, documents, or other physical objects and converts them into digital images";
             $word -> category_id = 7;
             $word -> save();
 
             $word = new Word;
-            $word -> name = "webcam";
+            $word -> name = "Webcam";
             $word -> description = "A camera that captures video and audio and sends it over the internet in real-time";
             $word -> category_id = 7;
             $word -> save();
 
             $word = new Word;
-            $word -> name = "headset";
+            $word -> name = "Headset";
             $word -> description = "A combination of headphones and microphone";
             $word -> category_id = 7;
             $word -> save();
 
             $word = new Word;
-            $word -> name = "speaker";
+            $word -> name = "Speaker";
             $word -> description = "A device that produces audio output from a computer";
             $word -> category_id = 7;
             $word -> save();
 
             $word = new Word;
-            $word -> name = "external hard drive";
-            $word -> description = "A portable storage device that provides additional storage capacity";
+            $word -> name = "USB";
+            $word -> description = "A portable storage device that provides additional storage capacity and to transfer data";
             $word -> category_id = 7;
             $word -> save();
 
             $word = new Word;
-            $word -> name = "joystick";
+            $word -> name = "Joystick";
             $word -> description = "Input gaming device that allows the user to control the movement";
             $word -> category_id = 7;
             $word -> save();

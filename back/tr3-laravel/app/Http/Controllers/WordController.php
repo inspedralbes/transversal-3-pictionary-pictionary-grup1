@@ -7,19 +7,20 @@ use App\Models\Word;
 
 class WordController extends Controller
 {
-    public function getWord(Request $request)
+    public function getWords(Request $request)
     {  
         $category = $request -> category;
         $difficulty = $request -> difficulty;
+        $amount = $request -> amount;
 
         if ($category != "null" && $difficulty == "null") {
-            $word = Word::inRandomOrder()->where("category_id", $category)->limit(1)->get(); 
+            $words = Word::inRandomOrder()->where("category_id", $category)->limit($amount)->get(); 
         } else if ($category == "" && $difficulty != "") {
-            $word = Word::inRandomOrder()->where("difficulty", $difficulty)->limit(1)->get();  
+            $words = Word::inRandomOrder()->where("difficulty", $difficulty)->limit($amount)->get();  
         } else {
-            $word = Word::inRandomOrder()->first();  
+            $words = Word::inRandomOrder()->limit($amount)->get();  
         }
         
-        return response()->json(['wordToCheck' => $word]);
+        return response()->json(['wordsToCheck' => $words]);
     }
 }

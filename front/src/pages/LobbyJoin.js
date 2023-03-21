@@ -1,22 +1,34 @@
 import { useState, useEffect } from "react";
 import ConnectedUsers from "../components/ConnectedUsers";
 import { useNavigate } from "react-router-dom";
+import "../styles/LobbyCreation.css"
 
 function LobbyJoin({ socket }) {
     const [lobbyId, setLobbyId] = useState("");
+    const [username, setUsername] = useState("");
     const [error, setError] = useState("");
     const [insideLobby, setInsideLobby] = useState(false);
     const navigate = useNavigate();
 
-    function handleChange(e) {
+    function handleChangeLobbyId(e) {
         setLobbyId(e.target.value)
+    }
+
+    function handleChangeUsername(e) {
+        setUsername(e.target.value)
     }
 
     function handleSubmit(e) {
         e.preventDefault();
-        socket.emit("join_room", {
-            lobbyIdentifier: lobbyId
-        })
+        if (lobbyId != "" && username != "") {
+            socket.emit("join_room", {
+                lobbyIdentifier: lobbyId,
+                username: username,
+            })
+        } else {
+            setError("You need to fill both input fields.")
+        }
+
     }
 
     function handleLeave(e) {
@@ -46,31 +58,44 @@ function LobbyJoin({ socket }) {
         socket.on("YOU_LEFT_LOBBY", () => {
             setInsideLobby(false)
         })
-    }, [])
+
+        socket.on("USER_ALR_CHOSEN_ERROR", () => {
+            setError("The chosen username is already on use")
+        })
+    }, [navigate, socket])
 
     if (!insideLobby) {
         return (
             <div>
-                {error != "" && (<h1 className="error">{error}</h1>)}
+                {error !== "" && (<h1 className="error">{error}</h1>)}
                 <form onSubmit={handleSubmit}>
-                    <input type="text" value={lobbyId} onChange={handleChange} placeholder="Enter lobby identifier" />
+                    <label>Enter your nickname
+                        <input type="text" value={username} onChange={handleChangeUsername} placeholder="nickname..." />
+                    </label>
+
+                    <br />
+
+                    <label>Enter lobby Identifier
+                        <input type="text" value={lobbyId} onChange={handleChangeLobbyId} placeholder="code..." />
+                    </label>
+
                     <button type="submit">Join</button>
                 </form>
             </div>
-    
+
         );
     } else {
         return (
             <div>
-                <button onClick={handleLeave}>Leave lobby</button>
-                {error != "" && (<h1 className="error">{error}</h1>)}
-                <h1>Identifier: {lobbyId}</h1>
+                <button className="createGame__leaveButton" onClick={handleLeave}>Leave lobby</button>
+                {error !== "" && (<h1 className="error">{error}</h1>)}
+                <h1 className="identifier"><span>I</span><span>D</span><span>E</span><span>N</span><span>T</span><span>I</span><span>F</span><span>I</span><span>E</span><span>R</span>: {lobbyId}</h1>
                 <ConnectedUsers socket={socket}></ConnectedUsers>
             </div>
-    
+
         );
     }
-    
+
 }
 
 export default LobbyJoin;
