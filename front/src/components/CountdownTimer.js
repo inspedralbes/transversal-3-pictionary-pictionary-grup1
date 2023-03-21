@@ -15,7 +15,7 @@ function CountdownTimer({socket}) {
     })
 
     socket.on("game_ended", () => {
-      setCounter(69);
+      setCounter("GAME ENDED");
     })
   }, [])
 
