@@ -21,7 +21,7 @@ function Board({ socket, pintor }) {
   const undo = (e) => {
     let endLine = false;
     let auxNum = 0;
-    if (e.ctrlKey && e.key === "z" && pintor) {
+    if (e.ctrlKey && !e.shiftKey && e.key === "z" && pintor) {
       let i = arrayDatos.length;
       for (i; i >= 0; i--) {
         if (arrayDatos[i] != "nuevaLinea" && endLine == false) {
@@ -41,8 +41,7 @@ function Board({ socket, pintor }) {
         }
       }
       arrayRedo.push("nuevaLinea");
-      console.log("data", arrayDatos);
-      console.log("Redo", arrayRedo);
+      
 
       const canvas = canvasRef.current;
       const context = canvas.getContext("2d");
@@ -77,60 +76,56 @@ function Board({ socket, pintor }) {
       let endLine = false;
       let auxNum = 0;
 
-      // console.log("Before undo", arrayDatos);
-      // console.log("Before redo", arrayRedo);
-
-      for (let i = arrayRedo.length; i >= 0; i--) {
-
-        if (arrayRedo[i] != "nuevaLinea" && endLine == false) {
-          if (typeof arrayRedo[i] !== 'undefined') {
-            arrayDatos.push(arrayRedo[i]);
-            arrayRedo.splice(i, 1);
+      if (arrayRedo.length > 0){
+        for (let i = arrayRedo.length; i >= 0; i--) {
+  
+          if (arrayRedo[i] != "nuevaLinea" && endLine == false) {
+            if (typeof arrayRedo[i] !== 'undefined') {
+              arrayDatos.push(arrayRedo[i]);
+              arrayRedo.splice(i, 1);
+            }
+          }
+          else if (arrayRedo[i] == "nuevaLinea" && endLine == false){
+            if (auxNum == 1) {
+              endLine = true;
+            }
+            else {
+              arrayRedo.splice(i, 1);
+              auxNum++;
+            }
+            
           }
         }
-        else if (arrayRedo[i] == "nuevaLinea" && endLine == false){
-          if (auxNum == 1) {
-            endLine = true;
-          }
-          else {
-            //arrayDatos.push(arrayRedo[i]);
-            arrayRedo.splice(i, 1);
-            auxNum++;
-          }
-          
-        }
-      }
-      arrayDatos.push("nuevaLinia");
+        arrayDatos.push("nuevaLinea");
 
-      arrayRedo.splice(arrayRedo.length, 1);
-      // console.log("After undo", arrayDatos);
-      // console.log("After redo", arrayRedo);
-
-      const canvas = canvasRef.current;
-      const context = canvas.getContext("2d");
-      context.clearRect(0, 0, canvas.width, canvas.height);
-      sendBoardDataToSocketIo();
-
-      context.beginPath();
-      if (arrayDatos.length != 0) {
-        context.moveTo(arrayDatos[0].x, arrayDatos[0].y);
-      } else {
-        return
-      }
-
-      for (let i = 1; i < arrayDatos.length; i++) {
-        if (arrayDatos[i] === "nuevaLinea") {
-          context.stroke();
-          context.beginPath();
-          i++;
+  
+        arrayRedo.splice(arrayRedo.length, 1);
+  
+        const canvas = canvasRef.current;
+        const context = canvas.getContext("2d");
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        sendBoardDataToSocketIo();
+  
+        context.beginPath();
+        if (arrayDatos.length != 0) {
+          context.moveTo(arrayDatos[0].x, arrayDatos[0].y);
         } else {
-          context.lineTo(arrayDatos[i].x, arrayDatos[i].y);
-          context.lineWidth = arrayDatos[i].brushRadius;
-          context.strokeStyle = arrayDatos[i].currentColor;
+          return
         }
+  
+        for (let i = 1; i < arrayDatos.length; i++) {
+          if (arrayDatos[i] === "nuevaLinea") {
+            context.stroke();
+            context.beginPath();
+            i++;
+          } else {
+            context.lineTo(arrayDatos[i].x, arrayDatos[i].y);
+            context.lineWidth = arrayDatos[i].brushRadius;
+            context.strokeStyle = arrayDatos[i].currentColor;
+          }
+        }
+        context.stroke();
       }
-      context.stroke();
-
     }
   }
 
