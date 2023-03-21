@@ -117,7 +117,8 @@ socketIO.on('connection', socket => {
   })
 
   socket.on("join_room", (data) => {
-    joinLobby(socket, data.lobbyIdentifier)
+    socket.data.username = data.username;
+    joinLobby(socket, data.lobbyIdentifier, socket.data.username)
   });
 
   socket.on("leave_lobby", (data) => {
@@ -280,13 +281,14 @@ function acabarRonda(lobbyId) {
 
 }
 
-function joinLobby(socket, lobbyIdentifier) {
+function joinLobby(socket, lobbyIdentifier, username) {
+  var disponible = false;
   lobbies.forEach((lobby) => {
     if (lobby.lobbyIdentifier == lobbyIdentifier) {
-      var disponible = true;
+      disponible = true;
 
       lobby.members.forEach(member => {
-        if (member.idUser == socket.data.id || lobby.ownerId == socket.data.id) {
+        if (member.username == username || lobby.ownerId == socket.data.id) {
           disponible = false;
         }
       });
@@ -294,18 +296,25 @@ function joinLobby(socket, lobbyIdentifier) {
       if (disponible) {
         lobby.members.push({
           idUser: socket.data.id,
+          username: username,
           lastAnswerCorrect: false,
           lastAnswer: ""
         });
 
         socketIO.to(socket.id).emit("lobby_info", lobby)
+      } else {
+        socketIO.to(socket.id).emit("USER_ALR_CHOSEN_ERROR")
       }
     }
   });
-  socket.join(lobbyIdentifier);
-  socket.data.current_lobby = lobbyIdentifier;
 
-  sendUserList(lobbyIdentifier);
+  if (disponible) {
+    socket.join(lobbyIdentifier);
+    socket.data.current_lobby = lobbyIdentifier;
+
+    sendUserList(lobbyIdentifier);
+  }
+
 }
 
 function leaveLobby(socket) {
@@ -367,7 +376,7 @@ function sendUserList(room) {
       lobby.members.forEach(member => {
         if (member.idUser != lobby.ownerId) {
           list.push({
-            name: member.idUser,
+            name: member.username,
             lastAnswerCorrect: member.lastAnswerCorrect,
             lastAnswer: member.lastAnswer,
             painting: member.painting

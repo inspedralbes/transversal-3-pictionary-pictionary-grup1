@@ -23,16 +23,12 @@ function Game({ socket }) {
   useEffect(() => {
 
     socket.on('answer_result', (data) => {
-      if (data.resultsMatch) {
-        setResult(messageResponses.wordAttemptSuccess)
-      } else {
-        setResult(messageResponses.wordAttemptError)
-      }
+      setResult(data.resultsMatch);
     });
 
     socket.on('pintor', (data) => {
       setPintor(data.pintor);
-      setResult("")
+      setResult(null)
     });
 
     socket.on('spectator', (data) => {
@@ -55,32 +51,52 @@ function Game({ socket }) {
 
   return (
     <>
-      {!starting ? <>
-        {spectator ?
-          <>
-            <Board socket={socket} pintor={pintor}></Board>
-          </> :
-          <>
-            {pintor ?
-              <div style={{ display: "flex" }}>
-                <div style={{ marginRight: "20px" }}>
-                  <WordGuess socket={socket}></WordGuess>
-                  <Description socket={socket}></Description>
-                  {result && <p>{result}</p>}
-                  <Board socket={socket} pintor={pintor}></Board>
-                </div>
-              </div> : <>
-                {result && <p>{result}</p>}
-                <WordForm socket={socket} /><br></br>
-                <Board socket={socket} pintor={pintor}></Board>
-              </>}
-          </>}
-      </> : <><p>Loading...</p></>}
+      {!starting ? (
+        <div style={{ display: 'flex' }}>
+          {/* Right column */}
+          <div>
+            <ConnectedUsersInGame socket={socket} pintor={pintor} />
+          </div>
 
-      <ConnectedUsersInGame socket={socket} pintor={pintor}></ConnectedUsersInGame>
+          {/* Left column */}
+          <div>
+            {spectator ? (
+              <Board socket={socket} pintor={pintor} />
+            ) : (
+              <>
+                {pintor ? (
+                  <div>
+                    <div>
+                      <WordGuess socket={socket} />
+                      <Description socket={socket} />
+                      <Board socket={socket} pintor={pintor} />
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    {result != null && (
+                      <>
+                        {result ? (
+                          <p>{messageResponses.wordAttemptSuccess}</p>
+                        ) : (
+                          <p>{messageResponses.wordAttemptError}</p>
+                        )}
+                      </>
+                    )}
+                    <WordForm socket={socket} answerCorrect={result} /><br />
+                    <Board socket={socket} pintor={pintor} />
+                  </>
+                )}
+              </>
+            )}
+          </div>
+        </div>
+      ) : (
+        <><p>Loading...</p></>
+      )}
     </>
-  )
-
+  );
 }
+
 
 export default Game;

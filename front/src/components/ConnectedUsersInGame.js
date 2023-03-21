@@ -19,7 +19,6 @@ function ConnectedUsersInGame({ socket, pintor }) {
 
     return (
         <div className="game__connectedUsersInGame">
-            <h1 className="connectedUsersInGame_title">Connected users</h1>
             <ul id="userList" className="connectedUsersInGame__userList userList">
                 {Array.isArray(userList.list)
                     ? userList.list.map((user, index) => {
@@ -28,7 +27,7 @@ function ConnectedUsersInGame({ socket, pintor }) {
                                 <div className="item__name">
                                     <p>{user.painting ?
                                         <>{user.name + " (painting)"} </>
-                                        : <>{user.name} {pintor && user.lastAnswer != "" ? `Last answer attempted: ${user.lastAnswer}` : ""}</>}
+                                        : <>{user.name} {pintor && user.lastAnswer != "" ? `: ${user.lastAnswer}` : ""}</>}
                                     </p>
                                 </div>
                             </li>
