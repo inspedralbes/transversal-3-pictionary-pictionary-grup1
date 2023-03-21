@@ -23,9 +23,10 @@ function LandingPage() {
 
   return (
     <div className='ldPage'>
-      <div className='ldPage__loginRegister'>
+      <Link to='/login'>
+        <div className='ldPage__loginRegister'>
         <a>Log in/Register</a>
-      </div>
+      </div></Link>
       <div className="border is-drawn" id="border">
         <div className="space-around">
           <h1 className='ldPage__title'><span className='span'>P</span><span className='span'>I</span><span className='span'>C</span><span className='span'>T</span><span className='span'>I</span><span className='span'>O</span><span className='span'>N</span><span className='span'>A</span><span className='span'>R</span><span className='span'>Y</span> <span id='brush' onMouseOver={changeColor} className='span'><i className="icon-paint-brush"></i></span></h1>
