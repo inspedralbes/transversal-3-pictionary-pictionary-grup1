@@ -6,6 +6,7 @@ import "../styles/LobbyCreation.css"
 
 function LobbyCreation({ socket }) {
     const [lobbyId, setLobbyId] = useState("");
+    const [roundDuration, setRoundDuration] = useState(0);
     const [firstTime, setFirstTime] = useState(true);
     const navigate = useNavigate();
 
@@ -23,6 +24,7 @@ function LobbyCreation({ socket }) {
         e.preventDefault();
         //
         socket.emit("start_game");
+        socket.emit("set_timer", roundDuration);
     }
 
     function changeColor() {
@@ -62,7 +64,7 @@ function LobbyCreation({ socket }) {
             {lobbyId && (
                 <h1 className="identifier"><span>I</span><span>D</span><span>E</span><span>N</span><span>T</span><span>I</span><span>F</span><span>I</span><span>E</span><span>R</span>: <span id="copyId" onClick={copyId} onMouseOver={changeColor}><p>CLICK TO COPY THE ID</p>{lobbyId}</span></h1>
             )}
-            <Settings socket={socket}></Settings>
+            <Settings socket={socket} roundDuration={roundDuration} setRoundDuration={setRoundDuration}></Settings>
             <ConnectedUsers socket={socket}></ConnectedUsers>
             <div className="createGame__startButtonDiv">
                 <button className="createGame__startButton" onClick={handleStartGame}>Start game  <i className="icon-paint-brush"></i></button>

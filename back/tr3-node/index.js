@@ -60,7 +60,7 @@ const maxSettings = {
   maxTime: 120,
   minTime: 30,
   minAmountOfTurns: 1,
-  maxAmountOfTurns:5
+  maxAmountOfTurns: 5
 }
 
 // ------------------------------------------------------------------
@@ -71,7 +71,7 @@ socketIO.on('connection', socket => {
   socket.data.id = i;
   socket.data.username = "guest"
   console.log(socket.data.id + " connected ");
-  
+
   const random_hex_color_code = () => {
     let n = Math.floor(Math.random() * 999999);
     return n.toString();
@@ -181,6 +181,7 @@ socketIO.on('connection', socket => {
 
   socket.on("save_settings", (data) => {
     let valid = true;
+    console.log(data);
     lobbies.forEach(lobby => {
       if (lobby.lobbyIdentifier == socket.data.current_lobby && lobby.ownerId == socket.data.id) {
         if (data.roundDuration < maxSettings.minTime) {
@@ -331,7 +332,7 @@ function setCounter(lobbyId) {
   let timer;
   lobbies.forEach(lobby => {
     if (lobby.lobbyIdentifier == lobbyId && !lobby.ended) {
-      let cont = lobby.settings.roundDuration + 1
+      let cont = lobby.settings.roundDuration;
       timer = setInterval(() => {
         cont--;
         socketIO.to(lobbyId).emit("counter_down", {

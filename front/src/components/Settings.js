@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 
-function Settings({ socket }) {
-    const [roundDuration, setRoundDuration] = useState(0);
+function Settings({ socket, roundDuration, setRoundDuration }) {
     const [ownerPlay, setOwnerPlay] = useState(false);
     const [nickname, setNickname] = useState("");
     const [error, setError] = useState("");
