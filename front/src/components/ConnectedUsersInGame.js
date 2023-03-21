@@ -1,7 +1,7 @@
 // import "../normalize.css";
 import { useState, useEffect } from "react";
 
-function ConnectedUsersInGame({ socket }) {
+function ConnectedUsersInGame({ socket, pintor }) {
     const [userList, setUserList] = useState([]);
     const [firstTime, setFirstTime] = useState(true);
 
@@ -12,6 +12,7 @@ function ConnectedUsersInGame({ socket }) {
         }
         socket.on("lobby_user_list", (data) => {
             setUserList(data);
+            console.log(data);
         });
     }, [])
 
@@ -25,7 +26,10 @@ function ConnectedUsersInGame({ socket }) {
                         return (
                             <li id="bgColor" className={`game_item ${user.lastAnswerCorrect ? 'userListInGame__item--correct' : "userListInGame__item "}`} key={index}>
                                 <div className="item__name">
-                                    <p>{user.name}</p>
+                                    <p>{user.painting ?
+                                        <>{user.name + " (painting)"} </>
+                                        : <>{user.name} {pintor && user.lastAnswer != "" ? `Last answer attempted: ${user.lastAnswer}` : ""}</>}
+                                    </p>
                                 </div>
                             </li>
                         );

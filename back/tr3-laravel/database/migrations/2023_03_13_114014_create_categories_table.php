@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
             $table->string('name') -> unique();
+            $table->enum('privacy', ['public', 'private']) -> default ('public');
             $table->timestamps();
         });
     }

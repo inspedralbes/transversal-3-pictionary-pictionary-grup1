@@ -21,12 +21,6 @@ function Game({ socket }) {
   }
 
   useEffect(() => {
-    socket.on('send_guessed_word', (data) => {
-      const userId = data.id;
-      const userMessage = data.wordGuessed;
-
-      setUserMessages(prevUserMessages => [...prevUserMessages, { userId, userMessage }]);
-    });
 
     socket.on('answer_result', (data) => {
       if (data.resultsMatch) {
@@ -38,6 +32,7 @@ function Game({ socket }) {
 
     socket.on('pintor', (data) => {
       setPintor(data.pintor);
+      setResult("")
     });
 
     socket.on('spectator', (data) => {
@@ -66,31 +61,23 @@ function Game({ socket }) {
             <Board socket={socket} pintor={pintor}></Board>
           </> :
           <>
-            {pintor ? <div style={{ display: "flex" }}>
-              <div style={{ marginRight: "20px" }}>
-                <WordGuess socket={socket}></WordGuess>
-                <Description socket={socket}></Description>
-                {result && <p>{result}</p>}
-                <Board socket={socket} pintor={pintor}></Board>
-              </div>
-              {userMessages.length > 0 && (
-                <div>
-                  <ul style={{ listStyle: "none" }}>
-                    {userMessages.map((message, index) => (
-                      <li key={index}>User {message.userId}: {message.userMessage}</li>
-                    ))}
-                  </ul>
+            {pintor ?
+              <div style={{ display: "flex" }}>
+                <div style={{ marginRight: "20px" }}>
+                  <WordGuess socket={socket}></WordGuess>
+                  <Description socket={socket}></Description>
+                  {result && <p>{result}</p>}
+                  <Board socket={socket} pintor={pintor}></Board>
                 </div>
-              )}
-            </div> : <>
-              {result && <p>{result}</p>}
-              <WordForm socket={socket} /><br></br>
-              <Board socket={socket} pintor={pintor}></Board>
-            </>}
+              </div> : <>
+                {result && <p>{result}</p>}
+                <WordForm socket={socket} /><br></br>
+                <Board socket={socket} pintor={pintor}></Board>
+              </>}
           </>}
       </> : <><p>Loading...</p></>}
 
-      <ConnectedUsersInGame socket={socket}></ConnectedUsersInGame>
+      <ConnectedUsersInGame socket={socket} pintor={pintor}></ConnectedUsersInGame>
     </>
   )
 

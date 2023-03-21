@@ -130,7 +130,6 @@ socketIO.on('connection', socket => {
 
     lobbies.forEach(lobby => {
       if (lobby.lobbyIdentifier == data.lobbyIdentifier) {
-        console.log("started", lobby.members);
         lobby.rounds = lobby.members.length;
         amountOfRounds = lobby.rounds;
         socketIO.to(data.lobbyIdentifier).emit('game_started');
@@ -186,28 +185,34 @@ socketIO.on('connection', socket => {
     let wordToCheck;
     lobbies.forEach(lobby => {
       if (lobby.lobbyIdentifier == socket.data.current_lobby) {
-        wordToCheck = lobby.words[lobby.actualRound].name
+        if (!lobby.ended) {
+          wordToCheck = lobby.words[lobby.actualRound].name
 
-        if (data.word.toLowerCase() === wordToCheck.toLowerCase()) {
-          socketIO.to(socket.id).emit('answer_result', {
-            resultsMatch: true,
-          })
+          if (data.word.toLowerCase() === wordToCheck.toLowerCase()) {
+            socketIO.to(socket.id).emit('answer_result', {
+              resultsMatch: true,
+            })
 
-          lobby.members.forEach(member => {
-            if (member.idUser == socket.data.id) {
-              member.lastAnswerCorrect = true;
-            }
-          });
-          sendUserList(socket.data.current_lobby)
-        } else {
-          socketIO.to(socket.id).emit('answer_result', {
-            resultsMatch: false,
-          })
+            lobby.members.forEach(member => {
+              if (member.idUser == socket.data.id) {
+                member.lastAnswerCorrect = true;
+                member.lastAnswer = data.word;
+              }
+            });
+            sendUserList(socket.data.current_lobby)
+          } else {
+            socketIO.to(socket.id).emit('answer_result', {
+              resultsMatch: false,
+            })
 
-          socketIO.emit('send_guessed_word', {
-            wordGuessed: data.word,
-            id: socket.id
-          })
+            lobby.members.forEach(member => {
+              if (member.idUser == socket.data.id) {
+                member.lastAnswerCorrect = false;
+                member.lastAnswer = data.word;
+              }
+            });
+            sendUserList(socket.data.current_lobby)
+          }
         }
       }
     });
@@ -256,6 +261,7 @@ function acabarRonda(lobbyId) {
       if (!lobby.ended) {
         lobby.members.forEach(member => {
           member.lastAnswerCorrect = false;
+          member.lastAnswer = "";
         });
 
         lobby.boardData = {
@@ -281,7 +287,6 @@ function joinLobby(socket, lobbyIdentifier) {
 
       lobby.members.forEach(member => {
         if (member.idUser == socket.data.id || lobby.ownerId == socket.data.id) {
-          console.log("hola");
           disponible = false;
         }
       });
@@ -289,6 +294,8 @@ function joinLobby(socket, lobbyIdentifier) {
       if (disponible) {
         lobby.members.push({
           idUser: socket.data.id,
+          lastAnswerCorrect: false,
+          lastAnswer: ""
         });
 
         socketIO.to(socket.id).emit("lobby_info", lobby)
@@ -352,18 +359,18 @@ async function setLobbyWord(room, amount) {
   });
 }
 
-async function sendUserList(room) {
+function sendUserList(room) {
   var list = [];
-
-  const sockets = await socketIO.in(room).fetchSockets();
 
   lobbies.forEach(lobby => {
     if (lobby.lobbyIdentifier == room) {
-
-      sockets.forEach((element) => {
-        if (element.data.id != lobby.ownerId) {
+      lobby.members.forEach(member => {
+        if (member.idUser != lobby.ownerId) {
           list.push({
-            name: element.data.id,
+            name: member.idUser,
+            lastAnswerCorrect: member.lastAnswerCorrect,
+            lastAnswer: member.lastAnswer,
+            painting: member.painting
           });
         }
       });
@@ -410,20 +417,36 @@ async function enviarPintor(room) {
 
         sockets.forEach(user => {
           if (user.data.id == lobby.members[lobby.actualRound].idUser) {
-            console.log("ronda: " + lobby.actualRound);
-
             socketIO.to(user.id).emit("pintor", {
               pintor: true
             })
+
+            lobby.members.forEach(member => {
+              if (member.idUser == user.data.id) {
+                member.painting = true;
+              }
+            });
           } else {
             if (user.data.id != lobby.ownerId) {
               socketIO.to(user.id).emit("pintor", {
                 pintor: false
               })
+
+              lobby.members.forEach(member => {
+                if (member.idUser == user.data.id) {
+                  member.painting = false;
+                }
+              });
             } else {
               socketIO.to(user.id).emit("spectator", {
                 spectator: true
               })
+
+              lobby.members.forEach(member => {
+                if (member.idUser == user.data.id) {
+                  member.painting = false;
+                }
+              });
             }
 
           }

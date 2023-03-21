@@ -66,7 +66,7 @@ function LobbyCreation({ socket }) {
             )}
             <ConnectedUsers socket={socket}></ConnectedUsers>
             <div className="createGame__startButtonDiv">
-                <button className="createGame__startButton" onClick={handleStartGame}>Start game </button>
+                <button className="createGame__startButton" onClick={handleStartGame}>Start game</button>
             </div>
         </div>
 
