@@ -14,6 +14,7 @@ const socketIO = require("socket.io")(server, {
     origin: true,
     credentials: true,
   },
+  path: "/node/",
 });
 
 // ================= SAVE TOKEN AS COOKIE ================

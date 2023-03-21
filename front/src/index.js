@@ -13,9 +13,9 @@ import { BrowserRouter, HashRouter, Routes, Route } from "react-router-dom";
 import socketIO from "socket.io-client";
 
 const routes = {
-  fetchLaravel: "http://144.24.200.186:8000/index.php/",
+  fetchLaravel: "http://g1.pictionary.alumnes.inspedralbes.cat/index.php/",
   // fetchNode: "http://localhost:7500",
-  wsNode: "wss://144.24.200.186:7777",
+  wsNode: "wss://g1.pictionary.alumnes.inspedralbes.cat/",
 };
 
 
@@ -25,6 +25,7 @@ var socket = socketIO(routes.wsNode, {
     origin: "*",
     credentials: true,
   },
+  path: "/node/",
   transports: ["websocket"],
 });
 
