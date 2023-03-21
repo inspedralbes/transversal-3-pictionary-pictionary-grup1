@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name') -> unique();
             $table->bigInteger('creator_id')->unsigned()->index()->nullable();
+            $table->enum('privacy', ['public', 'private']) -> default('private');
 
             $table->foreign('creator_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();

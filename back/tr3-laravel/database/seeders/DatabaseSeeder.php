@@ -18,30 +18,37 @@ class DatabaseSeeder extends Seeder
         {
             $category = new Category;
             $category -> name = "GENERAL";
+            $category -> privacy = "public";
             $category -> save();
     
             $category = new Category;
             $category -> name = "PLACES";
+            $category -> privacy = "public";
             $category -> save();
     
             $category = new Category;
             $category -> name = "ART";
+            $category -> privacy = "public";
             $category -> save();
     
             $category = new Category;
             $category -> name = "SCIENCE";
+            $category -> privacy = "public";
             $category -> save();
     
             $category = new Category;
             $category -> name = "SPORTS";
+            $category -> privacy = "public";
             $category -> save();
     
             $category = new Category;
             $category -> name = "GEOGRAPHY";
+            $category -> privacy = "public";
             $category -> save();
     
             $category = new Category;
             $category -> name = "COMPUTER SCIENCE";
+            $category -> privacy = "public";
             $category -> save();
         }
 
