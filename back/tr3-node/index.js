@@ -63,7 +63,7 @@ const maxSettings = {
   maxTime: 120,
   minTime: 30,
   minAmountOfTurns: 1,
-  maxAmountOfTurns:5
+  maxAmountOfTurns: 5
 }
 
 var sesiones = [];
@@ -74,7 +74,7 @@ socketIO.on('connection', socket => {
 
   i++
   socket.data.id = i;
-  socket.data.username = "guest"
+  socket.data.username = ""
   console.log(socket.data.id + " connected ");
 
   const random_hex_color_code = () => {
@@ -105,6 +105,14 @@ socketIO.on('connection', socket => {
         console.log(error);
       });
   });
+
+  socket.on("get_username", () => {
+    if (socket.data.username != "") {
+      socketIO.to(socket.id).emit("username_saved", {
+        name: socket.data.username
+      })
+    }
+  })
 
   socket.on("new_lobby", () => {
     let existeix = false;

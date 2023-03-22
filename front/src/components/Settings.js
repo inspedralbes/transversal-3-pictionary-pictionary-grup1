@@ -5,6 +5,7 @@ function Settings({ socket }) {
     const [ownerPlay, setOwnerPlay] = useState(false);
     const [nickname, setNickname] = useState("");
     const [error, setError] = useState("");
+    const [firstTime, setFirstTime] = useState(true);
 
     function handleFormSubmit(e) {
         e.preventDefault();
@@ -34,8 +35,17 @@ function Settings({ socket }) {
     }
 
     useEffect(() => {
+        if (firstTime) {
+            socket.emit("get_username")
+            setFirstTime(false);
+        }
+
         socket.on("lobby_settings", (data) => {
             setRoundDuration(data.roundDuration)
+        })
+
+        socket.on("username_saved", (data) => {
+            setNickname(data.name);
         })
 
         socket.on("ROUND_TIME_UNDER_MIN", (data) => {

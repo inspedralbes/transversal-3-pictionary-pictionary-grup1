@@ -31,7 +31,7 @@ function Login({ socket }) {
                         socket.emit("send token", {
                             token: cookies.get("token"),
                         });
-                        navigate("/lobbies");
+                        navigate("/");
                     } else {
                         setErrorText(data.message)
                     }
