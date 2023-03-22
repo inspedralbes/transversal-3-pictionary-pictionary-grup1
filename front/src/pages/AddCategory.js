@@ -82,9 +82,6 @@ function Register({ socket }) {
             user.append("token", cookies.get('token'));
             user.append("words", JSON.stringify(wordsAndDescription));
 
-            console.log(cookies.get('token'));
-            console.log(wordList);
-            console.log(descriptionList);
             fetch(routes.fetchLaravel + "addCategory", {
                 method: 'POST',
                 mode: 'cors',
