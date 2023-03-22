@@ -25,7 +25,7 @@ function LandingPage() {
     <div className='ldPage'>
       <Link to='/login'>
         <div className='ldPage__loginRegister'>
-        <a>Log in/Register</a>
+        <>Log in/Register</>
       </div></Link>
       <div className="border is-drawn" id="border">
         <div className="space-around">

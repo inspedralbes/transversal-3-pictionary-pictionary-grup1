@@ -72,11 +72,6 @@ function Register({ socket }) {
                     <label className="form__inputlabel">token
                     </label>
                 </div>
-                {/* <div className="form__inputGroup">
-                    <input className="form__input" style={{ color: color.words }} placeholder=" " type="token" onChange={(e) => setUserData({ ...userData, token: e.target.value })} onKeyDown={handleKeyDown} required></input>
-                    <span className="form__inputBar"></span>
-                    <label className="form__inputlabel">words </label>
-                </div> */}
             </div>
 
             <div className="form__buttonsLinks">

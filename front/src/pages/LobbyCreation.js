@@ -8,6 +8,7 @@ function LobbyCreation({ socket }) {
     const [lobbyId, setLobbyId] = useState("");
     const [firstTime, setFirstTime] = useState(true);
     const [starting, setStarting] = useState(false);
+    const [sent, setSent] = useState(false);
     const navigate = useNavigate();
 
     function handleLeave(e) {
@@ -50,7 +51,11 @@ function LobbyCreation({ socket }) {
 
         socket.on("starting_errors", (data) => {
             if (data.valid) {
-                socket.emit("start_game");
+                if (!sent) {
+                    console.log("STARTING ERRORS");
+                    socket.emit("start_game");
+                }
+                setSent(true)
             } else {
                 setStarting(false);
             }
