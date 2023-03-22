@@ -54,14 +54,19 @@ app.use(
 );
 
 let i = 0;
+
 const laravelRoute = "http://127.0.0.1:8000/index.php/";
+
 let lobbies = [];
+
 const maxSettings = {
   maxTime: 120,
   minTime: 30,
   minAmountOfTurns: 1,
   maxAmountOfTurns:5
 }
+
+var sesiones = [];
 
 // ------------------------------------------------------------------
 
@@ -76,6 +81,30 @@ socketIO.on('connection', socket => {
     let n = Math.floor(Math.random() * 999999);
     return n.toString();
   };
+
+  socket.on("send token", (data) => {
+    let token = data.token;
+
+    axios
+      .post(laravelRoute + "getUserInfo", {
+        token: token,
+      })
+      .then(function (response) {
+        var user = {
+          token: token,
+          userId: response.data.id,
+          userName: response.data.name,
+        };
+        sesiones.push(user);
+
+        socket.data.dbId = response.data.id;
+        socket.data.username = response.data.name;
+        console.log(`database id: ${socket.data.dbId} database name: ${socket.data.username}`);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  });
 
   socket.on("new_lobby", () => {
     let existeix = false;
