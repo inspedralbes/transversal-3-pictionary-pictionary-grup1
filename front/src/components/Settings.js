@@ -25,8 +25,17 @@ function Settings({ socket, start }) {
             setFirstTime(false);
         }
 
+        if (firstTime) {
+            socket.emit("get_username")
+            setFirstTime(false);
+        }
+
         socket.on("lobby_settings", (data) => {
             setRoundDuration(data.roundDuration)
+        })
+
+        socket.on("username_saved", (data) => {
+            setNickname(data.name);
         })
 
         socket.on("username_saved", (data) => {
