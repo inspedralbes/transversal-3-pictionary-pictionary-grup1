@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import ConnectedUsers from "../components/ConnectedUsers";
+import Settings from "../components/Settings";
 import { useNavigate } from "react-router-dom";
 import "../styles/LobbyCreation.css"
 
@@ -11,9 +12,7 @@ function LobbyCreation({ socket }) {
     function handleLeave(e) {
         e.preventDefault();
         //
-        socket.emit("leave_lobby", {
-            lobbyIdentifier: lobbyId
-        });
+        socket.emit("leave_lobby");
     }
 
     function copyId() {
@@ -23,9 +22,7 @@ function LobbyCreation({ socket }) {
     function handleStartGame(e) {
         e.preventDefault();
         //
-        socket.emit("start_game", {
-            lobbyIdentifier: lobbyId
-        });
+        socket.emit("start_game");
     }
 
     function changeColor() {
@@ -48,6 +45,7 @@ function LobbyCreation({ socket }) {
 
         socket.on("lobby_info", (data) => {
             setLobbyId(data.lobbyIdentifier);
+            socket.emit("get_lobby_settings");
         })
 
         socket.on("game_started", () => {
@@ -64,6 +62,7 @@ function LobbyCreation({ socket }) {
             {lobbyId && (
                 <h1 className="identifier"><span>I</span><span>D</span><span>E</span><span>N</span><span>T</span><span>I</span><span>F</span><span>I</span><span>E</span><span>R</span>: <span id="copyId" onClick={copyId} onMouseOver={changeColor}><p>CLICK TO COPY THE ID</p>{lobbyId}</span></h1>
             )}
+            <Settings socket={socket}></Settings>
             <ConnectedUsers socket={socket}></ConnectedUsers>
             <div className="createGame__startButtonDiv">
                 <button className="createGame__startButton" onClick={handleStartGame}>Start game  <i className="icon-paint-brush"></i></button>
