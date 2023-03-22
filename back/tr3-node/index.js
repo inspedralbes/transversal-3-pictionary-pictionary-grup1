@@ -171,7 +171,7 @@ socketIO.on('connection', socket => {
 
     lobbies.forEach(lobby => {
       if (lobby.lobbyIdentifier == socket.data.current_lobby) {
-        if (lobby.settings.roundDuration > maxSettings.minTime && lobby.settings.roundDuration < maxSettings.maxTime) {
+        // if (lobby.settings.roundDuration > maxSettings.minTime && lobby.settings.roundDuration < maxSettings.maxTime) {
           lobby.rounds = lobby.members.length;
           amountOfRounds = lobby.rounds;
           socketIO.to(socket.data.current_lobby).emit('game_started');
@@ -179,9 +179,9 @@ socketIO.on('connection', socket => {
           enviarPintor(socket.data.current_lobby)
           sendUserList(socket.data.current_lobby);
           setCounter(socket.data.current_lobby);
-        } else {
-          socketIO.to(socket.id).emit('INVALID_SETTINGS');
-        }
+        // } else {
+        //   socketIO.to(socket.id).emit('INVALID_SETTINGS');
+        // }
 
       }
     });
@@ -195,12 +195,14 @@ socketIO.on('connection', socket => {
       if (lobby.lobbyIdentifier == socket.data.current_lobby) {
         data = lobby
         word = lobby.words[lobby.actualRound];
+        console.log(lobby.words);
       }
     });
     socketIO.to(socket.id).emit('game_data', data);
     socketIO.to(socket.id).emit('current_word', {
       word: word
     });
+    
   });
 
   socket.on("get_lobby_settings", () => {
@@ -289,9 +291,11 @@ socketIO.on('connection', socket => {
             sendUserList(socket.data.current_lobby)
           }
         }
+
         if (valid) {
           lobby.settings = data
         }
+
         socketIO.to(socket.id).emit("starting_errors", {
           valid: valid
         })
@@ -378,7 +382,7 @@ function setCounter(lobbyId) {
           counter: cont
         })
 
-        if (cont == lobby.settings.roundDuration) {
+        if (cont == 0) {
           if (lobby.actualRound < lobby.rounds) {
             lobby.actualRound++;
           }
