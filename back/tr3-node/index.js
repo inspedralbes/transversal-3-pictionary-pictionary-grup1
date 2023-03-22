@@ -47,21 +47,26 @@ app.use(
   cors({
     credentials: true,
     origin: function (origin, callback) {
-      console.log(origin);
+      // console.log(origin);
       return callback(null, true);
     },
   })
 );
 
 let i = 0;
+
 const laravelRoute = "http://127.0.0.1:8000/index.php/";
+
 let lobbies = [];
+
 const maxSettings = {
   maxTime: 120,
   minTime: 30,
   minAmountOfTurns: 1,
-  maxAmountOfTurns:5
+  maxAmountOfTurns: 5
 }
+
+var sesiones = [];
 
 // ------------------------------------------------------------------
 
@@ -69,13 +74,45 @@ socketIO.on('connection', socket => {
 
   i++
   socket.data.id = i;
-  socket.data.username = "guest"
+  socket.data.username = ""
   console.log(socket.data.id + " connected ");
 
   const random_hex_color_code = () => {
     let n = Math.floor(Math.random() * 999999);
     return n.toString();
   };
+
+  socket.on("send token", (data) => {
+    let token = data.token;
+
+    axios
+      .post(laravelRoute + "getUserInfo", {
+        token: token,
+      })
+      .then(function (response) {
+        var user = {
+          token: token,
+          userId: response.data.id,
+          userName: response.data.name,
+        };
+        sesiones.push(user);
+
+        socket.data.dbId = response.data.id;
+        socket.data.username = response.data.name;
+        console.log(`database id: ${socket.data.dbId} database name: ${socket.data.username} token: ${token}`);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  });
+
+  socket.on("get_username", () => {
+    if (socket.data.username != "") {
+      socketIO.to(socket.id).emit("username_saved", {
+        name: socket.data.username
+      })
+    }
+  })
 
   socket.on("new_lobby", () => {
     let existeix = false;
@@ -198,10 +235,16 @@ socketIO.on('connection', socket => {
         }
 
         if (valid) {
+          if (!(data.ownerPlay && data.nickname != "")) {
+            valid = false;
+            socketIO.to(socket.id).emit("NO_USR_DEFINED");
+          }
+
           if (!lobby.settings.ownerPlay && data.ownerPlay) {
             lobby.members.forEach(checking_member => {
               if (checking_member.username == data.nickname) {
                 valid = false;
+                socketIO.to(socket.id).emit("USER_ALR_CHOSEN_ERROR");
               }
             });
 
@@ -215,11 +258,7 @@ socketIO.on('connection', socket => {
               });
 
               sendUserList(socket.data.current_lobby)
-            } else {
-              socketIO.to(socket.id).emit("USER_ALR_CHOSEN_ERROR");
             }
-
-
           } else if (lobby.settings.ownerPlay && !data.ownerPlay) {
             lobby.members.forEach((member, index) => {
               if (member.idUser == socket.data.id) {
@@ -250,12 +289,12 @@ socketIO.on('connection', socket => {
             sendUserList(socket.data.current_lobby)
           }
         }
-
-
-
         if (valid) {
           lobby.settings = data
         }
+        socketIO.to(socket.id).emit("starting_errors", {
+          valid: valid
+        })
       }
     });
   })
@@ -486,8 +525,6 @@ function sendUserList(room) {
       });
     }
   });
-
-  console.log("");
   socketIO.to(room).emit("lobby_user_list", {
     list: list,
     message: "user list",
