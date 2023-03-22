@@ -51,36 +51,52 @@ function Game({ socket }) {
 
   return (
     <>
-      {!starting ? <>
-        {spectator ?
-          <>
-            <Board socket={socket} pintor={pintor}></Board>
-          </> :
-          <>
-            {pintor ?
-              <div style={{ display: "flex" }}>
-                <div style={{ marginRight: "20px" }}>
-                  <WordGuess socket={socket}></WordGuess>
-                  <Description socket={socket}></Description>
-                  <Board socket={socket} pintor={pintor}></Board>
-                </div>
-              </div> : <>
-                {result != null &&
+      {!starting ? (
+        <div style={{ display: 'flex' }}>
+          {/* Right column */}
+          <div>
+            <ConnectedUsersInGame socket={socket} pintor={pintor} />
+          </div>
+
+          {/* Left column */}
+          <div>
+            {spectator ? (
+              <Board socket={socket} pintor={pintor} />
+            ) : (
+              <>
+                {pintor ? (
+                  <div>
+                    <div>
+                      <WordGuess socket={socket} />
+                      <Description socket={socket} />
+                      <Board socket={socket} pintor={pintor} />
+                    </div>
+                  </div>
+                ) : (
                   <>
-                    {result ?
-                      <p>{messageResponses.wordAttemptSuccess}</p> :
-                      <p>{messageResponses.wordAttemptError}</p>}
-                  </>}
-                <WordForm socket={socket} answerCorrect={result} /><br></br>
-                <Board socket={socket} pintor={pintor}></Board>
-              </>}
-          </>}
-      </> : <><p>Loading...</p></>}
-
-      <ConnectedUsersInGame socket={socket} pintor={pintor}></ConnectedUsersInGame>
+                    {result != null && (
+                      <>
+                        {result ? (
+                          <p>{messageResponses.wordAttemptSuccess}</p>
+                        ) : (
+                          <p>{messageResponses.wordAttemptError}</p>
+                        )}
+                      </>
+                    )}
+                    <WordForm socket={socket} answerCorrect={result} /><br />
+                    <Board socket={socket} pintor={pintor} />
+                  </>
+                )}
+              </>
+            )}
+          </div>
+        </div>
+      ) : (
+        <><p>Loading...</p></>
+      )}
     </>
-  )
-
+  );
 }
+
 
 export default Game;
