@@ -99,7 +99,7 @@ socketIO.on('connection', socket => {
 
         socket.data.dbId = response.data.id;
         socket.data.username = response.data.name;
-        console.log(`database id: ${socket.data.dbId} database name: ${socket.data.username}`);
+        console.log(`database id: ${socket.data.dbId} database name: ${socket.data.username} token: ${token}`);
       })
       .catch(function (error) {
         console.log(error);
