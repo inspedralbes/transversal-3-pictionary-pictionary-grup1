@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Word;
 use Laravel\Sanctum\PersonalAccessToken;
 use Illuminate\Support\Facades\Validator;
+use PhpParser\Node\Expr\Cast\Object_;
 
 class CategoryController extends Controller
 {
@@ -50,7 +51,7 @@ class CategoryController extends Controller
         $wrongWords = [];
         $userRequest = $request;
         $privacy = 'private';
-        $categoryAdded;
+        $categoryAdded = (object)[];
         $repetido = false;
         //Set privacy
         if ($request -> public) {
