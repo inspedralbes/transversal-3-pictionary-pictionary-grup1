@@ -73,8 +73,8 @@ socketIO.on('connection', socket => {
   console.log(socket.data.id + " connected ");
 
   const random_hex_color_code = () => {
-    let n = (Math.random() * 0xfffff * 1000000).toString(16);
-    return n.slice(0, 6);
+    let n = Math.floor(Math.random() * 999999);
+    return n.toString();
   };
 
   socket.on("new_lobby", () => {
@@ -331,7 +331,8 @@ function setCounter(lobbyId) {
   let timer;
   lobbies.forEach(lobby => {
     if (lobby.lobbyIdentifier == lobbyId && !lobby.ended) {
-      let cont = lobby.settings.roundDuration + 1
+      let cont = lobby.settings.roundDuration
+      cont++;
       timer = setInterval(() => {
         cont--;
         socketIO.to(lobbyId).emit("counter_down", {
