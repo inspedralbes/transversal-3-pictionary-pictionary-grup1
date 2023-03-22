@@ -1,10 +1,10 @@
 # Documentació bàsica del projecte
-Alguns dels punts que han de quedar explicats:
- * Objectius
- * Arquitectura bàsica
-   * Tecnologies utilitzades
-   * Interrelació entre els diversos components
- * Com crees l'entorn de desenvolupament
+<h1>Alguns dels punts que han de quedar explicats:</h1>
+ <h2> Objectius</h2>
+ <h2> Arquitectura bàsica</h2>
+   <h3> Tecnologies utilitzades</h3> 
+   <h3> Interrelació entre els diversos components</h3> 
+ <h2> Com crees l'entorn de desenvolupament</h2>
  <h2>Com desplegues l'aplicació a producció</h2>
 
 - **Oracle**
@@ -26,7 +26,7 @@ Alguns dels punts que han de quedar explicats:
 	 - Per tant, una vegada que ja tenim la configuració feta en labs anirem cap a oracle.  
   
 
- * Llistat d'endpoints de l'API de backend
-    * Rutes
-   * Exemples de JSON de peticó
-   * Exemples de JSON de resposta i els seus codis d'estat 200? 404?
+  <h2>Llistat d'endpoints de l'API de backend</h2> 
+    <h3>Rutes</h3> 
+   <h2>Exemples de JSON de peticó</h2>
+   <h2>Exemples de JSON de resposta i els seus codis d'estat 200? 404?</h2>
