@@ -126,6 +126,31 @@ socketIO.on('connection', socket => {
     sendUserList(data.lobbyIdentifier);
   });
 
+  socket.on("use_same_seed", () => {
+    console.log("Hola");
+  });
+
+  socket.on("get_owner", () => {
+    getOwner();
+  });
+
+  async function getOwner() {
+    const sockets = await socketIO.in(socket.data.current_lobby).fetchSockets();
+    lobbies.forEach((lobby) => {
+
+      if (lobby.lobbyIdentifier == socket.data.current_lobby) {
+        
+        sockets.forEach(user => {
+            if (user.data.id == lobby.ownerId) {
+              socketIO.to(user.id).emit("is_owner", lobby)
+              
+            } 
+          }
+        );
+      }
+    });
+  }
+
   socket.on("start_game", (data) => {
     let amountOfRounds;
 
@@ -236,7 +261,7 @@ function setCounter(lobbyId) {
           counter: cont
         })
 
-        if (cont == 45) {
+        if (cont == 55) {
           if (lobby.actualRound < lobby.rounds) {
             lobby.actualRound++;
           }
@@ -466,7 +491,6 @@ async function enviarPintor(room) {
       }
     }
   });
-
 }
 
 server.listen(PORT, host, () => {

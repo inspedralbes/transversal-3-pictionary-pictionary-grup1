@@ -7,6 +7,7 @@ import React from 'react';
 import ConnectedUsersInGame from "../components/ConnectedUsersInGame";
 import WordGuess from "../components/WordGuess";
 import Description from "../components/Description";
+import { useNavigate } from "react-router-dom";
 
 function Game({ socket }) {
   const [starting, setStarting] = useState(true);
@@ -14,6 +15,9 @@ function Game({ socket }) {
   const [pintor, setPintor] = useState(false);
   const [spectator, setSpectator] = useState(false);
   const [userMessages, setUserMessages] = useState([]);
+  
+  const navigateToEndGame = useNavigate();
+
 
   const messageResponses = {
     wordAttemptError: "You failed the attempt!",
@@ -32,12 +36,17 @@ function Game({ socket }) {
     });
 
     socket.on('spectator', (data) => {
+      console.log("Spectator", data);
       setSpectator(data.spectator);
     });
 
     socket.on('started', () => {
       console.log("STARTED");
       setStarting(false);
+    })
+
+    socket.on("game_ended", () => {
+      navigateToEndGame("/endGame");
     })
 
     return () => {
