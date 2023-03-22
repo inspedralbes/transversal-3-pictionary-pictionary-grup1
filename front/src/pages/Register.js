@@ -85,7 +85,7 @@ function Register({ socket }) {
                     socket.emit("send token", {
                         token: cookies.get('token')
                     });
-                    navigate("/avatarMaker")
+                    navigate("/")
                 } else {
                     console.log(data);
                 }

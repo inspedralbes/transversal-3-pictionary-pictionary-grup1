@@ -378,7 +378,7 @@ function setCounter(lobbyId) {
           counter: cont
         })
 
-        if (cont == lobby.settings.roundDuration - 15) {
+        if (cont == lobby.settings.roundDuration) {
           if (lobby.actualRound < lobby.rounds) {
             lobby.actualRound++;
           }

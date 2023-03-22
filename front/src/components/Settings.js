@@ -70,7 +70,7 @@ function Settings({ socket, start }) {
             {error != "" && (<h1 className="error">{error}</h1>)}
             <form>
                 <label>{"Round duration (seconds)"} <input type="number" value={roundDuration} onChange={handleChangeRoundDuration} /></label><br />
-                <label>{"Will the lobby creator play? "} <input type="checkbox" value={ownerPlay} onChange={handleChangeOwnerPlay} /></label><br />
+                <label>{"Will the lobby creator play?"} <input type="checkbox" value={ownerPlay} onChange={handleChangeOwnerPlay} /></label><br />
                 {ownerPlay ?
                     <>
                         <label>{"Enter your nickname:"}
