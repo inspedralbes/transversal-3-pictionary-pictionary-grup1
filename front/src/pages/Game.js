@@ -31,7 +31,7 @@ function Game({ socket }) {
     socket.on('pintor', (data) => {
       setPintor(data.pintor);
       console.log(data);
-      setResult(null)
+      setResult(null);
     });
 
     socket.on('drawer_name', (data) => {
@@ -79,12 +79,9 @@ function Game({ socket }) {
       )}
       {!starting && !showDrawer && (
         <div style={{ display: 'flex' }}>
-          {/* Right column */}
           <div>
             <ConnectedUsersInGame socket={socket} pintor={pintor} />
           </div>
-
-          {/* Left column */}
           <div>
             {spectator ? (
               <Board socket={socket} pintor={pintor} />
