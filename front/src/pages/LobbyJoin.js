@@ -8,6 +8,8 @@ function LobbyJoin({ socket }) {
     const [username, setUsername] = useState("");
     const [error, setError] = useState("");
     const [insideLobby, setInsideLobby] = useState(false);
+    const [firstTime, setFirstTime] = useState(true);
+    const [registeredUsername, setRegisteredUsername] = useState(false);
     const navigate = useNavigate();
 
     function handleChangeLobbyId(e) {
@@ -16,6 +18,10 @@ function LobbyJoin({ socket }) {
 
     function handleChangeUsername(e) {
         setUsername(e.target.value)
+    }
+
+    function handleEnableUsername(e) {
+        setRegisteredUsername(false);
     }
 
     function handleSubmit(e) {
@@ -40,6 +46,16 @@ function LobbyJoin({ socket }) {
     }
 
     useEffect(() => {
+        if (firstTime) {
+            socket.emit("get_username")
+            setFirstTime(false);
+        }
+
+        socket.on("username_saved", (data) => {
+            setUsername(data.name);
+            setRegisteredUsername(true);
+        })
+
         socket.on("lobby_info", (data) => {
             setInsideLobby(true);
             setError("");
@@ -70,8 +86,9 @@ function LobbyJoin({ socket }) {
                 {error !== "" && (<h1 className="error">{error}</h1>)}
                 <form onSubmit={handleSubmit}>
                     <label>Enter your nickname
-                        <input type="text" value={username} onChange={handleChangeUsername} placeholder="nickname..." />
+                        <input type="text" value={username} onChange={handleChangeUsername} disabled={registeredUsername} placeholder="nickname..." />
                     </label>
+                    {registeredUsername && <button onClick={handleEnableUsername}>Change nickname</button>}
 
                     <br />
 

@@ -74,7 +74,7 @@ function Register({ socket }) {
             user.append("password", userData.password);
             user.append("password_confirmation", userData.passwordValidation);
 
-            fetch(routes.fetchLaravel + "/register", {
+            fetch(routes.fetchLaravel + "register", {
                 method: 'POST',
                 mode: 'cors',
                 body: user,
@@ -85,7 +85,7 @@ function Register({ socket }) {
                     socket.emit("send token", {
                         token: cookies.get('token')
                     });
-                    navigate("/avatarMaker")
+                    console.log(data);
                 } else {
                     console.log(data);
                 }

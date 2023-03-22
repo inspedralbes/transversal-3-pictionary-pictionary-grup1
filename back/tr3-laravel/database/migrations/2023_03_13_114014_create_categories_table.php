@@ -14,7 +14,10 @@ return new class extends Migration
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
             $table->string('name') -> unique();
-            $table->enum('privacy', ['public', 'private']) -> default ('public');
+            $table->bigInteger('creator_id')->unsigned()->index()->nullable();
+            $table->enum('privacy', ['public', 'private']) -> default('private');
+
+            $table->foreign('creator_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }
