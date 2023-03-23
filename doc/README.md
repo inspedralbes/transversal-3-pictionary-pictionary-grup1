@@ -58,7 +58,7 @@
 		> 4. sudo git clone -b release "https://github.com/inspedralbes/transversal-3-pictionary-pictionary-grup1.git"
 		
 	- A continuació, entrem en la carpeta de projecte ---> front i install tots els paquets que te node 
-		> 5. sudo npm install.
+		> 5. sudo npm install
 		
 	- I finalment, esborrem tot el contingut de /var/www/html/, fem build en front i portem tot el contingut que tenim en la carpeta build a carpeta html 
 		>6. sudo cd /var/www/archivos/transversal-3-pictionary-pictionary-grup1/front
@@ -70,8 +70,10 @@
 		> 10. sudo  nginx -t
 		> 11. sudo systemctl restart nginx
 		
--  **Configuració Proxy invers**
-	 -
+- **Configuració Node & Proxy invers(Node)**
+	 - Primer de tot, instal·lem tots els paquets que te nodejs
+		 > 1. cd /var/www/archivos/transversal-3-pictionary-pictionary-grup1/back/tr3-node/
+		 > 2. sudo npm install
 
 
 
