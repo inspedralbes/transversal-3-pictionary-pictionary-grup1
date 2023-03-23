@@ -97,8 +97,8 @@ function Register({ socket }) {
 
     return (
         <div>
-                <Link to="/login">
-                    <button className="back__button">Go back</button>
+                <Link to="/">
+                    <button className="createGame__leaveButton">Go back</button>
                 </Link>
             <div className="form register">
                 <h1>REGISTER</h1>

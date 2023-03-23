@@ -37,7 +37,7 @@
     border-color: #5c5b5b;
 }
 
-.createGame__startButton:hover {
+.createGame__startButton:hover, .createGame__startButton:focus {
     border: 2px solid #fa75b3;
     background: none;
     color: #32633a;
@@ -46,7 +46,7 @@
     transition: all 0.7s;
 }
 
-.createGame__leaveButton:hover {
+.createGame__leaveButton:hover, .createGame__leaveButton:focus {
     border: 2px solid #fa8a4a;
     background: none;
     color: #382af5;
@@ -168,7 +168,8 @@
     border-radius: 255px 15px 255px 15px / 15px 255px 15px 255px;
     width: 50%;
     padding: 50px;
-    margin: 20vh auto;
+    background: #fffaf4;
+    margin: 10vh auto;
     animation: draw 2s;
     animation-fill-mode: forwards;
 }
@@ -179,6 +180,7 @@
     grid-template-columns: 1fr;
     height: 70%;
     width: 100%;
+    margin: 0 auto;
     grid-template-rows: repeat(3, 1fr);
 }
 
@@ -192,8 +194,8 @@
 .JoinLobby__id--grid{
     text-align: center;
     display: block;
-    margin: 0 auto;     
-    width: 50%;
+    margin: 10px auto;     
+    width: 70%;
     grid-area: 2 / 1 / 3 / 2;
 }
 
@@ -207,17 +209,16 @@
 .JoinLobby__button{
     font-size: 150%;
     width: 60%;
-    height: 40%;
+    height: 50%;
     transition: all 0.2s ease-in-out;
 }
 
-.JoinLobby__button:hover{
+.JoinLobby__button:hover, .JoinLobby__button:focus{
     background: none;
-    border-color: #32633a;
-    color: #fd5ba7;
+    border-color: #b300a4;
+    color: #3a1aca;
     box-shadow: 0px 10px 34px 0px rgba(0, 0, 0, 0.2);
 }
-
 
 
 
@@ -241,7 +242,7 @@
     display: block;
     width: 80%;
     border: none;
-    border-bottom: 1px solid #535353;
+    border-bottom: 1px solid #156438;
 }
 
 .form__input:focus {
@@ -292,7 +293,7 @@
     width: 0;
     bottom: 0;
     position: absolute;
-    background: rgb(238, 151, 20);
+    background: #df62f8;
     transition: 0.2s ease all;
     -moz-transition: 0.2s ease all;
     -webkit-transition: 0.2s ease all;

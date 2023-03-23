@@ -48,7 +48,7 @@ function Login({ socket }) {
     return (
         <div>
             <Link to="/">
-                <button className="back__button">Go back</button>
+                <button className="createGame__leaveButton">Go back</button>
             </Link>
             <div className="form login">
                 <h1>LOGIN</h1>
@@ -78,6 +78,8 @@ function Login({ socket }) {
                             onKeyDown={handleKeyDown}
                             required
                         ></input>
+                        <span className="form__inputBar"></span>
+                        <label className="form__inputlabel">Password</label>
                         <div className="form__links link">
                             <Link className="link__ForgotPass" to="/forgotPassword">
                                 <p>Forgot your password?</p>

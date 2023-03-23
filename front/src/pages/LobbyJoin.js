@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import ConnectedUsers from "../components/ConnectedUsers";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../styles/LobbyCreation.css"
+
 
 function LobbyJoin({ socket }) {
     const [lobbyId, setLobbyId] = useState("");
@@ -83,37 +84,41 @@ function LobbyJoin({ socket }) {
 
     if (!insideLobby) {
         return (
-            <div className="JoinLobby">
-                {error !== "" && (<h1 className="error">{error}</h1>)}
-                <form className="JoinLobby__form--grid" onSubmit={handleSubmit}>
-                    <label className="JoinLobby__nickname--grid">
+            <div>
+                <Link to="/">
+                    <button className="createGame__leaveButton">Go back</button>
+                </Link>
+                <div className="JoinLobby">
+                    {error !== "" && (<h1 className="error">{error}</h1>)}
+                    <form className="JoinLobby__form--grid" onSubmit={handleSubmit}>
+                        <label className="JoinLobby__nickname--grid">
+                                <div className="form__inputGroup">
+                                <input
+                                    id="nickname"
+                                    value={username}
+                                    className="form__input"
+                                    onChange={handleChangeUsername}
+                                    placeholder=" "
+                                    type="text"
+                                    required
+                                ></input>
+                                <span className="form__inputBar"></span>
+                                <label className="form__inputlabel">Introduce your nickname</label>
+                                </div>
+                        </label>
+                            <label className="JoinLobby__id--grid">
                             <div className="form__inputGroup">
-                            <input
-                                id="nickname"
-                                value={username}
-                                className="form__input"
-                                onChange={handleChangeUsername}
-                                placeholder=" "
-                                type="text"
-                                required
-                            ></input>
-                            <span className="form__inputBar"></span>
-                            <label className="form__inputlabel">Introduce your nickname</label>
+                                <input className="form__input"  value={lobbyId} onChange={handleChangeLobbyId}placeholder=" " type="text" required></input>
+                                <span className="form__inputBar"></span>
+                                <label className="form__inputlabel">Introduce lobby ID</label>
                             </div>
-                    </label>
-                        <label className="JoinLobby__id--grid">
-                        <div className="form__inputGroup">
-                            <input className="form__input"  value={lobbyId} onChange={handleChangeLobbyId}placeholder=" " type="text" required></input>
-                            <span className="form__inputBar"></span>
-                            <label className="form__inputlabel">Introduce lobby ID</label>
+                        </label>
+                        <div className="JoinLobby__button--grid">
+                            <button className="JoinLobby__button" type="submit">Join lobby</button>
                         </div>
-                    </label>
-                    <div className="JoinLobby__button--grid">
-                        <button className="JoinLobby__button" type="submit">Join lobby</button>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
-
         );
     } else {
         return (

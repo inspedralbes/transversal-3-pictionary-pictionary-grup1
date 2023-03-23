@@ -2,10 +2,12 @@
 
 body {
   margin: 0;
-  -webkit-font-smoothing: antialiased;
+  -webkit-font-smoothing: antialiased; 
   -moz-osx-font-smoothing: grayscale;
-  background: rgb(255, 247, 236);
+  background-size: contain;
   width: 100%;
+  background: none;
+  background-color: #ffecec;
   padding: 0;
   overflow: auto;
 }
