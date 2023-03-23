@@ -143,7 +143,7 @@ class CategoryController extends Controller
     {
         $userLogged = false;
 
-        if ($request -> token == null || $request -> token == undefined || $request -> token == "" ) {
+        if ($request -> token == null || $request -> token == "" ) {
             $userLogged = false;
         } else {    
         //Check if the user is logged, returns 'null' if the user is not logged in.
