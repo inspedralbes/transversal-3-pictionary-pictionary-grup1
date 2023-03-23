@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\WordController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,4 +17,22 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+Route::group(['middleware' => ['web']], function () {
+    Route::post('/getWords', [WordController::class, 'getWords']);
+
+    Route::post('/register', [UserController::class, 'register']);
+
+    Route::post('/login', [UserController::class, 'login']);
+
+    Route::post('/logout', [UserController::class, 'logout']);
+
+    Route::post('/isUserLogged', [UserController::class, 'isUserLogged']);
+    
+    Route::post('/getProfile', [UserController::class, 'getProfile']);
+
+    Route::post('/getUserId', [UserController::class, 'getUserId']);
+
+    Route::post('/getUserInfo', [UserController::class, 'getUserInfo']);    
 });

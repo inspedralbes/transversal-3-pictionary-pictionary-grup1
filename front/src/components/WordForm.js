@@ -1,26 +1,41 @@
 import React, { useState } from 'react';
 
+<<<<<<< HEAD
 
 function WordForm(props) {
+=======
+function WordForm({ socket, answerCorrect }) {
+>>>>>>> develop
   const [word, setWord] = useState('');
 
-  function handleSubmit(e) {
+  function handleFormSubmit(e) {
     e.preventDefault();
-    props.onSubmit(word);
+    if (word.trim() !== "") {
+      socket.emit("try_word_attempt", {
+        word: word,
+      });
+    }
   }
 
   function handleChange(e) {
     setWord(e.target.value);
   }
 
-  return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <input type="text" value={word} onChange={handleChange} placeholder="Enter a word" />
-        <button type="submit">Check</button>
-      </form>
-    </div>
-  );
+  if (answerCorrect) {
+    return (
+      <></>
+    )
+  } else {
+    return (
+      <div>
+        <form onSubmit={handleFormSubmit}>
+          <input type="text" value={word} onChange={handleChange} placeholder="Enter a word" />
+          <button type="submit">Check</button>
+        </form>
+      </div>
+    );
+  }
+
 }
 
 export default WordForm;
