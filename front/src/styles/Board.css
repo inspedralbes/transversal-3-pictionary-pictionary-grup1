@@ -1,28 +1,24 @@
-
-body{
-  margin:0;
-  width: 100%;
-  height: 100vh;
+.Board {
+  justify-items: center;
 }
 
-.Board{
-    background: white;
+.Board__draw,
+.Board__view {
+  margin: 0 auto;
+  background: #ffffff;
+  border-radius: 4% 95% 6% 95%/95% 4% 92% 5%;
+  transform: rotate(-2deg);
+  overflow: hidden;
 }
 
-.Board__draw, .Board__view{
-    cursor: url("../img/cursor.cur") , pointer;
-    margin: 0 auto;
-    border-radius: 10px;
-    height: 70vh;
-    padding: 10px;
-    background: #fff;
-    border: solid black;
-    border-color: black;
-    border-width: 3px 3px 5px 5px;
-    border-radius: 4% 95% 6% 95%/95% 4% 92% 5%;
-    transform: rotate(-2deg);
-    overflow: hidden;
-  }
-.board__settings{
+.Board__draw {
+  cursor: url("../img/brush.cur"), pointer;
+}
+
+.Board__draw:active {
+  cursor: url("../img/brush-click.cur"), pointer;
+}
+
+.board__settings {
   float: right;
 }

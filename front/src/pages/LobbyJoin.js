@@ -8,6 +8,8 @@ function LobbyJoin({ socket }) {
     const [username, setUsername] = useState("");
     const [error, setError] = useState("");
     const [insideLobby, setInsideLobby] = useState(false);
+    const [firstTime, setFirstTime] = useState(true);
+    const [registeredUsername, setRegisteredUsername] = useState(false);
     const navigate = useNavigate();
 
     function handleChangeLobbyId(e) {
@@ -16,6 +18,10 @@ function LobbyJoin({ socket }) {
 
     function handleChangeUsername(e) {
         setUsername(e.target.value)
+    }
+
+    function handleEnableUsername(e) {
+        setRegisteredUsername(false);
     }
 
     function handleSubmit(e) {
@@ -39,7 +45,34 @@ function LobbyJoin({ socket }) {
         });
     }
 
+    
+    function changeColor() {
+        document.getElementById("copyId").addEventListener('mouseover', function () {
+            let colors = ["#70a1da", "#70da92", "#cada70", "#858cb7", "#f6a39e", "#ab605c", "#70ab5c", "#ed96f1", "#e05b8c", "#e0ce5b", "#997490", "#9dff4e", "#ffd64e", "#e24eff", "#4ebeff", "#b2b5dc", "#20bf55", "#bf97ff", "#ff9797", "#97e5ff"];
+            let color = colors[Math.floor(Math.random() * 21)];
+            document.getElementById("copyId").style.color = color;
+        });
+
+        document.getElementById("copyId").addEventListener('mouseout', function () {
+            document.getElementById("copyId").style.color = '#5c5b5b';
+        });
+    }
+
+    function copyId() {
+        navigator.clipboard.writeText(lobbyId);
+    }
+
     useEffect(() => {
+        if (firstTime) {
+            socket.emit("get_username")
+            setFirstTime(false);
+        }
+
+        socket.on("username_saved", (data) => {
+            setUsername(data.name);
+            setRegisteredUsername(true);
+        })
+
         socket.on("lobby_info", (data) => {
             setInsideLobby(true);
             setError("");
@@ -66,20 +99,34 @@ function LobbyJoin({ socket }) {
 
     if (!insideLobby) {
         return (
-            <div>
+            <div className="JoinLobby">
                 {error !== "" && (<h1 className="error">{error}</h1>)}
-                <form onSubmit={handleSubmit}>
-                    <label>Enter your nickname
-                        <input type="text" value={username} onChange={handleChangeUsername} placeholder="nickname..." />
+                <form className="JoinLobby__form--grid" onSubmit={handleSubmit}>
+                    <label className="JoinLobby__nickname--grid">
+                            <div className="form__inputGroup">
+                            <input
+                                id="nickname"
+                                value={username}
+                                className="form__input"
+                                onChange={handleChangeUsername}
+                                placeholder=" "
+                                type="text"
+                                required
+                            ></input>
+                            <span className="form__inputBar"></span>
+                            <label className="form__joinLobby">Introduce your nickname</label>
+                            </div>
                     </label>
-
-                    <br />
-
-                    <label>Enter lobby Identifier
-                        <input type="text" value={lobbyId} onChange={handleChangeLobbyId} placeholder="code..." />
+                        <label className="JoinLobby__id--grid">
+                        <div className="form__inputGroup">
+                            <input className="form__input"  value={lobbyId} onChange={handleChangeLobbyId}placeholder=" " type="text" required></input>
+                            <span className="form__inputBar"></span>
+                            <label className="form__joinLobby">Introduce lobby ID</label>
+                        </div>
                     </label>
-
-                    <button type="submit">Join</button>
+                    <div className="JoinLobby__button--grid">
+                        <button className="JoinLobby__button" type="submit">Join lobby</button>
+                    </div>
                 </form>
             </div>
 
@@ -89,7 +136,7 @@ function LobbyJoin({ socket }) {
             <div>
                 <button className="createGame__leaveButton" onClick={handleLeave}>Leave lobby</button>
                 {error !== "" && (<h1 className="error">{error}</h1>)}
-                <h1 className="identifier"><span>I</span><span>D</span><span>E</span><span>N</span><span>T</span><span>I</span><span>F</span><span>I</span><span>E</span><span>R</span>: {lobbyId}</h1>
+                <h1 className="identifier"><span className='span'>I</span><span className='span'>D</span><span className='span'>E</span><span className='span'>N</span><span className='span'>T</span><span className='span'>I</span><span className='span'>F</span><span className='span'>I</span><span className='span'>E</span><span className='span'>R</span>: <span className='span' id="copyId" onClick={copyId} onMouseOver={changeColor}><p>CLICK TO COPY THE ID</p>{lobbyId}</span></h1>
                 <ConnectedUsers socket={socket}></ConnectedUsers>
             </div>
 
