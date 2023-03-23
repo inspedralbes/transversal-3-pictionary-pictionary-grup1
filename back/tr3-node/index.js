@@ -216,17 +216,26 @@ socketIO.on('connection', socket => {
 
   socket.on("get_game_data", () => {
     enviarPintor(socket.data.current_lobby)
-    let data;
     let word;
     lobbies.forEach(lobby => {
       if (lobby.lobbyIdentifier == socket.data.current_lobby) {
-        data = lobby
         word = lobby.words[lobby.actualRound];
       }
     });
-    // socketIO.to(socket.id).emit('game_data', data);
     socketIO.to(socket.id).emit('current_word', {
       word: word
+    });
+  });
+
+  socket.on("get_word_length", () => {
+    let long;
+    lobbies.forEach(lobby => {
+      if (lobby.lobbyIdentifier == socket.data.current_lobby) {
+        long = lobby.words[lobby.actualRound].name.length;
+      }
+    });
+    socketIO.to(socket.id).emit('current_word_length', {
+      long: long
     });
 
   });
@@ -415,7 +424,7 @@ function setCounter(lobbyId) {
           }
         });
 
-        if (cont == 50 || correct == lobby.members.length - 1) {
+        if (cont == 0 || correct == lobby.members.length - 1) {
           if (lobby.actualRound < lobby.rounds) {
             lobby.actualRound++;
           }

@@ -6,17 +6,9 @@ import React from "react";
 function Description({ socket }) {
   const [description, setDescription] = useState("");
   const [refresh, setRefresh] = useState(0);
-  const [word, setWord] = useState("");
+  const [word, setWord] = useState("error");
 
   useEffect(() => {
-
-    socket.on('game_data', (data) => {
-      console.log(data);
-      if (data.words != undefined) {
-        setWord(data.words[0].name);
-      }
-    });
-
     socket.on("current_word", (data) => {
       if (data != undefined) {
         setWord(data.word.name);
@@ -26,7 +18,7 @@ function Description({ socket }) {
     return () => {
       socket.off("word_to_check");
     };
-  }, [socket]);
+  }, [socket, word]);
 
   useEffect(() => {
     fetch("https://api.dictionaryapi.dev/api/v2/entries/en/" + word)

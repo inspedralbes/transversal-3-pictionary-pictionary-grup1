@@ -10,7 +10,6 @@ function WordGuess({ socket }) {
         socket.emit('get_game_data');
         
         socket.on('game_data', (data) => {
-            console.log(data);
             if (data.words != undefined) {
                 setWordToCheck(data.words[0].name);
             }
