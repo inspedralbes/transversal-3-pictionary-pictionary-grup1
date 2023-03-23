@@ -11,18 +11,16 @@ import Description from "../components/Description";
 import { useNavigate } from "react-router-dom";
 
 function Game({ socket }) {
+  const navigateToEndGame = useNavigate();
   const [starting, setStarting] = useState(true);
   const [countdown, setCountdown] = useState(3);
   const [result, setResult] = useState(null);
   const [pintor, setPintor] = useState(false);
   const [spectator, setSpectator] = useState(false);
-  const [userMessages, setUserMessages] = useState([]);
-
-  const navigateToEndGame = useNavigate();
-
   const [showDrawer, setShowDrawer] = useState(true);
   const [drawerName, setDrawerName] = useState();
   const [roundEnded, setRoundEnded] = useState(false);
+  const [wordToCheck, setWordToCheck] = useState("");
 
   const messageResponses = {
     wordAttemptError: "You failed the attempt!",
@@ -59,6 +57,12 @@ function Game({ socket }) {
     socket.on('spectator', (data) => {
       console.log("Spectator", data);
       setSpectator(data.spectator);
+    });
+
+    socket.on('game_data', (data) => {
+      for (let i = 0; i < data.words.length; i++) {
+        setWordToCheck(data.words[i].name);  
+      }
     });
 
     socket.on('started', () => {
@@ -102,20 +106,16 @@ function Game({ socket }) {
         </div>
       )}
       {!starting && roundEnded && (
-          <div style={{ textAlign: 'center', position: 'fixed', top: '50%', left: '50%', fontSize: '5rem', transform: 'translate(-50%, -50%)', zIndex: '1', backgroundColor: 'white', border: '1px solid black', pointerEvents: 'auto' }}>
-            {countdown}<br></br><br></br>
-            Round change
-            Last word was:
-            Drawer: {drawerName}
-          </div>
+        <div style={{ textAlign: 'center', position: 'fixed', top: '50%', left: '50%', fontSize: '5rem', transform: 'translate(-50%, -50%)', zIndex: '1', backgroundColor: 'white', border: '1px solid black', pointerEvents: 'auto' }}>
+          Last word was: {wordToCheck}<br></br><br></br>
+          Next roun drawer: {drawerName}
+        </div>
       )}
       {!starting && !showDrawer && (
-        <div style={{ display: 'flex', pointerEvents: roundEnded ? 'none' : 'auto'}}>
+        <div style={{ display: 'flex', pointerEvents: roundEnded ? 'none' : 'auto' }}>
           <div>
             <ConnectedUsersInGame socket={socket} pintor={pintor} />
           </div>
-
-          {/* Left column */}
           <div>
             {spectator ? (
               <Board socket={socket} pintor={pintor} />
@@ -148,7 +148,6 @@ function Game({ socket }) {
             )}
           </div>
         </div>
-                        
       )}
     </>
   );
