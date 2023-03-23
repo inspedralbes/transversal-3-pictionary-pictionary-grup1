@@ -17,6 +17,7 @@ function Game({ socket }) {
   const [userMessages, setUserMessages] = useState([]);
   const [showDrawer, setShowDrawer] = useState(true);
   const [drawerName, setDrawerName] = useState();
+  const [roundEnded, setRoundEnded] = useState(false);
 
   const messageResponses = {
     wordAttemptError: "You failed the attempt!",
@@ -38,6 +39,18 @@ function Game({ socket }) {
       setDrawerName(data.name);
     });
 
+    socket.on("round_ended", () => {
+      setRoundEnded(true);
+      const intervalId = setInterval(() => {
+        setCountdown(countdown => countdown - 1);
+      }, 1000);
+      setTimeout(() => {
+        clearInterval(intervalId);
+        setRoundEnded(false);
+        setCountdown(3);
+      }, 3000);
+    })
+
     socket.on('spectator', (data) => {
       setSpectator(data.spectator);
     });
@@ -52,6 +65,7 @@ function Game({ socket }) {
         clearInterval(intervalId);
         setStarting(false);
         setShowDrawer(false);
+        setCountdown(3);
       }, 3000);
     })
 
@@ -67,17 +81,23 @@ function Game({ socket }) {
   return (
     <>
       {starting && (
-        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', fontSize: '10rem' }}>
+        <div style={{textAlign: 'center', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', fontSize: '10rem' }}>
           Loading
         </div>
       )}
       {!starting && showDrawer && (
-        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', fontSize: '5rem' }}>
+        <div style={{textAlign: 'center', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', fontSize: '5rem' }}>
           {countdown}<br></br><br></br>
           Drawer: {drawerName}
         </div>
       )}
-      {!starting && !showDrawer && (
+      {!starting && roundEnded && (
+        <div style={{ textAlign: 'center', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', fontSize: '5rem' }}>
+          {countdown}<br></br><br></br>
+          Drawer: {drawerName}
+        </div>
+      )}
+      {!starting && !showDrawer && !roundEnded && (
         <div style={{ display: 'flex' }}>
           <div>
             <ConnectedUsersInGame socket={socket} pintor={pintor} />
