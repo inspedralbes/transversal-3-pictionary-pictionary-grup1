@@ -287,6 +287,13 @@
     padding-left: 30px;
 }
 
+.form__input:focus~.form__joinLobby,
+.form__input:valid~.form__joinLobby {
+    top: -20px;
+    font-size: 20px;
+    color: #8a1780;
+}
+
 /* active state */
 .form__input:focus~.form__inputlabel,
 .form__input:valid~.form__inputlabel {
