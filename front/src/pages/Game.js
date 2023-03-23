@@ -72,7 +72,7 @@ function Game({ socket }) {
         </div>
       )}
       {!starting && showDrawer && (
-        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', fontSize: '10rem' }}>
+        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', fontSize: '5rem' }}>
           {countdown}<br></br><br></br>
           Drawer: {drawerName}
         </div>
