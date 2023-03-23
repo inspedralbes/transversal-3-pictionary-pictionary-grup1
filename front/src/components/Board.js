@@ -13,7 +13,7 @@ function Board({ socket, pintor }) {
   const [currentColor, setCurrentColor] = useState("#000");
   const [brushRadius, setBrushRadius] = useState(5);
   let colors = ["black", "#ce0101", "#f7de03", "#5cb351", "#76c1df", "#ffffff"];
-  let moreColors = [ '#ffbb00', '#ff8800', '#ff3300', '#333333', '#808080', '#cccccc', '#D33115', '#E27300', '#FCC400', '#B0BC00', '#68BC00', '#16A5A5', '#009CE0', '#7B64FF', '#FA28FF', '#000000', '#666666', '#B3B3B3']
+  let moreColors = ['#ffbb00', '#ff8800', '#ff3300', '#f8479a', '#bb3acc', '#9242b8', '#6b42b8', '#563de0', '#4e96f3', '#8ad0f8', '#75c7b2', '#5ac560', '#037208', '#6b8316', '#75572a', '#534229', '#5e5a58', '#8b8a8a']
 
 
   const sendBoardDataToSocketIo = () => {
@@ -249,7 +249,10 @@ function Board({ socket, pintor }) {
   if (pintor) {
     return (
       <div className="Board">
+        <CountDownTimer socket={socket} />
+
         <CirclePicker onChangeComplete={(color) => setCurrentColor(color.hex)} color={currentColor} colors={colors}></CirclePicker>
+        <br />
         <details>
           <summary>More colors</summary>
           <CirclePicker
@@ -258,7 +261,6 @@ function Board({ socket, pintor }) {
             onChangeComplete={(color) => setCurrentColor(color.hex)}
           ></CirclePicker>
         </details>
-        <CountDownTimer socket={socket} />
 
         <button onClick={clearBoard}>Clear</button>
         <button id='eraser' onClick={eraser}>Eraser</button>

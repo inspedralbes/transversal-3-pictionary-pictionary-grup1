@@ -39,7 +39,8 @@
 }
 
 .game__timer {
-    border: 2px dotted #362c2c;
+    border: 2px dotted #005f0d;
+    float: right;
     display: flex;
     border-radius: 50%;
     align-items: center;
