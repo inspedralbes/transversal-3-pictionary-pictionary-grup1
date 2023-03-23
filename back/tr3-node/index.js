@@ -282,7 +282,8 @@ socketIO.on('connection', socket => {
                 idUser: socket.data.id,
                 username: data.nickname,
                 lastAnswerCorrect: false,
-                lastAnswer: ""
+                lastAnswer: "",
+                points: 0
               });
 
               sendUserList(socket.data.current_lobby)
@@ -355,6 +356,8 @@ socketIO.on('connection', socket => {
 
   socket.on('try_word_attempt', (data) => {
     let wordToCheck;
+    let pointsRound = 0;
+
     lobbies.forEach(lobby => {
       if (lobby.lobbyIdentifier == socket.data.current_lobby) {
         if (!lobby.ended) {
@@ -365,13 +368,30 @@ socketIO.on('connection', socket => {
               resultsMatch: true,
             })
 
+            socketIO.to(socket.id).emit('get_time')
+
+            socket.on('calculate_points', (data) => {
+
+              if (lobby.settings.roundDuration - data > lobby.settings.roundDuration - 20) {
+                pointsRound = lobby.settings.roundDuration;
+              }
+              else {
+                pointsRound = lobby.settings.roundDuration - data;
+
+              }
+              console.log("PointsRound", pointsRound);
+            })
+
             lobby.members.forEach(member => {
               if (member.idUser == socket.data.id) {
                 member.lastAnswerCorrect = true;
                 member.lastAnswer = data.word;
+                member.points = member.points + pointsRound;
+                console.log("Member poitns", member.points);
               }
             });
             sendUserList(socket.data.current_lobby)
+
           } else {
             socketIO.to(socket.id).emit('answer_result', {
               resultsMatch: false,
@@ -415,7 +435,7 @@ function setCounter(lobbyId) {
           }
         });
 
-        if (cont == 50 || correct == lobby.members.length - 1) {
+        if (cont == 0 || correct == lobby.members.length - 1) {
           if (lobby.actualRound < lobby.rounds) {
             lobby.actualRound++;
           }
@@ -477,7 +497,8 @@ function joinLobby(socket, lobbyIdentifier, username) {
           idUser: socket.data.id,
           username: username,
           lastAnswerCorrect: false,
-          lastAnswer: ""
+          lastAnswer: "",
+          points: 0
         });
 
         socketIO.to(socket.id).emit("lobby_info", lobby)
@@ -562,7 +583,8 @@ function sendUserList(room) {
           name: member.username,
           lastAnswerCorrect: member.lastAnswerCorrect,
           lastAnswer: member.lastAnswer,
-          painting: member.painting
+          painting: member.painting,
+          points: member.points
         });
       });
     }
