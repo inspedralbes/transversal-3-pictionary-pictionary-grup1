@@ -17,7 +17,7 @@ function Game({ socket }) {
   const [pintor, setPintor] = useState(false);
   const [spectator, setSpectator] = useState(false);
   const [userMessages, setUserMessages] = useState([]);
-  
+
   const navigateToEndGame = useNavigate();
 
   const [showDrawer, setShowDrawer] = useState(true);
@@ -91,25 +91,26 @@ function Game({ socket }) {
   return (
     <>
       {starting && (
-        <div style={{textAlign: 'center', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', fontSize: '10rem' }}>
+        <div style={{ textAlign: 'center', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', fontSize: '10rem' }}>
           Loading
         </div>
       )}
       {!starting && showDrawer && (
-        <div style={{textAlign: 'center', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', fontSize: '5rem' }}>
+        <div style={{ textAlign: 'center', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', fontSize: '5rem' }}>
           {countdown}<br></br><br></br>
           Drawer: {drawerName}
         </div>
       )}
       {!starting && roundEnded && (
-        <div style={{ textAlign: 'center', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', fontSize: '5rem' }}>
-          {countdown}<br></br><br></br>
-          Round change
-          Drawer: {drawerName}
-        </div>
+          <div style={{ textAlign: 'center', position: 'fixed', top: '50%', left: '50%', fontSize: '5rem', transform: 'translate(-50%, -50%)', zIndex: '1', backgroundColor: 'white', border: '1px solid black', pointerEvents: 'auto' }}>
+            {countdown}<br></br><br></br>
+            Round change
+            Last word was:
+            Drawer: {drawerName}
+          </div>
       )}
-      {!starting && !showDrawer && !roundEnded && (
-        <div style={{ display: 'flex' }}>
+      {!starting && !showDrawer && (
+        <div style={{ display: 'flex', pointerEvents: roundEnded ? 'none' : 'auto'}}>
           <div>
             <ConnectedUsersInGame socket={socket} pintor={pintor} />
           </div>
@@ -147,6 +148,7 @@ function Game({ socket }) {
             )}
           </div>
         </div>
+                        
       )}
     </>
   );
