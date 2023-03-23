@@ -78,10 +78,12 @@ function Login({ socket }) {
                             onKeyDown={handleKeyDown}
                             required
                         ></input>
+                         <span className="form__inputBar"></span>
+                        <label className="form__inputlabel">Password</label>
                         <div className="form__links link">
-                            <Link className="link__ForgotPass" to="/forgotPassword">
+                            {/* <Link className="link__ForgotPass" to="/forgotPassword">
                                 <p>Forgot your password?</p>
-                            </Link>
+                            </Link> */}
                         </div>
                     </div>
                 </div>
