@@ -581,8 +581,12 @@ async function enviarPintor(room) {
 
         sockets.forEach(user => {
           if (user.data.id == lobby.members[lobby.actualRound].idUser) {
+            lobby.currentDrawer = lobby.members[lobby.actualRound].username
             socketIO.to(user.id).emit("pintor", {
               pintor: true
+            })
+            socketIO.to(lobby.lobbyIdentifier).emit("drawer_name", {
+              name: lobby.currentDrawer
             })
 
             lobby.members.forEach(member => {
