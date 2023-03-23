@@ -3,7 +3,7 @@ import { render } from "react-dom";
 
 
 function CountdownTimer({socket}) {
-  const [counter, setCounter] = useState(60);
+  const [counter, setCounter] = useState();
 
   useEffect(() => {
     socket.on("counter_down", (data) => {
@@ -15,7 +15,7 @@ function CountdownTimer({socket}) {
     })
 
     socket.on("game_ended", () => {
-      setCounter(69);
+      setCounter("GAME ENDED");
     })
   }, [])
 

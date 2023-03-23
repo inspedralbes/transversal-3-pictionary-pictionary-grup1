@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\WordController;
 use App\Http\Controllers\UserController;
-
+use App\Http\Controllers\CategoryController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -34,5 +34,7 @@ Route::group(['middleware' => ['web']], function () {
 
     Route::post('/getUserId', [UserController::class, 'getUserId']);
 
-    Route::post('/getUserInfo', [UserController::class, 'getUserInfo']);    
+    Route::post('/getUserInfo', [UserController::class, 'getUserInfo']);  
+    
+    Route::post('/addCategory', [CategoryController::class, 'addCategory']);  
 });
