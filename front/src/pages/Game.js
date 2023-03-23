@@ -104,6 +104,7 @@ function Game({ socket }) {
       {!starting && roundEnded && (
         <div style={{ textAlign: 'center', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', fontSize: '5rem' }}>
           {countdown}<br></br><br></br>
+          Round change
           Drawer: {drawerName}
         </div>
       )}

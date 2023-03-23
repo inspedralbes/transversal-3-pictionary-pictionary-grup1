@@ -415,7 +415,7 @@ function setCounter(lobbyId) {
           }
         });
 
-        if (cont == 0 || correct == lobby.members.length - 1) {
+        if (cont == 50 || correct == lobby.members.length - 1) {
           if (lobby.actualRound < lobby.rounds) {
             lobby.actualRound++;
           }

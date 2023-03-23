@@ -2,9 +2,6 @@ import { NavLink } from 'react-router-dom';
 import Ranking from '../components/Ranking';
 import { useState, useEffect } from "react";
 
-
-
-
 function EndGame({ socket }) {
   const [owner, setOwner] = useState(false);
   const [firstTime, setFirstTime] = useState(true);
