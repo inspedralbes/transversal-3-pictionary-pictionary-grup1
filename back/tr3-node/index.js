@@ -55,7 +55,7 @@ app.use(
 
 let i = 0;
 
-const laravelRoute = "http://127.0.0.1:8000/index.php/";
+const laravelRoute = "http://192.168.220.32/public/";
 
 let lobbies = [];
 

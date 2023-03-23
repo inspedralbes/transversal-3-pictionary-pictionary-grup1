@@ -14,9 +14,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import socketIO from "socket.io-client";
 
 const routes = {
-  fetchLaravel: "http://localhost:8000/index.php/",
-  // fetchNode: "http://localhost:7500",
-  wsNode: "ws://localhost:7878",
+  fetchLaravel: "http://192.168.220.32/public",
+  wsNode: "ws://192.168.220.32:7878",
 };
 
 
