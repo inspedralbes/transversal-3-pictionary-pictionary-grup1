@@ -6,8 +6,7 @@ import CanvasDraw from "react-canvas-draw";
 import heart from "../img/Heart_corazón.svg.png"
 =======
 import { useEffect, useRef, useState } from "react";
->>>>>>> develop
-import { CirclePicker } from "react-color";
+import { CirclePicker, SketchPicker } from "react-color";
 import "../styles/Board.css";
 import React from "react";
 import CountDownTimer from "./CountdownTimer";
@@ -20,6 +19,9 @@ function Board({ socket, pintor }) {
   const canvasRef2 = useRef(null);
   const [currentColor, setCurrentColor] = useState("#000");
   const [brushRadius, setBrushRadius] = useState(5);
+  let colors = ["black", "#ce0101", "#f7de03", "#5cb351", "#76c1df", "#ffffff"];
+  let moreColors = ['#ffbb00', '#ff8800', '#ff3300', '#f8479a', '#bb3acc', '#9242b8', '#6b42b8', '#563de0', '#4e96f3', '#8ad0f8', '#75c7b2', '#5ac560', '#037208', '#6b8316', '#75572a', '#534229', '#5e5a58', '#8b8a8a']
+
 
   const sendBoardDataToSocketIo = () => {
     const data = { arrayDatos };
@@ -67,7 +69,7 @@ function Board({ socket, pintor }) {
 >>>>>>> develop
       }
       arrayRedo.push("nuevaLinea");
-      
+
 
       const canvas = canvasRef.current;
       const context = canvas.getContext("2d");
@@ -102,16 +104,16 @@ function Board({ socket, pintor }) {
       let endLine = false;
       let auxNum = 0;
 
-      if (arrayRedo.length > 0){
+      if (arrayRedo.length > 0) {
         for (let i = arrayRedo.length; i >= 0; i--) {
-  
+
           if (arrayRedo[i] != "nuevaLinea" && endLine == false) {
             if (typeof arrayRedo[i] !== 'undefined') {
               arrayDatos.push(arrayRedo[i]);
               arrayRedo.splice(i, 1);
             }
           }
-          else if (arrayRedo[i] == "nuevaLinea" && endLine == false){
+          else if (arrayRedo[i] == "nuevaLinea" && endLine == false) {
             if (auxNum == 1) {
               endLine = true;
             }
@@ -119,26 +121,26 @@ function Board({ socket, pintor }) {
               arrayRedo.splice(i, 1);
               auxNum++;
             }
-            
+
           }
         }
         arrayDatos.push("nuevaLinea");
 
-  
+
         arrayRedo.splice(arrayRedo.length, 1);
-  
+
         const canvas = canvasRef.current;
         const context = canvas.getContext("2d");
         context.clearRect(0, 0, canvas.width, canvas.height);
         sendBoardDataToSocketIo();
-  
+
         context.beginPath();
         if (arrayDatos.length != 0) {
           context.moveTo(arrayDatos[0].x, arrayDatos[0].y);
         } else {
           return
         }
-  
+
         for (let i = 1; i < arrayDatos.length; i++) {
           if (arrayDatos[i] === "nuevaLinea") {
             context.stroke();
@@ -210,7 +212,7 @@ function Board({ socket, pintor }) {
         isDrawing = false;
         arrayDatos.push("nuevaLinea");
       }
-      
+
       function handleMouseOut() {
         isDrawing = false;
       }
@@ -273,16 +275,23 @@ function Board({ socket, pintor }) {
     return (
       <div className="Board">
         <CountDownTimer socket={socket} />
-        <CirclePicker
-          style={{ border: "4px solid #000" }}
-          color={currentColor}
-          onChangeComplete={(color) => setCurrentColor(color.hex)}
-        ></CirclePicker>
+
+        <CirclePicker onChangeComplete={(color) => setCurrentColor(color.hex)} color={currentColor} colors={colors}></CirclePicker>
+        <br />
+        <details>
+          <summary>More colors</summary>
+          <CirclePicker
+            colors={moreColors}
+            color={currentColor}
+            onChangeComplete={(color) => setCurrentColor(color.hex)}
+          ></CirclePicker>
+        </details>
+
         <button onClick={clearBoard}>Clear</button>
-        <button onClick={eraser}>Eraser</button>
+        <button id='eraser' onClick={eraser}>Eraser</button>
 
         <input id="brushRadius" type={"range"} min="5" max="50" step={1} value={brushRadius} onChange={(e) => setBrushRadius(e.target.value)} ></input>
-        <canvas ref={canvasRef} width={800} height={500} style={{ border: "1px solid black" }} />
+        <canvas className="Board__draw" ref={canvasRef} width={1000} height={700} style={{ border: "3px solid #575757" }} />
       </div>
     );
   }
@@ -290,7 +299,7 @@ function Board({ socket, pintor }) {
     return (
       <div className="Board">
         <CountDownTimer socket={socket} />
-        <canvas ref={canvasRef2} width={800} height={500} style={{ border: "1px solid black" }} />
+        <canvas className="Board__view" ref={canvasRef2} width={1000} height={700} style={{ border: "3px solid #575757" }} />
       </div>
     );
   }
