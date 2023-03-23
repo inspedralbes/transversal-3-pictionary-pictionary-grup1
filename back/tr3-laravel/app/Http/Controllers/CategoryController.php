@@ -139,7 +139,7 @@ class CategoryController extends Controller
         return response() -> json($sendCategory);
     }
 
-    public function isUserLogged($request)
+    public function isUserLogged(Request $request)
     {
         $userLogged = false;
 
@@ -158,5 +158,5 @@ class CategoryController extends Controller
         }
         return response() -> json($userLogged);
     }
-    
+
 }
