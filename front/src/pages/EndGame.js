@@ -9,9 +9,9 @@ function EndGame({ socket }) {
   const [owner, setOwner] = useState(false);
   const [firstTime, setFirstTime] = useState(true);
 
-function onClick() {
-  socket.emit("use_same_seed");
-}
+  function onClick() {
+    socket.emit("use_same_seed");
+  }
   useEffect(() => {
 
     if (firstTime) {
@@ -26,7 +26,6 @@ function onClick() {
   }, []);
   return (
     <div>
-      EndGame
       <>
         {owner ? (
           <div>
