@@ -8,6 +8,7 @@ import React from 'react';
 import ConnectedUsersInGame from "../components/ConnectedUsersInGame";
 import WordGuess from "../components/WordGuess";
 import Description from "../components/Description";
+import WordLength from "../components/WordLength";
 import { useNavigate } from "react-router-dom";
 
 function Game({ socket }) {
@@ -116,11 +117,11 @@ function Game({ socket }) {
 
           {/* Left column */}
           <div>
-            {spectator ? (
+            {spectator ? ( //ESPECTADOR:
               <Board socket={socket} pintor={pintor} />
             ) : (
               <>
-                {pintor ? (
+                {pintor ? ( //PINTOR:
                   <div>
                     <div>
                       <WordGuess className="game__word" socket={socket} />
@@ -128,8 +129,9 @@ function Game({ socket }) {
                       <Board socket={socket} pintor={pintor} />
                     </div>
                   </div>
-                ) : (
+                ) : ( //NO PINTOR:
                   <>
+                  <WordLength socket={socket}></WordLength>
                     {result != null && (
                       <>
                         {result ? (
