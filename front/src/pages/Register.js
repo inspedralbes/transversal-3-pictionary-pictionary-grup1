@@ -86,7 +86,7 @@ function Register({ socket }) {
                     socket.emit("send token", {
                         token: cookies.get('token')
                     });
-                    console.log(data);
+                    navigate("/")
                 } else {
                     console.log(data);
                 }
