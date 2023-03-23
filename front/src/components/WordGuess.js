@@ -1,4 +1,5 @@
 import "../App.css";
+import "../styles/Game.css"
 import { useState, useEffect } from "react";
 import React from 'react';
 
@@ -29,7 +30,7 @@ function WordGuess({ socket }) {
 
     return (
         <>
-            <p>{wordToCheck}</p>
+            <p className="WordGuess">{wordToCheck}</p>
         </>
     )
 

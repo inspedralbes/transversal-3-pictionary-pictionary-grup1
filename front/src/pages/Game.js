@@ -1,5 +1,6 @@
 import logo from "../logo.svg";
 import "../App.css";
+import "../styles/Game.css";
 import { useState, useEffect } from "react";
 import Board from "../components/Board";
 import WordForm from '../components/WordForm';
@@ -7,6 +8,7 @@ import React from 'react';
 import ConnectedUsersInGame from "../components/ConnectedUsersInGame";
 import WordGuess from "../components/WordGuess";
 import Description from "../components/Description";
+import { useNavigate } from "react-router-dom";
 
 function Game({ socket }) {
   const [starting, setStarting] = useState(true);
@@ -15,6 +17,9 @@ function Game({ socket }) {
   const [pintor, setPintor] = useState(false);
   const [spectator, setSpectator] = useState(false);
   const [userMessages, setUserMessages] = useState([]);
+  
+  const navigateToEndGame = useNavigate();
+
   const [showDrawer, setShowDrawer] = useState(true);
   const [drawerName, setDrawerName] = useState();
   const [roundEnded, setRoundEnded] = useState(false);
@@ -52,6 +57,7 @@ function Game({ socket }) {
     })
 
     socket.on('spectator', (data) => {
+      console.log("Spectator", data);
       setSpectator(data.spectator);
     });
 
@@ -67,6 +73,10 @@ function Game({ socket }) {
         setShowDrawer(false);
         setCountdown(3);
       }, 3000);
+    })
+
+    socket.on("game_ended", () => {
+      navigateToEndGame("/endGame");
     })
 
     return () => {
@@ -102,6 +112,8 @@ function Game({ socket }) {
           <div>
             <ConnectedUsersInGame socket={socket} pintor={pintor} />
           </div>
+
+          {/* Left column */}
           <div>
             {spectator ? (
               <Board socket={socket} pintor={pintor} />
@@ -110,8 +122,8 @@ function Game({ socket }) {
                 {pintor ? (
                   <div>
                     <div>
-                      <WordGuess socket={socket} />
-                      <Description socket={socket} />
+                      <WordGuess className="game__word" socket={socket} />
+                      <Description className="game__description" socket={socket} />
                       <Board socket={socket} pintor={pintor} />
                     </div>
                   </div>
@@ -126,8 +138,8 @@ function Game({ socket }) {
                         )}
                       </>
                     )}
-                    <WordForm socket={socket} answerCorrect={result} /><br />
                     <Board socket={socket} pintor={pintor} />
+                    <WordForm socket={socket} answerCorrect={result} /><br />
                   </>
                 )}
               </>

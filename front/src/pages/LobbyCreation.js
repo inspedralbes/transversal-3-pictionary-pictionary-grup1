@@ -71,14 +71,14 @@ function LobbyCreation({ socket }) {
     }, [navigate, socket, firstTime])
     return (
         <div className="createGame">
-            <button className="createGame__leaveButton" onClick={handleLeave}>Leave and delete lobby</button>
+            <button className="createGame__leaveButton" onClick={handleLeave}>Leave and delete lobby </button>
             {lobbyId && (
-                <h1 className="identifier"><span>I</span><span>D</span><span>E</span><span>N</span><span>T</span><span>I</span><span>F</span><span>I</span><span>E</span><span>R</span>: <span id="copyId" onClick={copyId} onMouseOver={changeColor}><p>CLICK TO COPY THE ID</p>{lobbyId}</span></h1>
+                <h1 className="identifier"><span className='span'>I</span><span className='span'>D</span><span className='span'>E</span><span className='span'>N</span><span className='span'>T</span><span className='span'>I</span><span className='span'>F</span><span className='span'>I</span><span className='span'>E</span><span className='span'>R</span>: <span className='span' id="copyId" onClick={copyId} onMouseOver={changeColor}><p>CLICK TO COPY THE ID</p>{lobbyId}</span></h1>
             )}
             <Settings socket={socket} start={starting}></Settings>
             <ConnectedUsers socket={socket}></ConnectedUsers>
             <div className="createGame__startButtonDiv">
-                <button className="createGame__startButton" onClick={handleStartGame}>Start game  <i className="icon-paint-brush"></i></button>
+                <button className="createGame__startButton" onClick={handleStartGame}>Start game</button>
             </div>
         </div>
 

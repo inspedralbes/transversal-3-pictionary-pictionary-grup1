@@ -45,10 +45,10 @@ function Description({ socket }) {
   }, [refresh, word]);
 
   return (
-    <>
-      <p>{description}</p>
-      <button onClick={() => setRefresh(refresh + 1)}>Refresh</button>
-    </>
+    <div className="Description">
+      <p className="Description__text">{description}</p>
+      <button className="Description__button" onClick={() => setRefresh(refresh + 1)}>Other definition</button>
+    </div>
   );
 }
 

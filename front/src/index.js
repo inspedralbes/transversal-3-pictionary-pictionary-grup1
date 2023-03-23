@@ -41,7 +41,7 @@ root.render(
         <Route path="/game" element={<Game socket={socket} />} />
         <Route path="/createlobby" element={<LobbyCreation socket={socket} />} />
         <Route path="/joinlobby" element={<LobbyJoin socket={socket} />} />
-        <Route path="/endGame" element={<EndGame />} />
+        <Route path="/endGame" element={<EndGame socket={socket} />} />
         <Route path="/addCategory" element={<AddCategory />} />
       </Route>
     </Routes>
