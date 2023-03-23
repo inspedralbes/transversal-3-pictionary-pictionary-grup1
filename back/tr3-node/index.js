@@ -75,6 +75,7 @@ socketIO.on('connection', socket => {
   i++
   socket.data.id = i;
   socket.data.username = ""
+  socket.data.token = null
   console.log(socket.data.id + " connected ");
 
   const random_hex_color_code = () => {
@@ -84,6 +85,7 @@ socketIO.on('connection', socket => {
 
   socket.on("send token", (data) => {
     let token = data.token;
+    socket.data.token = token;
 
     axios
       .post(laravelRoute + "getUserInfo", {
@@ -112,6 +114,24 @@ socketIO.on('connection', socket => {
         name: socket.data.username
       })
     }
+  })
+
+  socket.on("get_categories", () => {
+    console.log("GET CATEGORIES");
+    axios
+      .post(laravelRoute + "isUserLogged", {
+        token: socket.data.token,
+      })
+      .then(function (response) {
+        if (response.data) {
+          console.log("LOGGED IN");
+        } else {
+          console.log("NOT LOGGED IN");
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   })
 
   socket.on("new_lobby", () => {
@@ -180,13 +200,13 @@ socketIO.on('connection', socket => {
     lobbies.forEach((lobby) => {
 
       if (lobby.lobbyIdentifier == socket.data.current_lobby) {
-        
+
         sockets.forEach(user => {
-            if (user.data.id == lobby.ownerId) {
-              socketIO.to(user.id).emit("is_owner", lobby)
-              
-            } 
+          if (user.data.id == lobby.ownerId) {
+            socketIO.to(user.id).emit("is_owner", lobby)
+
           }
+        }
         );
       }
     });
