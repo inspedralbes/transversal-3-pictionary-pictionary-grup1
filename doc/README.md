@@ -70,17 +70,27 @@
 		> 10. sudo  nginx -t
 		> 11. sudo systemctl restart nginx
 		
-- **Configuració Node & Proxy invers(Node)**
-	 - Primer de tot, instal·lem tots els paquets que te nodejs
-		 > 1. cd /var/www/archivos/transversal-3-pictionary-pictionary-grup1/back/tr3-node/
-		 > 2. sudo npm install
+- **Configuració Proxy invers(Node) & Node**
+	- Primer de tot, afegim el proxy invers en l'arxiu de Nginx (default) per poder accedir en node de manera segura. <br><img  src="./img/image8.png"  alt="">
+	- En un principi, tenim el primer *location /* i a continuació ficarem el segon *location /node* per conseguir entrar en node atraves de ruta i el proxy invers s'encarregaraà de ubicar-nos fins el port que executant el node que en aquest cas tenim :7878.
+		> location ~/node {
+            proxy_http_version 1.1;
+			proxy_set_header Upgrade $http_upgrade;
+        	proxy_set_header Connection "Upgrade";
+            proxy_set_header Host $host;
+            proxy_cache_bypass $http_upgrade;
+			proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+			proxy_pass http://localhost:7878;
+            include proxy_params;
+        }
+		
+	- I finalment, instal·lem tots els paquets que te nodejs
+		> 1. cd /var/www/archivos/transversal-3-pictionary-pictionary-grup1/back/tr3-node/
+		> 2. sudo npm install
 
 
 
 <h3>Llistat d'endpoints de l'API de backend</h3>
-
-- Rutes
-
-- Exemples de JSON de peticó
-
-- Exemples de JSON de resposta i els seus codis d'estat 200? 404?
+	- Rutes
+	- Exemples de JSON de peticó
+	- Exemples de JSON de resposta i els seus codis d'estat 200? 404?
