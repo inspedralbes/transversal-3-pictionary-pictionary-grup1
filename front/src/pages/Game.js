@@ -1,5 +1,6 @@
 import logo from "../logo.svg";
 import "../App.css";
+import "../styles/Game.css";
 import { useState, useEffect } from "react";
 import Board from "../components/Board";
 import WordForm from '../components/WordForm';
@@ -52,14 +53,14 @@ function Game({ socket }) {
   return (
     <>
       {!starting ? (
-        <div style={{ display: 'flex' }}>
+        <div className="game">
           {/* Right column */}
-          <div>
+          <div className="game__left">
             <ConnectedUsersInGame socket={socket} pintor={pintor} />
           </div>
 
           {/* Left column */}
-          <div>
+          <div  className="game__right">
             {spectator ? (
               <Board socket={socket} pintor={pintor} />
             ) : (
@@ -67,8 +68,8 @@ function Game({ socket }) {
                 {pintor ? (
                   <div>
                     <div>
-                      <WordGuess socket={socket} />
-                      <Description socket={socket} />
+                      <WordGuess className="game__word" socket={socket} />
+                      <Description className="game__description" socket={socket} />
                       <Board socket={socket} pintor={pintor} />
                     </div>
                   </div>
@@ -83,8 +84,8 @@ function Game({ socket }) {
                         )}
                       </>
                     )}
-                    <WordForm socket={socket} answerCorrect={result} /><br />
                     <Board socket={socket} pintor={pintor} />
+                    <WordForm socket={socket} answerCorrect={result} /><br />
                   </>
                 )}
               </>

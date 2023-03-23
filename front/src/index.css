@@ -4,7 +4,7 @@ body {
   margin: 0;
   -webkit-font-smoothing: antialiased; 
   -moz-osx-font-smoothing: grayscale;
-  background-size: contain;
+  background: #ffffff;
   width: 100%;
   background: none;
   background-color: #ffecec;
@@ -12,14 +12,4 @@ body {
   overflow: auto;
 }
 
-
-.game__timer {
-  border: 2px solid red;
-  border-radius: 100px;
-  background-color: white;
-  text-align: center;
-  width: 70px;
-  height: 70px;
-  font-size: 46px;
-}
 
