@@ -21,6 +21,9 @@ function Game({ socket }) {
   const [drawerName, setDrawerName] = useState();
   const [roundEnded, setRoundEnded] = useState(false);
   const [wordToCheck, setWordToCheck] = useState("");
+  const [wordIndex, setWordIndex] = useState(0);
+
+  const [words, setWords] = useState([]);
 
   const messageResponses = {
     wordAttemptError: "You failed the attempt!",
@@ -34,7 +37,6 @@ function Game({ socket }) {
 
     socket.on('pintor', (data) => {
       setPintor(data.pintor);
-      console.log(data);
       setResult(null);
     });
 
@@ -50,23 +52,21 @@ function Game({ socket }) {
       setTimeout(() => {
         clearInterval(intervalId);
         setRoundEnded(false);
+        setWordIndex(wordIndex => wordIndex + 1);
         setCountdown(3);
       }, 3000);
     })
 
     socket.on('spectator', (data) => {
-      console.log("Spectator", data);
       setSpectator(data.spectator);
     });
 
     socket.on('game_data', (data) => {
-      for (let i = 0; i < data.words.length; i++) {
-        setWordToCheck(data.words[i].name);  
-      }
+      setWords(data.words);
+      setWordToCheck(data.words[wordIndex].name);
     });
 
     socket.on('started', () => {
-      console.log("STARTED");
       setStarting(false);
       const intervalId = setInterval(() => {
         setCountdown(countdown => countdown - 1);
@@ -89,8 +89,16 @@ function Game({ socket }) {
       socket.off('pintor');
       socket.off('drawer_name');
       socket.off('started');
+      socket.off('game_data');
+
     };
   }, []);
+
+  useEffect(() => {
+    if (words.length > 0) {
+      setWordToCheck(words[wordIndex].name);
+    }
+  }, [wordIndex, words]);
 
   return (
     <>
@@ -106,7 +114,7 @@ function Game({ socket }) {
         </div>
       )}
       {!starting && roundEnded && (
-        <div style={{ textAlign: 'center', position: 'fixed', top: '50%', left: '50%', fontSize: '5rem', transform: 'translate(-50%, -50%)', zIndex: '1', backgroundColor: 'white', border: '1px solid black', pointerEvents: 'auto' }}>
+        <div style={{ textAlign: 'center', position: 'fixed', top: '50%', left: '50%', fontSize: '5rem', transform: 'translate(-50%, -50%)', zIndex: '1', backgroundColor: 'white', border: '1px solid black' }}>
           Last word was: {wordToCheck}<br></br><br></br>
           Next roun drawer: {drawerName}
         </div>
