@@ -1,9 +1,13 @@
 .Board {
   justify-items: center;
+  display: grid;
+  grid-template-columns:  1.4fr 0.4fr ;
+  justify-items: center;
 }
 
 .Board__draw,
 .Board__view {
+  z-index: 0;
   margin: 0 auto;
   background: #ffffff;
   border-radius: 4% 95% 6% 95%/95% 4% 92% 5%;
@@ -19,6 +23,16 @@
   cursor: url("../img/brush-click.cur"), pointer;
 }
 
-.board__settings {
-  float: right;
+.Board__settings {
+    margin: 50% auto;
+}
+
+.Board__Colors{
+  z-index: 1;
+  position: absolute;
+  transform: translate(450px, -250px);
+}
+
+.circle-picker {
+  margin: 0;
 }

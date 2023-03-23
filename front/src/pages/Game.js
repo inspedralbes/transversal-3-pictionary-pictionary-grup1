@@ -8,6 +8,7 @@ import React from 'react';
 import ConnectedUsersInGame from "../components/ConnectedUsersInGame";
 import WordGuess from "../components/WordGuess";
 import Description from "../components/Description";
+import CountDownTimer from "../components/CountdownTimer";
 import { useNavigate } from "react-router-dom";
 
 function Game({ socket }) {
@@ -17,7 +18,7 @@ function Game({ socket }) {
   const [pintor, setPintor] = useState(false);
   const [spectator, setSpectator] = useState(false);
   const [userMessages, setUserMessages] = useState([]);
-  
+
   const navigateToEndGame = useNavigate();
 
   const [showDrawer, setShowDrawer] = useState(true);
@@ -88,13 +89,14 @@ function Game({ socket }) {
         </div>
       )}
       {!starting && !showDrawer && (
-        <div style={{ display: 'flex' }}>
-          <div>
+        <div className="game">
+          {/* Right column */}
+          <div className="game__left">
             <ConnectedUsersInGame socket={socket} pintor={pintor} />
           </div>
 
           {/* Left column */}
-          <div>
+          <div className="game__right">
             {spectator ? (
               <Board socket={socket} pintor={pintor} />
             ) : (
@@ -102,6 +104,7 @@ function Game({ socket }) {
                 {pintor ? (
                   <div>
                     <div>
+                      <CountDownTimer socket={socket} />
                       <WordGuess className="game__word" socket={socket} />
                       <Description className="game__description" socket={socket} />
                       <Board socket={socket} pintor={pintor} />
@@ -118,6 +121,7 @@ function Game({ socket }) {
                         )}
                       </>
                     )}
+                    <CountDownTimer socket={socket} />
                     <Board socket={socket} pintor={pintor} />
                     <WordForm socket={socket} answerCorrect={result} /><br />
                   </>

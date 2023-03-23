@@ -260,38 +260,14 @@
     font-weight: normal;
     position: absolute;
     pointer-events: none;
-    left: 50px;
-    top: 5px;
-    width: 70%;
-    transition: 0.2s ease all;
-    -moz-transition: 0.2s ease all;
-    -webkit-transition: 0.2s ease all;
-    margin-left: 30px;
-    padding-left: 30px;
-}
-
-.form__joinLobby{
-    text-align: center;
-    color: #2272a0;
-    font-size: 25px;
-    font-weight: normal;
-    position: absolute;
-    pointer-events: none;
     left: 5px;
     top: 5px;
-    width: 70%;
+    width: 80%;
     transition: 0.2s ease all;
     -moz-transition: 0.2s ease all;
     -webkit-transition: 0.2s ease all;
     margin-left: 30px;
     padding-left: 30px;
-}
-
-.form__input:focus~.form__joinLobby,
-.form__input:valid~.form__joinLobby {
-    top: -20px;
-    font-size: 20px;
-    color: #8a1780;
 }
 
 /* active state */

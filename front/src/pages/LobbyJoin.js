@@ -119,14 +119,14 @@ function LobbyJoin({ socket }) {
                                     required
                                 ></input>
                                 <span className="form__inputBar"></span>
-                                <label className="form__joinLobby">Introduce your nickname</label>
+                                <label className="form__inputlabel">Introduce your nickname</label>
                                 </div>
                         </label>
                             <label className="JoinLobby__id--grid">
                             <div className="form__inputGroup">
                                 <input className="form__input"  value={lobbyId} onChange={handleChangeLobbyId}placeholder=" " type="text" required></input>
                                 <span className="form__inputBar"></span>
-                                <label className="form__joinLobby">Introduce lobby ID</label>
+                                <label className="form__inputlabel">Introduce lobby ID</label>
                             </div>
                         </label>
                         <div className="JoinLobby__button--grid">

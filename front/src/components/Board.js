@@ -12,8 +12,7 @@ function Board({ socket, pintor }) {
   const canvasRef2 = useRef(null);
   const [currentColor, setCurrentColor] = useState("#000");
   const [brushRadius, setBrushRadius] = useState(5);
-  let colors = ["black", "#ce0101", "#f7de03", "#5cb351", "#76c1df", "#ffffff"];
-  let moreColors = ['#ffbb00', '#ff8800', '#ff3300', '#f8479a', '#bb3acc', '#9242b8', '#6b42b8', '#563de0', '#4e96f3', '#8ad0f8', '#75c7b2', '#5ac560', '#037208', '#6b8316', '#75572a', '#534229', '#5e5a58', '#8b8a8a']
+  let moreColors = ["black", "#ce0101", "#f7de03", "#5cb351", "#76c1df", '#8b8a8a', "#ffffff", '#ffbb00', '#ff8800', '#ff3300', '#f8479a', '#bb3acc', '#8b8a8a', '#9242b8', '#6b42b8', '#563de0', '#4e96f3', '#8ad0f8', '#75c7b2', '#5ac560', '#037208', '#6b8316', '#75572a', '#534229', '#5e5a58', '#8b8a8a']
 
 
   const sendBoardDataToSocketIo = () => {
@@ -249,24 +248,23 @@ function Board({ socket, pintor }) {
   if (pintor) {
     return (
       <div className="Board">
-        <CountDownTimer socket={socket} />
 
-        <CirclePicker onChangeComplete={(color) => setCurrentColor(color.hex)} color={currentColor} colors={colors}></CirclePicker>
-        <br />
-        <details>
-          <summary>More colors</summary>
+        <div className="Board__canvas">
+          <canvas className="Board__draw" ref={canvasRef} width={1000} height={700} style={{ border: "3px solid #575757" }} />
+        </div>
+        <div className="Board__settings">
           <CirclePicker
+            width={'150px'}
             colors={moreColors}
             color={currentColor}
             onChangeComplete={(color) => setCurrentColor(color.hex)}
-          ></CirclePicker>
-        </details>
+          ></CirclePicker>         
+          <br />
+          <button onClick={clearBoard}>Clear</button>
+          <button id='eraser' onClick={eraser}>Eraser</button>
+          <input id="brushRadius" style={{ transform: 'rotate(270deg)' }} type={"range"} min="5" max="50" step={1} value={brushRadius} onChange={(e) => setBrushRadius(e.target.value)} ></input>
 
-        <button onClick={clearBoard}>Clear</button>
-        <button id='eraser' onClick={eraser}>Eraser</button>
-
-        <input id="brushRadius" type={"range"} min="5" max="50" step={1} value={brushRadius} onChange={(e) => setBrushRadius(e.target.value)} ></input>
-        <canvas className="Board__draw" ref={canvasRef} width={1000} height={700} style={{ border: "3px solid #575757" }} />
+        </div>
       </div>
     );
   }

@@ -1,7 +1,6 @@
 .game {
     display: grid;
-    grid-template-columns: 0.5fr 1.4fr;
-    gap: 0px 20px;
+    grid-template-columns: 0.4fr 1.4fr;
     justify-items: center;
 }
 
