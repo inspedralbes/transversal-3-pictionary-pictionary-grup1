@@ -37,4 +37,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::post('/getUserInfo', [UserController::class, 'getUserInfo']);  
     
     Route::post('/addCategory', [CategoryController::class, 'addCategory']);  
+
+    Route::post('/isUserLogged', [CategoryController::class, 'isUserLogged']); 
+    
 });
