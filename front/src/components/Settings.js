@@ -1,26 +1,11 @@
 import { useState, useEffect } from "react";
 
-function Settings({ socket }) {
+function Settings({ socket, start }) {
     const [roundDuration, setRoundDuration] = useState(0);
     const [ownerPlay, setOwnerPlay] = useState(false);
     const [nickname, setNickname] = useState("");
     const [error, setError] = useState("");
     const [firstTime, setFirstTime] = useState(true);
-
-    function handleFormSubmit(e) {
-        e.preventDefault();
-
-        setError("")
-        if (ownerPlay && nickname == "") {
-            setError("You need to choose a nickname in order to play!")
-        } else {
-            socket.emit("save_settings", {
-                roundDuration: roundDuration,
-                ownerPlay: ownerPlay,
-                nickname: nickname
-            });
-        }
-    }
 
     function handleChangeOwnerPlay() {
         setOwnerPlay(!ownerPlay);
@@ -40,8 +25,17 @@ function Settings({ socket }) {
             setFirstTime(false);
         }
 
+        if (firstTime) {
+            socket.emit("get_username")
+            setFirstTime(false);
+        }
+
         socket.on("lobby_settings", (data) => {
             setRoundDuration(data.roundDuration)
+        })
+
+        socket.on("username_saved", (data) => {
+            setNickname(data.name);
         })
 
         socket.on("username_saved", (data) => {
@@ -63,23 +57,37 @@ function Settings({ socket }) {
         socket.on("USER_ALR_CHOSEN_ERROR", () => {
             setError("The chosen username is already on use")
         })
+
+        socket.on("NO_USR_DEFINED", () => {
+            setError("You need to choose a nickname in order to play!")
+        })
     }, [])
+
+    useEffect(() => {
+        if (start) {
+            setError("")
+            socket.emit("save_settings", {
+                roundDuration: roundDuration,
+                ownerPlay: ownerPlay,
+                nickname: nickname
+            });
+        }
+    }, [start])
 
     return (
         <div>
             {error != "" && (<h1 className="error">{error}</h1>)}
-            <form onSubmit={handleFormSubmit}>
+            <form>
                 <label>{"Round duration (seconds)"} <input type="number" value={roundDuration} onChange={handleChangeRoundDuration} /></label><br />
-                <label>{"Will the lobby creator play? "} <input type="checkbox" value={ownerPlay} onChange={handleChangeOwnerPlay} /></label><br />
+                <label>{"Will the lobby creator play?"} <input type="checkbox" value={ownerPlay} onChange={handleChangeOwnerPlay} /></label><br />
                 {ownerPlay ?
                     <>
-                        <label>{"Enter your nickname:"} 
+                        <label>{"Enter your nickname:"}
                             <input type="text" value={nickname} onChange={handleChangeNickname} />
                         </label><br />
                     </> :
                     <>
                     </>}
-                <button type="submit">Save settings</button>
             </form>
         </div>
     );
