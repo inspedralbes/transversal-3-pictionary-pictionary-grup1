@@ -36,7 +36,7 @@
     display: none;
 }
 
-.userListInGame__item--correct{
+.userListInGame__item--correct {
     color: #20bf55;
 }
 
@@ -228,5 +228,56 @@
                 0 100%,
                 min(8%, 13px) calc(100% - min(8%, 13px)));
     }
+
+}
+
+
+
+/* ========================================================================================================================================================================= */
+/* =======================================================================CONECTED USERS IN GAME============================================================================ */
+/* ========================================================================================================================================================================= */
+
+
+.game__connectedUsersInGame {
+    margin: 25px;
+    width: 80%;
+    height: max-content;
+    border: dashed;
+    border-color: #535353;
+    border-width: 2px 3px 2px 2px;
+    border-radius: 10% 10% 92% 5%/4% 10% 6% 10%;
+    transform: rotate(-1deg);
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.userListInGame__item:before{
+    display: none;
+}
+
+.userListInGame__item{
+    font-size: 200%;
+}
+
+.GameItem__name p{
+    margin: 0;
+}
+
+#userList{
+    padding: 20px;
+}
+
+.GameItem__name{
+    margin: 10px;
+    border: solid ;
+    padding: 15px;
+    border-width: 2px 3px 2px 2px;
+    border-radius: 10% 10% 92% 5%/4% 10% 6% 10%;
+    transform: rotate(-1deg);
+    transition: all 0.2s;
+}
+
+.GameItem__name:hover{
+    box-shadow: 0px 10px 34px 0px rgba(0, 0, 0, 0.2);
 
 }

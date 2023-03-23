@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import ConnectedUsers from "../components/ConnectedUsers";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../styles/LobbyCreation.css"
+
 
 function LobbyJoin({ socket }) {
     const [lobbyId, setLobbyId] = useState("");
@@ -45,6 +46,23 @@ function LobbyJoin({ socket }) {
         });
     }
 
+    
+    function changeColor() {
+        document.getElementById("copyId").addEventListener('mouseover', function () {
+            let colors = ["#70a1da", "#70da92", "#cada70", "#858cb7", "#f6a39e", "#ab605c", "#70ab5c", "#ed96f1", "#e05b8c", "#e0ce5b", "#997490", "#9dff4e", "#ffd64e", "#e24eff", "#4ebeff", "#b2b5dc", "#20bf55", "#bf97ff", "#ff9797", "#97e5ff"];
+            let color = colors[Math.floor(Math.random() * 21)];
+            document.getElementById("copyId").style.color = color;
+        });
+
+        document.getElementById("copyId").addEventListener('mouseout', function () {
+            document.getElementById("copyId").style.color = '#5c5b5b';
+        });
+    }
+
+    function copyId() {
+        navigator.clipboard.writeText(lobbyId);
+    }
+
     useEffect(() => {
         if (firstTime) {
             socket.emit("get_username")
@@ -83,30 +101,47 @@ function LobbyJoin({ socket }) {
     if (!insideLobby) {
         return (
             <div>
-                {error !== "" && (<h1 className="error">{error}</h1>)}
-                <form onSubmit={handleSubmit}>
-                    <label>Enter your nickname
-                        <input type="text" value={username} onChange={handleChangeUsername} disabled={registeredUsername} placeholder="nickname..." />
-                    </label>
-                    {registeredUsername && <button onClick={handleEnableUsername}>Change nickname</button>}
-
-                    <br />
-
-                    <label>Enter lobby Identifier
-                        <input type="text" value={lobbyId} onChange={handleChangeLobbyId} placeholder="code..." />
-                    </label>
-
-                    <button type="submit">Join</button>
-                </form>
+                <Link to="/">
+                    <button className="createGame__leaveButton">Go back</button>
+                </Link>
+                <div className="JoinLobby">
+                    {error !== "" && (<h1 className="error">{error}</h1>)}
+                    <form className="JoinLobby__form--grid" onSubmit={handleSubmit}>
+                        <label className="JoinLobby__nickname--grid">
+                                <div className="form__inputGroup">
+                                <input
+                                    id="nickname"
+                                    value={username}
+                                    className="form__input"
+                                    onChange={handleChangeUsername}
+                                    placeholder=" "
+                                    type="text"
+                                    required
+                                ></input>
+                                <span className="form__inputBar"></span>
+                                <label className="form__joinLobby">Introduce your nickname</label>
+                                </div>
+                        </label>
+                            <label className="JoinLobby__id--grid">
+                            <div className="form__inputGroup">
+                                <input className="form__input"  value={lobbyId} onChange={handleChangeLobbyId}placeholder=" " type="text" required></input>
+                                <span className="form__inputBar"></span>
+                                <label className="form__joinLobby">Introduce lobby ID</label>
+                            </div>
+                        </label>
+                        <div className="JoinLobby__button--grid">
+                            <button className="JoinLobby__button" type="submit">Join lobby</button>
+                        </div>
+                    </form>
+                </div>
             </div>
-
         );
     } else {
         return (
             <div>
                 <button className="createGame__leaveButton" onClick={handleLeave}>Leave lobby</button>
                 {error !== "" && (<h1 className="error">{error}</h1>)}
-                <h1 className="identifier"><span>I</span><span>D</span><span>E</span><span>N</span><span>T</span><span>I</span><span>F</span><span>I</span><span>E</span><span>R</span>: {lobbyId}</h1>
+                <h1 className="identifier"><span className='span'>I</span><span className='span'>D</span><span className='span'>E</span><span className='span'>N</span><span className='span'>T</span><span className='span'>I</span><span className='span'>F</span><span className='span'>I</span><span className='span'>E</span><span className='span'>R</span>: <span className='span' id="copyId" onClick={copyId} onMouseOver={changeColor}><p>CLICK TO COPY THE ID</p>{lobbyId}</span></h1>
                 <ConnectedUsers socket={socket}></ConnectedUsers>
             </div>
 

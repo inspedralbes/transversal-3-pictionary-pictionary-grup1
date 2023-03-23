@@ -9,11 +9,20 @@ function Description({ socket }) {
   const [word, setWord] = useState("");
 
   useEffect(() => {
+
+    socket.on('game_data', (data) => {
+      console.log(data);
+      if (data.words != undefined) {
+        setWord(data.words[0].name);
+      }
+    });
+
     socket.on("current_word", (data) => {
       if (data != undefined) {
         setWord(data.word.name);
       }
     });
+
     return () => {
       socket.off("word_to_check");
     };
@@ -26,7 +35,7 @@ function Description({ socket }) {
         try {
           if (refresh < data[0].meanings[0].definitions.length) {
             setDescription(data[0].meanings[0].definitions[refresh].definition);
-          }else {
+          } else {
             setRefresh(0);
           }
         } catch (error) {
@@ -36,10 +45,10 @@ function Description({ socket }) {
   }, [refresh, word]);
 
   return (
-    <>
-      <p>{description}</p>
-      <button onClick={() => setRefresh(refresh + 1)}>Refresh</button>
-    </>
+    <div className="Description">
+      <p className="Description__text">{description}</p>
+      <button className="Description__button" onClick={() => setRefresh(refresh + 1)}>Other definition</button>
+    </div>
   );
 }
 

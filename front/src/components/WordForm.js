@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import "../styles/Game.css";
 
 function WordForm({ socket, answerCorrect }) {
   const [word, setWord] = useState('');
@@ -23,7 +24,7 @@ function WordForm({ socket, answerCorrect }) {
   } else {
     return (
       <div>
-        <form onSubmit={handleFormSubmit}>
+        <form className="WordForm" onSubmit={handleFormSubmit}>
           <input type="text" value={word} onChange={handleChange} placeholder="Enter a word" />
           <button type="submit">Check</button>
         </form>

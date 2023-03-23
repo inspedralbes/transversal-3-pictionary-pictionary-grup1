@@ -1,5 +1,6 @@
 import logo from "../logo.svg";
 import "../App.css";
+import "../styles/Game.css";
 import { useState, useEffect } from "react";
 import Board from "../components/Board";
 import WordForm from '../components/WordForm';
@@ -7,6 +8,7 @@ import React from 'react';
 import ConnectedUsersInGame from "../components/ConnectedUsersInGame";
 import WordGuess from "../components/WordGuess";
 import Description from "../components/Description";
+import { useNavigate } from "react-router-dom";
 
 function Game({ socket }) {
   const [starting, setStarting] = useState(true);
@@ -15,8 +17,12 @@ function Game({ socket }) {
   const [pintor, setPintor] = useState(false);
   const [spectator, setSpectator] = useState(false);
   const [userMessages, setUserMessages] = useState([]);
+
+  const navigateToEndGame = useNavigate();
+
   const [showDrawer, setShowDrawer] = useState(true);
   const [drawerName, setDrawerName] = useState();
+  const [roundEnded, setRoundEnded] = useState(false);
 
   const messageResponses = {
     wordAttemptError: "You failed the attempt!",
@@ -31,14 +37,27 @@ function Game({ socket }) {
     socket.on('pintor', (data) => {
       setPintor(data.pintor);
       console.log(data);
-      setResult(null)
+      setResult(null);
     });
 
     socket.on('drawer_name', (data) => {
       setDrawerName(data.name);
     });
 
+    socket.on("round_ended", () => {
+      setRoundEnded(true);
+      const intervalId = setInterval(() => {
+        setCountdown(countdown => countdown - 1);
+      }, 1000);
+      setTimeout(() => {
+        clearInterval(intervalId);
+        setRoundEnded(false);
+        setCountdown(3);
+      }, 3000);
+    })
+
     socket.on('spectator', (data) => {
+      console.log("Spectator", data);
       setSpectator(data.spectator);
     });
 
@@ -52,7 +71,12 @@ function Game({ socket }) {
         clearInterval(intervalId);
         setStarting(false);
         setShowDrawer(false);
+        setCountdown(3);
       }, 3000);
+    })
+
+    socket.on("game_ended", () => {
+      navigateToEndGame("/endGame");
     })
 
     return () => {
@@ -67,19 +91,26 @@ function Game({ socket }) {
   return (
     <>
       {starting && (
-        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', fontSize: '10rem' }}>
+        <div style={{ textAlign: 'center', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', fontSize: '10rem' }}>
           Loading
         </div>
       )}
       {!starting && showDrawer && (
-        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', fontSize: '10rem' }}>
+        <div style={{ textAlign: 'center', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', fontSize: '5rem' }}>
           {countdown}<br></br><br></br>
           Drawer: {drawerName}
         </div>
       )}
+      {!starting && roundEnded && (
+          <div style={{ textAlign: 'center', position: 'fixed', top: '50%', left: '50%', fontSize: '5rem', transform: 'translate(-50%, -50%)', zIndex: '1', backgroundColor: 'white', border: '1px solid black', pointerEvents: 'auto' }}>
+            {countdown}<br></br><br></br>
+            Round change
+            Last word was:
+            Drawer: {drawerName}
+          </div>
+      )}
       {!starting && !showDrawer && (
-        <div style={{ display: 'flex' }}>
-          {/* Right column */}
+        <div style={{ display: 'flex', pointerEvents: roundEnded ? 'none' : 'auto'}}>
           <div>
             <ConnectedUsersInGame socket={socket} pintor={pintor} />
           </div>
@@ -93,8 +124,8 @@ function Game({ socket }) {
                 {pintor ? (
                   <div>
                     <div>
-                      <WordGuess socket={socket} />
-                      <Description socket={socket} />
+                      <WordGuess className="game__word" socket={socket} />
+                      <Description className="game__description" socket={socket} />
                       <Board socket={socket} pintor={pintor} />
                     </div>
                   </div>
@@ -109,14 +140,15 @@ function Game({ socket }) {
                         )}
                       </>
                     )}
-                    <WordForm socket={socket} answerCorrect={result} /><br />
                     <Board socket={socket} pintor={pintor} />
+                    <WordForm socket={socket} answerCorrect={result} /><br />
                   </>
                 )}
               </>
             )}
           </div>
         </div>
+                        
       )}
     </>
   );
