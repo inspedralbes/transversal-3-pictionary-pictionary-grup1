@@ -42,10 +42,6 @@ function LobbyCreation({ socket }) {
     }
 
     useEffect(() => {
-        if (firstTime) {
-            socket.emit("new_lobby");
-            setFirstTime(false)
-        }
 
         socket.on("lobby_info", (data) => {
             setLobbyId(data.lobbyIdentifier);
@@ -64,8 +60,11 @@ function LobbyCreation({ socket }) {
         })
 
         socket.on("categories", (data) => {
-            console.log(data);
             setCategoriesDataLoaded(true);
+            if (firstTime) {
+                socket.emit("new_lobby");
+                setFirstTime(false)
+            }
         })
 
         socket.on("game_started", () => {
