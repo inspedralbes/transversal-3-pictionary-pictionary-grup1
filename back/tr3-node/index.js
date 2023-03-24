@@ -197,12 +197,16 @@ socketIO.on('connection', socket => {
 
     lobbies.forEach(lobby => {
       if (lobby.lobbyIdentifier == socket.data.current_lobby && !lobby.started) {
-        lobby.rounds = lobby.members.length;
-        amountOfRounds = lobby.rounds;
-        socketIO.to(socket.data.current_lobby).emit('game_started');
-        setLobbyWord(socket.data.current_lobby, amountOfRounds);
-        enviarPintor(socket.data.current_lobby)
-        sendUserList(socket.data.current_lobby);
+        if (lobby.members.length > 1) {
+          lobby.rounds = lobby.members.length;
+          amountOfRounds = lobby.rounds;
+          socketIO.to(socket.data.current_lobby).emit('game_started');
+          setLobbyWord(socket.data.current_lobby, amountOfRounds);
+          enviarPintor(socket.data.current_lobby)
+          sendUserList(socket.data.current_lobby);
+        } else {
+          socketIO.to(socket.id).emit('NOT_ENOUGH_PLAYERS');
+        }
       }
     });
   });
