@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import "../styles/LobbyCreation.css"
 
 function LobbyCreation({ socket }) {
-    const [categoriesDataLoaded, setCategoriesDataLoaded] = useState(true);
+    const [categoriesDataLoaded, setCategoriesDataLoaded] = useState(false);
     const [lobbyId, setLobbyId] = useState("");
     const [firstTime, setFirstTime] = useState(true);
     const [starting, setStarting] = useState(false);
@@ -42,10 +42,6 @@ function LobbyCreation({ socket }) {
     }
 
     useEffect(() => {
-        if (firstTime) {
-            socket.emit("new_lobby");
-            setFirstTime(false)
-        }
 
         socket.on("lobby_info", (data) => {
             setLobbyId(data.lobbyIdentifier);
@@ -60,6 +56,14 @@ function LobbyCreation({ socket }) {
                 setSent(true)
             } else {
                 setStarting(false);
+            }
+        })
+
+        socket.on("categories", (data) => {
+            setCategoriesDataLoaded(true);
+            if (firstTime) {
+                socket.emit("new_lobby");
+                setFirstTime(false)
             }
         })
 

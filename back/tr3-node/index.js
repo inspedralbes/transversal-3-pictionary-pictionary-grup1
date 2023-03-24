@@ -58,6 +58,7 @@ let i = 0;
 const laravelRoute = "http://127.0.0.1:8000/index.php/";
 
 let lobbies = [];
+let cont = 0;
 
 const maxSettings = {
   maxTime: 120,
@@ -117,22 +118,21 @@ socketIO.on('connection', socket => {
   })
 
   socket.on("get_categories", () => {
-    console.log("GET CATEGORIES");
-    axios
-      .post(laravelRoute + "isUserLogged", {
-        token: socket.data.token,
+    sendCategoriesToUser(socket)
+  })
+
+  async function sendCategoriesToUser(socket) {
+    await axios
+      .post(laravelRoute + "getCategories", {
+        token: socket.data.token
       })
       .then(function (response) {
-        if (response.data) {
-          console.log("LOGGED IN");
-        } else {
-          console.log("NOT LOGGED IN");
-        }
+        socketIO.to(socket.id).emit("categories", response.data);
       })
       .catch(function (error) {
         console.log(error);
       });
-  })
+  }
 
   socket.on("new_lobby", () => {
     let existeix = false;
@@ -312,7 +312,8 @@ socketIO.on('connection', socket => {
                 idUser: socket.data.id,
                 username: data.nickname,
                 lastAnswerCorrect: false,
-                lastAnswer: ""
+                lastAnswer: "",
+                points: 0
               });
 
               sendUserList(socket.data.current_lobby)
@@ -385,6 +386,7 @@ socketIO.on('connection', socket => {
 
   socket.on('try_word_attempt', (data) => {
     let wordToCheck;
+
     lobbies.forEach(lobby => {
       if (lobby.lobbyIdentifier == socket.data.current_lobby) {
         if (!lobby.ended) {
@@ -394,14 +396,29 @@ socketIO.on('connection', socket => {
             socketIO.to(socket.id).emit('answer_result', {
               resultsMatch: true,
             })
+            let pointsRound = 0;
+            let userTime = lobby.settings.roundDuration - cont;
+
+            if (lobby.settings.roundDuration - userTime > lobby.settings.roundDuration - 20) {
+              pointsRound = lobby.settings.roundDuration - 20;
+            }
+            else {
+              pointsRound = lobby.settings.roundDuration - userTime;
+            }
 
             lobby.members.forEach(member => {
-              if (member.idUser == socket.data.id) {
+
+              if (member.username == lobby.currentDrawer) {
+                member.points = member.points + 10;
+              }
+              else if (member.idUser == socket.data.id) {
                 member.lastAnswerCorrect = true;
                 member.lastAnswer = data.word;
+                member.points = member.points + pointsRound;
               }
             });
             sendUserList(socket.data.current_lobby)
+
           } else {
             socketIO.to(socket.id).emit('answer_result', {
               resultsMatch: false,
@@ -439,7 +456,7 @@ function setCounter(lobbyId) {
   let timer;
   lobbies.forEach(lobby => {
     if (lobby.lobbyIdentifier == lobbyId && !lobby.ended) {
-      let cont = lobby.settings.roundDuration
+      cont = lobby.settings.roundDuration
       cont++;
       timer = setInterval(() => {
         cont--;
@@ -511,7 +528,8 @@ function joinLobby(socket, lobbyIdentifier, username) {
           idUser: socket.data.id,
           username: username,
           lastAnswerCorrect: false,
-          lastAnswer: ""
+          lastAnswer: "",
+          points: 0
         });
 
         socketIO.to(socket.id).emit("lobby_info", lobby)
@@ -602,7 +620,8 @@ function sendUserList(room) {
           name: member.username,
           lastAnswerCorrect: member.lastAnswerCorrect,
           lastAnswer: member.lastAnswer,
-          painting: member.painting
+          painting: member.painting,
+          points: member.points
         });
       });
     }
