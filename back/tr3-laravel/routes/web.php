@@ -38,6 +38,6 @@ Route::group(['middleware' => ['web']], function () {
     
     Route::post('/addCategory', [CategoryController::class, 'addCategory']);  
 
-    Route::get('/getCategories', [CategoryController::class, 'getCategories']);  
+    Route::post('/getCategories', [CategoryController::class, 'getCategories']);  
 
 });

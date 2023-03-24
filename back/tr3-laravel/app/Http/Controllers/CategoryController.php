@@ -139,16 +139,13 @@ class CategoryController extends Controller
         return response() -> json($sendCategory);
     }
 
-    public function getCategories ()
+    public function getCategories (Request $request)
     {  
-        //Request $request
-        $privacy = 'public';
         $privateCategories = [];
         $publicCategories = [];
         $categories = (object) ['public'=> [], 'private' => []];
 
-        //$request -> privacy == 'both'
-        if ($privacy == 'both') {
+        if ($request -> privacy == 'both') {
             //Get all private categories where the user is the creator.
             $getPrivate = Category::where('privacy', 'private')
             -> where('creatorId', $request->session()->get('userId'))
@@ -170,6 +167,7 @@ class CategoryController extends Controller
                 }
         }
 
+        //Always get public categories.
         $getPublic = Category::where('privacy', 'public') -> get();
             for ($i = 0; $i < count($getPublic); $i ++) { 
                 if ($getPublic[$i] -> creator_id != null) {
