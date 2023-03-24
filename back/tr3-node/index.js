@@ -117,23 +117,13 @@ socketIO.on('connection', socket => {
   })
 
   socket.on("get_categories", () => {
-    axios
-      .post(laravelRoute + "isUserLogged", {
-        token: socket.data.token,
-      })
-      .then(function (response) {
-        sendCategoriesToUser(socket, response.data)
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+    sendCategoriesToUser(socket)
   })
 
-  async function sendCategoriesToUser(socket, both) {
-    let privacy = both?"both":"public";
+  async function sendCategoriesToUser(socket) {
     await axios
       .post(laravelRoute + "getCategories", {
-        privacy: privacy,
+        token: socket.data.token
       })
       .then(function (response) {
         socketIO.to(socket.id).emit("categories", response.data);

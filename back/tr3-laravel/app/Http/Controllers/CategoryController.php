@@ -34,6 +34,7 @@ class CategoryController extends Controller
     {
         $userId = null;
 
+        if (!($request -> token == null || $request -> token == "" )) {
         //Check if the user is logged, returns 'null' if the user is not logged in.
         [$id, $token] = explode('|', $request -> token, 2);
         $accessToken = PersonalAccessToken::find($id);
@@ -42,6 +43,7 @@ class CategoryController extends Controller
             $userId = $accessToken -> tokenable_id;
             $request->session()->put('userId', $userId);
         }
+    }
 
         return $userId;
     }
@@ -145,10 +147,13 @@ class CategoryController extends Controller
         $publicCategories = [];
         $categories = (object) ['public'=> [], 'private' => []];
 
-        if ($request -> privacy == 'both') {
+        //Check if user is logged
+        $userId = $this->checkUserLogged($request);
+
+        if ($userId != null) {
             //Get all private categories where the user is the creator.
             $getPrivate = Category::where('privacy', 'private')
-            -> where('creatorId', $request->session()->get('userId'))
+            -> where('creator_id', $userId)
             -> get();
                 $creatorName = User::where('id', $request->session()->get('userId')) -> first();
                 for ($i = 0; $i < count($getPrivate); $i ++) { 

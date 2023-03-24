@@ -99,16 +99,16 @@ function Register({ socket }) {
             <h1>ADD NEW CATEGORY</h1>
             <br />
             <div className="form__form">
-                <div className="form__inputGroup">
-                    <span className="form__inputBar"></span>
-                    <label className="form__inputlabel"> Name
-                        <input className="form__input" style={{ color: color.name }} placeholder=" " type="text" onChange={(e) => setUserData({ ...userData, name: e.target.value })} required></input>
+                <div className="form">
+                    <span className=""></span>
+                    <label className=""> Name
+                        <input className="" style={{ color: color.name }} placeholder=" " type="text" onChange={(e) => setUserData({ ...userData, name: e.target.value })} required></input>
                     </label>
                 </div>
-                <div className="form__inputGroup">
-                    <span className="form__inputBar"></span>
-                    <label className="form__inputlabel"> Do you want the category to be public?
-                        <input className="form__input" style={{ color: color.privacy }} placeholder=" " type="checkbox" onChange={(e) => setUserData({ ...userData, privacy: e.target.checked })} required></input>
+                <div className="">
+                    <span className=""></span>
+                    <label className=""> Do you want the category to be public?
+                        <input className="" style={{ color: color.privacy }} placeholder=" " type="checkbox" onChange={(e) => setUserData({ ...userData, privacy: e.target.checked })} required></input>
                     </label>
                 </div>
             </div>
