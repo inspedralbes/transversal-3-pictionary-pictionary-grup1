@@ -1,10 +1,3 @@
-<<<<<<< HEAD
-import { useState, useEffect, useRef } from "react";
-import React from "react";
-import "../styles/Board.css"
-import CanvasDraw from "react-canvas-draw";
-import heart from "../img/Heart_corazón.svg.png"
-=======
 import { useEffect, useRef, useState } from "react";
 import { CirclePicker, SketchPicker } from "react-color";
 import "../styles/Board.css";
@@ -28,23 +21,6 @@ function Board({ socket, pintor }) {
     socket.emit("save_coord", data);
   };
 
-<<<<<<< HEAD
-  useEffect(() => {
-    // const interval = setInterval(() => {
-    //   setContador(contador + 1);
-    //   console.log(contador);
-    //   sendBoardDataToSocketIo();
-    // }, 1000);    
-    socket.emit("give_me_the_board");
-    
-    socket.on("pintor", (data) => {
-      setPintor(data.pintor);
-    });
-
-    socket.on("new_board_data", (data) => {
-      if (!pintor) {
-        secondCanvas.current.loadSaveData(data.board);
-=======
   const undo = (e) => {
     let endLine = false;
     let auxNum = 0;
@@ -66,7 +42,6 @@ function Board({ socket, pintor }) {
             auxNum++;
           }
         }
->>>>>>> develop
       }
       arrayRedo.push("nuevaLinea");
 
@@ -303,6 +278,6 @@ function Board({ socket, pintor }) {
       </div>
     );
   }
-  }
+}
 
 export default Board;

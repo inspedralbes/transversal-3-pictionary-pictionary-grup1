@@ -6,18 +6,6 @@ import "../styles/LandingPage.css";
 
 
 function LandingPage() {
-<<<<<<< HEAD
-  
-return (
-  <div className='ldPage' >
-    {/* <button className='ldPage__loginButton'>Login</button> */}
-
-    <h1 className='ldPage__title'>Pintur.io </h1>
-    
-    <div className='ldPage__buttonsContainer'>
-      <Link to='/createlobby'><button className='ldPage__buttons button-55'>Create game <i class="icon-edit"></i></button></Link>
-      <Link to='/joinlobby'><button className='ldPage__buttons button-55'>Join game <i class="icon-user-plus"></i></button></Link>
-=======
   function changeColor() {
     document.getElementById("brush").addEventListener('mouseover', function () {
         let colors = ["#70a1da", "#70da92", "#cada70", "#858cb7", "#f6a39e", "#ab605c", "#70ab5c", "#ed96f1", "#e05b8c", "#e0ce5b", "#997490", "#9dff4e", "#ffd64e", "#e24eff", "#4ebeff", "#b2b5dc", "#20bf55", "#bf97ff", "#ff9797", "#97e5ff"];
@@ -49,7 +37,6 @@ return (
         </div>
       </div>
     </div>
->>>>>>> develop
     </div>
 );
 }

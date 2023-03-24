@@ -1,12 +1,7 @@
 import React, { useState } from 'react';
 import "../styles/Game.css";
 
-<<<<<<< HEAD
-
-function WordForm(props) {
-=======
 function WordForm({ socket, answerCorrect }) {
->>>>>>> develop
   const [word, setWord] = useState('');
 
   function handleFormSubmit(e) {

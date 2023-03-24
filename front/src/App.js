@@ -1,5 +1,5 @@
 import logo from "./logo.svg";
-import "./styles/App.css";
+import "./App.css";
 import { useState, useEffect } from "react";
 import Board from "./components/Board";
 import WordForm from './components/WordForm';

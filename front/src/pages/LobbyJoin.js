@@ -3,6 +3,7 @@ import ConnectedUsers from "../components/ConnectedUsers";
 import { Link, useNavigate } from "react-router-dom";
 import "../styles/LobbyCreation.css"
 
+
 function LobbyJoin({ socket }) {
     const [lobbyId, setLobbyId] = useState("");
     const [username, setUsername] = useState("");
@@ -99,13 +100,6 @@ function LobbyJoin({ socket }) {
 
     if (!insideLobby) {
         return (
-<<<<<<< HEAD
-            <div className="lj">
-                {error != "" && (<h1 className="error">{error}</h1>)}
-                <form onSubmit={handleSubmit} className='lj__form'>
-                    <input type="text" value={lobbyId} onChange={handleChange} className='lj__form__input' placeholder="Enter lobby identifier" />
-                    <button type="submit" className='lj__form__btn'>Join</button>
-=======
             <div>
                 <Link to="/">
                     <button className="createGame__leaveButton">Go back</button>
@@ -144,16 +138,10 @@ function LobbyJoin({ socket }) {
         );
     } else {
         return (
-<<<<<<< HEAD
-            <div className="lj">
-                <button onClick={handleLeave}>Leave lobby</button>
-                {error != "" && (<h1 className="error">{error}</h1>)}
-                <h1>Identifier: {lobbyId}</h1>
-=======
             <div>
                 <button className="createGame__leaveButton" onClick={handleLeave}>Leave lobby</button>
                 {error !== "" && (<h1 className="error">{error}</h1>)}
-                <h1 className="identifier"><span>I</span><span>D</span><span>E</span><span>N</span><span>T</span><span>I</span><span>F</span><span>I</span><span>E</span><span>R</span>: {lobbyId}</h1>
+                <h1 className="identifier"><span className='span'>I</span><span className='span'>D</span><span className='span'>E</span><span className='span'>N</span><span className='span'>T</span><span className='span'>I</span><span className='span'>F</span><span className='span'>I</span><span className='span'>E</span><span className='span'>R</span>: <span className='span' id="copyId" onClick={copyId} onMouseOver={changeColor}><p>CLICK TO COPY THE ID</p>{lobbyId}</span></h1>
                 <ConnectedUsers socket={socket}></ConnectedUsers>
             </div>
 

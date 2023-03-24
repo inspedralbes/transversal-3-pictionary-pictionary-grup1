@@ -1,10 +1,3 @@
-<<<<<<< HEAD
-import { useEffect } from 'react';
-import { NavLink } from 'react-router-dom';
-import App from '../App';
-import "../styles/Game.css"
-
-=======
 import logo from "../logo.svg";
 import "../App.css";
 import "../styles/Game.css";
@@ -96,11 +89,6 @@ function Game({ socket }) {
   }, []);
 
   return (
-<<<<<<< HEAD
-    <div >
-      Game
-      {/* <NavLink to='/endGame'><button>End</button></NavLink> */}
-=======
     <>
       {starting && (
         <div style={{textAlign: 'center', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', fontSize: '10rem' }}>
@@ -125,7 +113,6 @@ function Game({ socket }) {
           <div>
             <ConnectedUsersInGame socket={socket} pintor={pintor} />
           </div>
->>>>>>> develop
 
           {/* Left column */}
           <div>
