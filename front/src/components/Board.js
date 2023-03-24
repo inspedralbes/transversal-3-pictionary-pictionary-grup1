@@ -180,12 +180,33 @@ function Board({ socket, pintor }) {
         x = newX;
         y = newY;
         arrayDatos.push({ x, y, currentColor, brushRadius });
+        console.log(arrayDatos);
         sendBoardDataToSocketIo();
       }
 
-      function handleMouseUp() {
+      function handleMouseUp(evt) {
         isDrawing = false;
-        arrayDatos.push("nuevaLinea");
+        
+        if (x == evt.offsetX && y == evt.offsetY) {
+          
+          context.beginPath();
+          context.moveTo(x, y);
+          context.lineTo(evt.offsetX, evt.offsetY);
+          context.lineCap = "round";
+          context.lineJoin = 'round';
+          context.strokeStyle = currentColor;
+          context.lineWidth = brushRadius;
+          context.stroke();
+          arrayDatos.push({ x, y, currentColor, brushRadius });
+          console.log(arrayDatos);
+          arrayDatos.push("newPoint");
+
+          sendBoardDataToSocketIo();
+        }
+        else {
+          arrayDatos.push("nuevaLinea");
+
+        }
       }
 
       function handleMouseOut() {
@@ -228,13 +249,19 @@ function Board({ socket, pintor }) {
           context.clearRect(0, 0, canvas.width, canvas.height);
           context.beginPath();
           context.moveTo(data.board.arrayDatos[0].x, data.board.arrayDatos[0].y);
-          for (let i = 1; i < data.board.arrayDatos.length; i++) {
+          for (let i = 0; i < data.board.arrayDatos.length; i++) {
             if (data.board.arrayDatos[i] === "nuevaLinea") {
               context.stroke();
               context.beginPath();
               context.moveTo(data.board.arrayDatos[i + 1].x, data.board.arrayDatos[i + 1].y);
               i++;
-            } else {
+            } else if (data.board.arrayDatos[i] === "newPoint") {
+              context.beginPath();
+              context.moveTo(data.board.arrayDatos[i + 1].x, data.board.arrayDatos[i + 1].y);
+              context.lineTo(data.board.arrayDatos[i + 1].x, data.board.arrayDatos[i + 1].y);
+              i += 2;
+            } 
+            else {
               context.lineTo(data.board.arrayDatos[i].x, data.board.arrayDatos[i].y);
             }
             context.lineWidth = data.board.arrayDatos[i].brushRadius;
