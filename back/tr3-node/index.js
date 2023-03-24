@@ -79,7 +79,7 @@ socketIO.on('connection', socket => {
 
   const random_hex_color_code = () => {
     let n = Math.floor(Math.random() * 999999);
-    return n.toString();
+    return n.toString().padStart(6, '0');
   };
 
   socket.on("send token", (data) => {
