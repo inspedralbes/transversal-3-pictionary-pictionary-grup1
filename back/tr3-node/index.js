@@ -454,7 +454,7 @@ function setCounter(lobbyId) {
           }
         });
 
-        if (cont == 45 || correct == lobby.members.length - 1) {
+        if (cont == 50 || correct == lobby.members.length - 1) {
           if (lobby.actualRound < lobby.rounds) {
             lobby.actualRound++;
           }
@@ -463,7 +463,8 @@ function setCounter(lobbyId) {
             lobby.ended = true;
             socketIO.to(lobbyId).emit("game_ended")
           } else {
-            socketIO.to(lobbyId).emit("round_ended", { roundIndex: lobby.actualRound });
+            let motivo = cont == 50 ? "time" : "perfect"
+            socketIO.to(lobbyId).emit("round_ended", { roundIndex: lobby.actualRound, motivo: motivo });
           }
           clearInterval(timer)
         }
