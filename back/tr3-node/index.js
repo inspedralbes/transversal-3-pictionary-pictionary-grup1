@@ -260,7 +260,10 @@ socketIO.on("connection", (socket) => {
 
       console.log(timeCounter);
       if (timeCounter == 0) {
+        console.log("TIME CLEAR");
         clearInterval(timer);
+        console.log(timer);
+        
       }
     }, timeBetweenLetters * 1000);
   });
