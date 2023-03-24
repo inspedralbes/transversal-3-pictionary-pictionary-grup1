@@ -20,7 +20,6 @@ function ConnectedUsersInGame({ socket, pintor }) {
         }
         socket.on("lobby_user_list", (data) => {
             setUserList(data);
-            console.log(data);
         });
     }, [])
 
