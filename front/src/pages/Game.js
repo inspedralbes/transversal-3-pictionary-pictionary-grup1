@@ -16,13 +16,13 @@ function Game({ socket }) {
   const [countdown, setCountdown] = useState(3);
   const [result, setResult] = useState(null);
   const [pintor, setPintor] = useState(false);
+  const [messageWin, setMessageWin] = useState(false);
   const [spectator, setSpectator] = useState(false);
   const [showDrawer, setShowDrawer] = useState(true);
   const [drawerName, setDrawerName] = useState();
   const [roundEnded, setRoundEnded] = useState(false);
   const [wordToCheck, setWordToCheck] = useState("");
   const [wordIndex, setWordIndex] = useState(0);
-
   const [words, setWords] = useState([]);
 
   const messageResponses = {
@@ -33,6 +33,15 @@ function Game({ socket }) {
   useEffect(() => {
     socket.on('answer_result', (data) => {
       setResult(data.resultsMatch);
+      setMessageWin(true);
+      const intervalId = setInterval(() => {
+        setCountdown(countdown => countdown - 1);
+      }, 1000);
+      setTimeout(() => {
+        clearInterval(intervalId);
+        setCountdown(3);
+        setMessageWin(false)
+      }, 3000);
     });
 
     socket.on('pintor', (data) => {
@@ -116,9 +125,15 @@ function Game({ socket }) {
           Drawer: {drawerName}
         </div>
       )}
-      {!starting && roundEnded && (
+      {!starting && roundEnded && !result && (
         <div style={{ textAlign: 'center', position: 'fixed', top: '50%', left: '50%', fontSize: '5rem', transform: 'translate(-50%, -50%)', zIndex: '1', backgroundColor: 'white', border: '1px solid black' }}>
           Last word was: {wordToCheck}<br></br><br></br>
+          Next round drawer: {drawerName}
+        </div>
+      )}
+      {!starting && roundEnded && result && (
+        <div style={{ textAlign: 'center', position: 'fixed', top: '50%', left: '50%', fontSize: '5rem', transform: 'translate(-50%, -50%)', zIndex: '1', backgroundColor: 'white', border: '1px solid black' }}>
+          You did it! <br></br><br></br>
           Next round drawer: {drawerName}
         </div>
       )}
@@ -142,10 +157,12 @@ function Game({ socket }) {
                   </div>
                 ) : (
                   <>
-                    {result != null && (
+                    {result != null && messageWin && (
                       <>
                         {result ? (
-                          <p>{messageResponses.wordAttemptSuccess}</p>
+                          <div style={{ textAlign: 'center', position: 'fixed', top: '50%', left: '50%', fontSize: '5rem', transform: 'translate(-50%, -50%)', zIndex: '1', backgroundColor: 'white', border: '1px solid black' }}>
+                            {messageResponses.wordAttemptSuccess}
+                          </div>
                         ) : (
                           <p>{messageResponses.wordAttemptError}</p>
                         )}
