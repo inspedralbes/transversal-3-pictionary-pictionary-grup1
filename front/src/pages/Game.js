@@ -17,7 +17,7 @@ function Game({ socket }) {
   const [pintor, setPintor] = useState(false);
   const [spectator, setSpectator] = useState(false);
   const [userMessages, setUserMessages] = useState([]);
-  
+
   const navigateToEndGame = useNavigate();
 
   const [showDrawer, setShowDrawer] = useState(true);
@@ -36,7 +36,6 @@ function Game({ socket }) {
 
     socket.on('pintor', (data) => {
       setPintor(data.pintor);
-      console.log(data);
       setResult(null);
     });
 
@@ -44,7 +43,7 @@ function Game({ socket }) {
       setDrawerName(data.name);
     });
 
-    socket.on("round_ended", () => {
+    socket.on("round_ended", (data) => {
       setRoundEnded(true);
       const intervalId = setInterval(() => {
         setCountdown(countdown => countdown - 1);
@@ -53,6 +52,7 @@ function Game({ socket }) {
         clearInterval(intervalId);
         setRoundEnded(false);
         setCountdown(3);
+        socket.emit('round_end');
       }, 3000);
     })
 
@@ -62,7 +62,6 @@ function Game({ socket }) {
     });
 
     socket.on('started', () => {
-      console.log("STARTED");
       setStarting(false);
       const intervalId = setInterval(() => {
         setCountdown(countdown => countdown - 1);
@@ -72,6 +71,7 @@ function Game({ socket }) {
         setStarting(false);
         setShowDrawer(false);
         setCountdown(3);
+        socket.emit('countdown_ended');
       }, 3000);
     })
 
@@ -91,12 +91,12 @@ function Game({ socket }) {
   return (
     <>
       {starting && (
-        <div style={{textAlign: 'center', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', fontSize: '10rem' }}>
+        <div style={{ textAlign: 'center', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', fontSize: '10rem' }}>
           Loading
         </div>
       )}
       {!starting && showDrawer && (
-        <div style={{textAlign: 'center', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', fontSize: '5rem' }}>
+        <div style={{ textAlign: 'center', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', fontSize: '5rem' }}>
           {countdown}<br></br><br></br>
           Drawer: {drawerName}
         </div>

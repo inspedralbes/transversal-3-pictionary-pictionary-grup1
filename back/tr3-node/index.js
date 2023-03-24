@@ -217,22 +217,23 @@ socketIO.on('connection', socket => {
 
     lobbies.forEach(lobby => {
       if (lobby.lobbyIdentifier == socket.data.current_lobby && !lobby.started) {
-        // if (lobby.settings.roundDuration > maxSettings.minTime && lobby.settings.roundDuration < maxSettings.maxTime) {
         lobby.rounds = lobby.members.length;
-        console.log("ROUNDS: " + lobby.rounds);
         amountOfRounds = lobby.rounds;
         socketIO.to(socket.data.current_lobby).emit('game_started');
         setLobbyWord(socket.data.current_lobby, amountOfRounds);
         enviarPintor(socket.data.current_lobby)
         sendUserList(socket.data.current_lobby);
-        setCounter(socket.data.current_lobby);
-        // } else {
-        //   socketIO.to(socket.id).emit('INVALID_SETTINGS');
-        // }
-
       }
     });
   });
+
+  socket.on("countdown_ended", () => {
+    lobbies.forEach(lobby => {
+      if (lobby.lobbyIdentifier == socket.data.current_lobby && lobby.ownerId == socket.data.id) {
+        setCounter(socket.data.current_lobby);
+      }
+    });
+  })
 
   socket.on("get_game_data", () => {
     enviarPintor(socket.data.current_lobby)
@@ -410,6 +411,15 @@ socketIO.on('connection', socket => {
     });
   });
 
+  socket.on('round_end', () => {
+    lobbies.forEach(lobby => {
+      if (lobby.lobbyIdentifier == socket.data.current_lobby && lobby.ownerId == socket.data.id) {
+        enviarPintor(socket.data.current_lobby);
+        acabarRonda(socket.data.current_lobby);
+      }
+    });
+  })
+
   socket.on('disconnect', () => {
     console.log(socket.data.id + " disconnected");
     leaveLobby(socket);
@@ -435,19 +445,17 @@ function setCounter(lobbyId) {
           }
         });
 
-        if (cont == 50 || correct == lobby.members.length - 1) {
+        if (cont == 55 || correct == lobby.members.length - 1) {
           if (lobby.actualRound < lobby.rounds) {
             lobby.actualRound++;
           }
 
           if (lobby.actualRound == lobby.rounds) {
             lobby.ended = true;
+            socketIO.to(lobbyId).emit("game_ended")
           } else {
             socketIO.to(lobbyId).emit("round_ended", { roundIndex: lobby.actualRound });
           }
-
-          enviarPintor(lobbyId);
-          acabarRonda(lobbyId);
           clearInterval(timer)
         }
       }, 1000)
@@ -472,8 +480,6 @@ function acabarRonda(lobbyId) {
         sendBoardData(lobbyId);
         sendUserList(lobbyId);
         setCounter(lobbyId);
-      } else {
-        socketIO.to(lobbyId).emit("game_ended")
       }
     }
   });
