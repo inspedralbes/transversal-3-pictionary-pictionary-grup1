@@ -53,7 +53,7 @@ function Game({ socket }) {
       setDrawerName(data.name);
     });
 
-    socket.on("round_ended", () => {
+    socket.on("round_ended", (data) => {
       setRoundEnded(true);
       const intervalId = setInterval(() => {
         setCountdown(countdown => countdown - 1);
