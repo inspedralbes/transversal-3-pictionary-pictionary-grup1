@@ -75,6 +75,7 @@ socketIO.on('connection', socket => {
   i++
   socket.data.id = i;
   socket.data.username = ""
+  socket.data.token = null
   console.log(socket.data.id + " connected ");
 
   const random_hex_color_code = () => {
@@ -84,6 +85,7 @@ socketIO.on('connection', socket => {
 
   socket.on("send token", (data) => {
     let token = data.token;
+    socket.data.token = token;
 
     axios
       .post(laravelRoute + "getUserInfo", {
@@ -112,6 +114,24 @@ socketIO.on('connection', socket => {
         name: socket.data.username
       })
     }
+  })
+
+  socket.on("get_categories", () => {
+    console.log("GET CATEGORIES");
+    axios
+      .post(laravelRoute + "isUserLogged", {
+        token: socket.data.token,
+      })
+      .then(function (response) {
+        if (response.data) {
+          console.log("LOGGED IN");
+        } else {
+          console.log("NOT LOGGED IN");
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   })
 
   socket.on("new_lobby", () => {
@@ -158,13 +178,22 @@ socketIO.on('connection', socket => {
   })
 
   socket.on("join_room", (data) => {
+    console.log(data);
     socket.data.username = data.username;
     joinLobby(socket, data.lobbyIdentifier, socket.data.username)
   });
 
-  socket.on("leave_lobby", () => {
-    leaveLobby(socket);
-    sendUserList(socket.data.current_lobby);
+  socket.on("leave_lobby", (data) => {
+    let lobby = socket.data.current_lobby;
+    if (data.delete) {
+      deleteLobby(socket)
+    } else if (data.wasDeleted) {
+      socket.leave(socket.data.current_lobby);
+      socket.data.current_lobby = null
+    } else {
+      leaveLobby(socket);
+      sendUserList(lobby);
+    }
   });
 
   socket.on("use_same_seed", () => {
@@ -470,7 +499,6 @@ function joinLobby(socket, lobbyIdentifier, username) {
   lobbies.forEach((lobby) => {
     if (lobby.lobbyIdentifier == lobbyIdentifier) {
       disponible = true;
-
       lobby.members.forEach(member => {
         if (member.username == username || lobby.ownerId == socket.data.id) {
           disponible = false;
@@ -507,22 +535,28 @@ function leaveLobby(socket) {
       lobby.members.forEach((member, index) => {
         if (member.idUser == socket.data.id) {
           lobby.members.splice(index, 1);
+          console.log(lobby.members);
         }
       });
-      if (lobby.members.length == 0) {
-        lobbies.splice(ind_lobby, 1);
-      } else if (lobby.ownerId == socket.data.id) {
-        lobbies.splice(ind_lobby, 1);
-        socketIO.to(lobby.lobbyIdentifier).emit("lobby_deleted", {
-          message: "Lobby has been deleted by the owner"
-        })
-      }
     }
   });
 
   socket.leave(socket.data.current_lobby);
   socket.data.current_lobby = null
   socketIO.to(socket.id).emit("YOU_LEFT_LOBBY")
+}
+function deleteLobby(socket) {
+  lobbies.forEach((lobby, ind_lobby) => {
+    if (lobby.lobbyIdentifier == socket.data.current_lobby) {
+      lobbies.splice(ind_lobby, 1);
+      socketIO.to(lobby.lobbyIdentifier).emit("lobby_deleted", {
+        message: "Lobby has been deleted by the owner"
+      })
+    }
+  });
+
+  socket.leave(socket.data.current_lobby);
+  socket.data.current_lobby = null
 }
 
 async function setLobbyWord(room, amount) {
