@@ -1,20 +1,24 @@
 .game {
     display: grid;
-    grid-template-columns: 0.4fr 1.4fr;
+    grid-template-columns: 0.5fr 1.4fr;
     justify-items: center;
+}
+.View{
+    margin-top: 5%;;
 }
 
 .game__left {
     width: 100%;
-    margin: 20% auto;
+    margin: 10% auto;
 }
 
 .game__right {
-    width: 100%;
+    width: 90%;
+    margin-right:10%;
 }
 
 .WordGuess {
-    font-size: 200%;
+    font-size: 300%;
     text-align: center;
     text-transform: uppercase;
     letter-spacing: 3px;
@@ -39,26 +43,29 @@
 }
 
 .game__timer {
-    border: 2px dotted #005f0d;
     float: right;
     display: flex;
-    border-radius: 50%;
     align-items: center;
     justify-content: center;
     text-align: center;
     width: 90px;
     height: 90px;
     font-size: 200%;
-    transform: rotate(-1deg);
+    border: 3px solid #575757;
+    border-radius: 4% 75% 6% 95%/95% 4% 92% 5%;
+    transform: rotate(1deg);    
     transition: all 0.2s;
-    margin: 0 auto;
+    margin: 6% auto;
 }
 
 .Board__timer{
+    margin: 0 0 0 50%;
+    width: 100%;
     display: flex;
     text-align: center;
     justify-content: center;
     align-items: center;
+    padding-bottom: 30px;
 }
 
 
@@ -67,4 +74,9 @@
     align-items: center;
     justify-content: center;
     text-align: center;
+}
+
+.WordForm__input{
+    width: 60%;
+    height: 30px;
 }

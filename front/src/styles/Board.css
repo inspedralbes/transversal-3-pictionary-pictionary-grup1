@@ -17,6 +17,10 @@
   overflow: hidden;
 }
 
+.View_board{
+  margin-left: 10%;
+}
+
 .Board__draw {
   cursor: url("../img/brush.cur"), pointer;
 }
@@ -26,7 +30,7 @@
 }
 
 .Board__settings--grid {
-  width: 80%;
+  width: 100%;
   display: grid; 
   grid-template-columns: 1fr; 
   grid-template-rows: 0.2fr 1.5fr; 
@@ -34,25 +38,29 @@
   grid-template-areas: 
     "."
     "."; 
-  background-color: bisque;
   padding: 20px;
   margin: 0 auto;
 }
 
+.Board__settings--grid h1 {
+  margin: 0;
+}
+
 .Board__settings{
-   background-color: bisque;
+  background-color: #ececec;
   padding: 20px;
+  border: 3px dashed #575757;
+  border-radius: 4% 75% 6% 95%/95% 4% 92% 5%;
+  overflow: hidden;
   margin: 0 auto;
   align-items: center;
   text-align: center;
   justify-content: center;
-  
+  transform: rotate(1deg);
 }
 
-.Board__Colors {
-  z-index: 1;
-  position: absolute;
-  transform: translate(450px, -250px);
+.Board__settings--center{
+  margin-top: 5%;
 }
 
 .circle-picker {
@@ -60,4 +68,9 @@
   align-items: center;
   text-align: center;
   justify-content: center;
+}
+
+.Board__buttons{
+  margin: 10px auto;
+  width: 90%;
 }

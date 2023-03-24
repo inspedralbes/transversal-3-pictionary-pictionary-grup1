@@ -108,8 +108,7 @@ function Game({ socket }) {
                 {pintor ? (
                   <div>
                     <div>
-                      <WordGuess className="game__word" socket={socket} />
-                      <Description className="game__description" socket={socket} />
+                      {/* <Description className="game__description" socket={socket} /> */}
                       <Board socket={socket} pintor={pintor} />
                     </div>
                   </div>

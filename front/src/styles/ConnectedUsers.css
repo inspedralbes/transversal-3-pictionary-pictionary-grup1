@@ -239,8 +239,9 @@
 
 
 .game__connectedUsersInGame {
-    margin: 25px;
-    width: 80%;
+    margin: 5% auto;
+    margin-left: 10%;
+    width: 90%;
     height: max-content;
     border: dashed;
     border-color: #535353;
@@ -250,12 +251,16 @@
     overflow-x: hidden;
     overflow-y: auto;
 }
+.game__connectedUsersInGame h1{
+    margin-bottom: 0;
+}
 
 .userListInGame__item:before{
     display: none;
 }
 
 .userListInGame__item{
+    text-align: center;
     font-size: 200%;
 }
 
@@ -264,7 +269,7 @@
 }
 
 #userList{
-    padding: 20px;
+    padding:0 20px;
 }
 
 .GameItem__name{

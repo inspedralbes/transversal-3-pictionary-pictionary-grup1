@@ -27,6 +27,7 @@ function ConnectedUsersInGame({ socket, pintor }) {
 
     return (
         <div className="game__connectedUsersInGame">
+            <h1>USER LIST</h1>
             <ul id="userList" className="connectedUsersInGame__userList userList">
                 {Array.isArray(userList.list)
                     ? userList.list.map((user, index) => {

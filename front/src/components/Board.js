@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { CirclePicker, SketchPicker } from "react-color";
+import WordGuess from "../components/WordGuess";
 import "../styles/Board.css";
 import React from "react";
 import CountDownTimer from "./CountdownTimer";
@@ -250,6 +251,7 @@ function Board({ socket, pintor }) {
       <div className="Board">
 
         <div className="Board__canvas">
+          <WordGuess className="game__word" socket={socket} />
           <canvas className="Board__draw" ref={canvasRef} width={1000} height={700} style={{ border: "3px solid #575757" }} />
         </div>
         <div className="Board__settings--grid">
@@ -257,16 +259,22 @@ function Board({ socket, pintor }) {
             <CountDownTimer socket={socket} />
           </div >
           <div className="Board__settings">
-            <CirclePicker
-              width={'150px'}
-              colors={moreColors}
-              color={currentColor}
-              onChangeComplete={(color) => setCurrentColor(color.hex)}
-            ></CirclePicker>
-            <br />
-            <button onClick={clearBoard}>Clear</button>
-            <button id='eraser' onClick={eraser}>Eraser</button>
-            <input id="brushRadius" type={"range"} min="5" max="50" step={1} value={brushRadius} onChange={(e) => setBrushRadius(e.target.value)} ></input>
+            <div className="Board__settings--center">
+              <h1>Colors</h1>
+              <br />
+              <CirclePicker
+                width={'150px'}
+                colors={moreColors}
+                color={currentColor}
+                onChangeComplete={(color) => setCurrentColor(color.hex)}
+              ></CirclePicker>
+              <br />
+              <button className="Board__buttons" onClick={clearBoard}>Clear</button>
+              <br />
+              <button className="Board__buttons" id='eraser' onClick={eraser}>Eraser</button>
+              <br />
+              <input id="brushRadius" type={"range"} min="5" max="50" step={1} value={brushRadius} onChange={(e) => setBrushRadius(e.target.value)} ></input>
+            </div>
           </div>
         </div>
       </div>
