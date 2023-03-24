@@ -31,9 +31,9 @@ function LandingPage() {
         <div className="space-around">
           <h1 className='ldPage__title'><span className='span'>P</span><span className='span'>I</span><span className='span'>C</span><span className='span'>T</span><span className='span'>I</span><span className='span'>O</span><span className='span'>N</span><span className='span'>A</span><span className='span'>R</span><span className='span'>Y</span> </h1>
         <div className='ldPage__buttonsContainer'>
-          <Link to='/createlobby'  tabindex="-1"><button className='ldPage__button1'>Create game</button></Link>
+          <Link to='/createlobby'  tabIndex="-1"><button className='ldPage__button1'>Create game</button></Link>
           <br />
-          <Link to='/joinlobby'  tabindex="-1"><button className='ldPage__button2'>Join game</button></Link>
+          <Link to='/joinlobby'  tabIndex="-1"><button className='ldPage__button2'>Join game</button></Link>
         </div>
       </div>
     </div>

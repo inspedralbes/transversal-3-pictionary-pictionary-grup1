@@ -426,7 +426,7 @@ function setCounter(lobbyId) {
           }
         });
 
-        if (cont == 0 || correct == lobby.members.length - 1) {
+        if (cont == 55 || correct == lobby.members.length - 1) {
           if (lobby.actualRound < lobby.rounds) {
             lobby.actualRound++;
           }
@@ -465,7 +465,6 @@ function acabarRonda(lobbyId) {
       }
     }
   });
-
 }
 
 function joinLobby(socket, lobbyIdentifier, username) {

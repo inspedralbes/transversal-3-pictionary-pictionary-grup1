@@ -82,6 +82,7 @@ function Game({ socket }) {
     })
 
     socket.on("game_ended", () => {
+      console.log("end game");
       navigateToEndGame("/endGame");
     })
 
@@ -118,7 +119,7 @@ function Game({ socket }) {
       {!starting && roundEnded && (
         <div style={{ textAlign: 'center', position: 'fixed', top: '50%', left: '50%', fontSize: '5rem', transform: 'translate(-50%, -50%)', zIndex: '1', backgroundColor: 'white', border: '1px solid black' }}>
           Last word was: {wordToCheck}<br></br><br></br>
-          Next roun drawer: {drawerName}
+          Next round drawer: {drawerName}
         </div>
       )}
       {!starting && !showDrawer && (
