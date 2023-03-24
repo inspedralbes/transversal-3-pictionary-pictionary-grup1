@@ -7,13 +7,9 @@ function ConnectedUsersInGame({ socket, pintor }) {
 
     const [userList, setUserList] = useState([]);
     const [firstTime, setFirstTime] = useState(true);
-    // const [color, setColor] = useState('#535353');
 
 
     useEffect(() => {
-        // setColor(colors[Math.floor(Math.random() * 31)]);
-        // console.log(color);
-
         if (firstTime) {
             socket.emit("lobby_data");
             setFirstTime(false)
@@ -21,7 +17,6 @@ function ConnectedUsersInGame({ socket, pintor }) {
         socket.on("lobby_user_list", (data) => {
             setUserList(data);
             data.list.sort((a, b) =>  b.points-a.points);
-            console.log(data);
         });
     }, [])
 
