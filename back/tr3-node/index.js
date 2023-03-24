@@ -399,6 +399,7 @@ socketIO.on('connection', socket => {
     lobbies.forEach(lobby => {
       if (lobby.lobbyIdentifier == socket.data.current_lobby && lobby.ownerId == socket.data.id) {
         enviarPintor(socket.data.current_lobby);
+        sendUserList(socket.data.current_lobby);
         acabarRonda(socket.data.current_lobby);
       }
     });
