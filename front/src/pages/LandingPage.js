@@ -1,11 +1,9 @@
 import { Link } from 'react-router-dom';
 import "../styles/normalize.css";
 import "../styles/LandingPage.css";
+import { useEffect } from 'react';
 
-
-
-
-function LandingPage() {
+function LandingPage({socket}) {
   function changeColor() {
     document.getElementById("brush").addEventListener('mouseover', function () {
         let colors = ["#70a1da", "#70da92", "#cada70", "#858cb7", "#f6a39e", "#ab605c", "#70ab5c", "#ed96f1", "#e05b8c", "#e0ce5b", "#997490", "#9dff4e", "#ffd64e", "#e24eff", "#4ebeff", "#b2b5dc", "#20bf55", "#bf97ff", "#ff9797", "#97e5ff"];
@@ -21,6 +19,10 @@ function LandingPage() {
 
 }
 
+function enviarGetCategories() {
+  socket.emit("get_categories");
+}
+
   return (
     <div className='ldPage'>
       <Link to='/login'>
@@ -31,9 +33,9 @@ function LandingPage() {
         <div className="space-around">
           <h1 className='ldPage__title'><span className='span'>P</span><span className='span'>I</span><span className='span'>C</span><span className='span'>T</span><span className='span'>I</span><span className='span'>O</span><span className='span'>N</span><span className='span'>A</span><span className='span'>R</span><span className='span'>Y</span> </h1>
         <div className='ldPage__buttonsContainer'>
-          <Link to='/createlobby'  tabindex="-1"><button className='ldPage__button1'>Create game</button></Link>
+          <Link to='/createlobby'  tabIndex="-1" onClick={enviarGetCategories}><button className='ldPage__button1'>Create game</button></Link>
           <br />
-          <Link to='/joinlobby'  tabindex="-1"><button className='ldPage__button2'>Join game</button></Link>
+          <Link to='/joinlobby'  tabIndex="-1"><button className='ldPage__button2'>Join game</button></Link>
         </div>
       </div>
     </div>
