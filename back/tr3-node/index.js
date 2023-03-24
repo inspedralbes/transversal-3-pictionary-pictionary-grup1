@@ -480,7 +480,7 @@ function setCounter(lobbyId) {
             lobby.ended = true;
             socketIO.to(lobbyId).emit("game_ended")
           } else {
-            let motivo = cont == 50 ? "time" : "perfect"
+            let motivo = cont <= 50 ? "time" : "perfect"
             socketIO.to(lobbyId).emit("round_ended", { roundIndex: lobby.actualRound, motivo: motivo });
           }
           clearInterval(timer)
