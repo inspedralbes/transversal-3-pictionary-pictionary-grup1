@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import "../styles/LobbyCreation.css"
 
 function LobbyCreation({ socket }) {
+    const [categoriesDataLoaded, setCategoriesDataLoaded] = useState(true);
     const [lobbyId, setLobbyId] = useState("");
     const [firstTime, setFirstTime] = useState(true);
     const [starting, setStarting] = useState(false);
@@ -13,8 +14,10 @@ function LobbyCreation({ socket }) {
 
     function handleLeave(e) {
         e.preventDefault();
-        //
-        socket.emit("leave_lobby");
+        socket.emit("leave_lobby", {
+            delete: true
+        });
+        navigate("/")
     }
 
     function copyId() {
@@ -52,7 +55,6 @@ function LobbyCreation({ socket }) {
         socket.on("starting_errors", (data) => {
             if (data.valid) {
                 if (!sent) {
-                    console.log("STARTING ERRORS");
                     socket.emit("start_game");
                 }
                 setSent(true)
@@ -71,15 +73,21 @@ function LobbyCreation({ socket }) {
     }, [navigate, socket, firstTime])
     return (
         <div className="createGame">
-            <button className="createGame__leaveButton" onClick={handleLeave}>Leave and delete lobby </button>
-            {lobbyId && (
-                <h1 className="identifier"><span className='span'>I</span><span className='span'>D</span><span className='span'>E</span><span className='span'>N</span><span className='span'>T</span><span className='span'>I</span><span className='span'>F</span><span className='span'>I</span><span className='span'>E</span><span className='span'>R</span>: <span className='span' id="copyId" onClick={copyId} onMouseOver={changeColor}><p>CLICK TO COPY THE ID</p>{lobbyId}</span></h1>
-            )}
-            <Settings socket={socket} start={starting}></Settings>
-            <ConnectedUsers socket={socket}></ConnectedUsers>
-            <div className="createGame__startButtonDiv">
-                <button className="createGame__startButton" onClick={handleStartGame}>Start game</button>
-            </div>
+            {categoriesDataLoaded ?
+                <>
+                    <button className="createGame__leaveButton" onClick={handleLeave}>Leave and delete lobby </button>
+                    {lobbyId && (
+                        <h1 className="identifier"><span className='span'>I</span><span className='span'>D</span><span className='span'>E</span><span className='span'>N</span><span className='span'>T</span><span className='span'>I</span><span className='span'>F</span><span className='span'>I</span><span className='span'>E</span><span className='span'>R</span>: <span className='span' id="copyId" onClick={copyId} onMouseOver={changeColor}><p>CLICK TO COPY THE ID</p>{lobbyId}</span></h1>
+                    )}
+                    <Settings socket={socket} start={starting}></Settings>
+                    <ConnectedUsers socket={socket}></ConnectedUsers>
+                    <div className="createGame__startButtonDiv">
+                        <button className="createGame__startButton" onClick={handleStartGame}>Start game</button>
+                    </div>
+                </> :
+                <div style={{ textAlign: 'center', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', fontSize: '5rem' }}>
+                    Creating lobby...
+                </div>}
         </div>
 
     );
