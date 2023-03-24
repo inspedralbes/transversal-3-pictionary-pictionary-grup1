@@ -58,6 +58,7 @@ let i = 0;
 const laravelRoute = "http://127.0.0.1:8000/index.php/";
 
 let lobbies = [];
+let cont = 0;
 
 const maxSettings = {
   maxTime: 120,
@@ -315,7 +316,8 @@ socketIO.on('connection', socket => {
                 idUser: socket.data.id,
                 username: data.nickname,
                 lastAnswerCorrect: false,
-                lastAnswer: ""
+                lastAnswer: "",
+                points: 0
               });
 
               sendUserList(socket.data.current_lobby)
@@ -388,6 +390,7 @@ socketIO.on('connection', socket => {
 
   socket.on('try_word_attempt', (data) => {
     let wordToCheck;
+
     lobbies.forEach(lobby => {
       if (lobby.lobbyIdentifier == socket.data.current_lobby) {
         if (!lobby.ended) {
@@ -397,14 +400,29 @@ socketIO.on('connection', socket => {
             socketIO.to(socket.id).emit('answer_result', {
               resultsMatch: true,
             })
+            let pointsRound = 0;
+            let userTime = lobby.settings.roundDuration - cont;
+
+            if (lobby.settings.roundDuration - userTime > lobby.settings.roundDuration - 20) {
+              pointsRound = lobby.settings.roundDuration - 20;
+            }
+            else {
+              pointsRound = lobby.settings.roundDuration - userTime;
+            }
 
             lobby.members.forEach(member => {
-              if (member.idUser == socket.data.id) {
+
+              if (member.username == lobby.currentDrawer) {
+                member.points = member.points + 10;
+              }
+              else if (member.idUser == socket.data.id) {
                 member.lastAnswerCorrect = true;
                 member.lastAnswer = data.word;
+                member.points = member.points + pointsRound;
               }
             });
             sendUserList(socket.data.current_lobby)
+
           } else {
             socketIO.to(socket.id).emit('answer_result', {
               resultsMatch: false,
@@ -443,7 +461,7 @@ function setCounter(lobbyId) {
   let timer;
   lobbies.forEach(lobby => {
     if (lobby.lobbyIdentifier == lobbyId && !lobby.ended) {
-      let cont = lobby.settings.roundDuration
+      cont = lobby.settings.roundDuration
       cont++;
       timer = setInterval(() => {
         cont--;
@@ -458,7 +476,7 @@ function setCounter(lobbyId) {
           }
         });
 
-        if (cont == 45 || correct == lobby.members.length - 1) {
+        if (cont == 50 || correct == lobby.members.length - 1) {
           if (lobby.actualRound < lobby.rounds) {
             lobby.actualRound++;
           }
@@ -467,7 +485,8 @@ function setCounter(lobbyId) {
             lobby.ended = true;
             socketIO.to(lobbyId).emit("game_ended")
           } else {
-            socketIO.to(lobbyId).emit("round_ended", { roundIndex: lobby.actualRound });
+            let motivo = cont <= 50 ? "time" : "perfect"
+            socketIO.to(lobbyId).emit("round_ended", { roundIndex: lobby.actualRound, motivo: motivo });
           }
           clearInterval(timer)
         }
@@ -514,7 +533,8 @@ function joinLobby(socket, lobbyIdentifier, username) {
           idUser: socket.data.id,
           username: username,
           lastAnswerCorrect: false,
-          lastAnswer: ""
+          lastAnswer: "",
+          points: 0
         });
 
         socketIO.to(socket.id).emit("lobby_info", lobby)
@@ -605,7 +625,8 @@ function sendUserList(room) {
           name: member.username,
           lastAnswerCorrect: member.lastAnswerCorrect,
           lastAnswer: member.lastAnswer,
-          painting: member.painting
+          painting: member.painting,
+          points: member.points
         });
       });
     }
@@ -648,15 +669,20 @@ async function enviarPintor(room) {
       if (lobby.actualRound < lobby.rounds && !lobby.ended) {
 
         sockets.forEach(user => {
-          if (user.data.id == lobby.members[lobby.actualRound].idUser) {
+          if (user.data.id == lobby.members[lobby.actualRound].idUser) {            
             lobby.currentDrawer = lobby.members[lobby.actualRound].username
+            if (lobby.actualRound < lobby.rounds - 1) {
+              lobby.nextDrawer = lobby.members[lobby.actualRound + 1].username
+            } else {
+              lobby.nextDrawer = lobby.currentDrawer;
+            }
             socketIO.to(user.id).emit("pintor", {
               pintor: true
             })
             socketIO.to(lobby.lobbyIdentifier).emit("drawer_name", {
-              name: lobby.currentDrawer
+              name: lobby.currentDrawer,
+              next: lobby.nextDrawer
             })
-
             lobby.members.forEach(member => {
               if (member.idUser == user.data.id) {
                 member.painting = true;

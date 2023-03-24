@@ -19,11 +19,14 @@ function Game({ socket }) {
   const [messageWin, setMessageWin] = useState(false);
   const [spectator, setSpectator] = useState(false);
   const [showDrawer, setShowDrawer] = useState(true);
+  const [nextDrawerName, setNextDrawerName] = useState();
   const [drawerName, setDrawerName] = useState();
   const [roundEnded, setRoundEnded] = useState(false);
+  const [timeUp, setTimeUp] = useState(false);
   const [wordToCheck, setWordToCheck] = useState("");
   const [wordIndex, setWordIndex] = useState(0);
   const [words, setWords] = useState([]);
+  const [gameEnded, setGameEnded] = useState(false);
 
   const messageResponses = {
     wordAttemptError: "You failed the attempt!",
@@ -40,7 +43,7 @@ function Game({ socket }) {
       setTimeout(() => {
         clearInterval(intervalId);
         setCountdown(3);
-        setMessageWin(false)
+        setMessageWin(false);
       }, 3000);
     });
 
@@ -51,10 +54,17 @@ function Game({ socket }) {
 
     socket.on('drawer_name', (data) => {
       setDrawerName(data.name);
+      setNextDrawerName(data.next);
     });
 
-    socket.on("round_ended", () => {
+    socket.on("round_ended", (data) => {
       setRoundEnded(true);
+      if (data.motivo == "time") {
+        setTimeUp(true);
+      } else {
+        setTimeUp(false);
+      }
+
       const intervalId = setInterval(() => {
         setCountdown(countdown => countdown - 1);
       }, 1000);
@@ -90,9 +100,21 @@ function Game({ socket }) {
       }, 3000);
     })
 
+
     socket.on("game_ended", () => {
-      console.log("end game");
-      navigateToEndGame("/endGame");
+      setGameEnded(false);
+      setRoundEnded(true);
+      const intervalId = setInterval(() => {
+        setCountdown(countdown => countdown - 1);
+      }, 1000);
+      setTimeout(() => {
+        clearInterval(intervalId);
+        navigateToEndGame("/endGame");
+        setCountdown(3);
+        setGameEnded(true);
+        setRoundEnded(false);
+        socket.emit('countdown_ended');
+      }, 3000);
     })
 
     return () => {
@@ -102,7 +124,6 @@ function Game({ socket }) {
       socket.off('drawer_name');
       socket.off('started');
       socket.off('game_data');
-
     };
   }, []);
 
@@ -125,16 +146,26 @@ function Game({ socket }) {
           Drawer: {drawerName}
         </div>
       )}
-      {!starting && roundEnded && !result && (
+      {!starting && roundEnded && !result && !pintor && !gameEnded && (
         <div style={{ textAlign: 'center', position: 'fixed', top: '50%', left: '50%', fontSize: '5rem', transform: 'translate(-50%, -50%)', zIndex: '1', backgroundColor: 'white', border: '1px solid black' }}>
           Last word was: {wordToCheck}<br></br><br></br>
-          Next round drawer: {drawerName}
+          Next round drawer: {nextDrawerName}
         </div>
       )}
-      {!starting && roundEnded && result && (
+      {!starting && roundEnded && !result && pintor && !timeUp && !gameEnded && (
+        <div style={{ textAlign: 'center', position: 'fixed', top: '50%', left: '50%', fontSize: '5rem', transform: 'translate(-50%, -50%)', zIndex: '1', backgroundColor: 'white', border: '1px solid black' }}>
+          Congratulations! Everyone got the word!
+        </div>
+      )}
+      {!starting && roundEnded && !result && pintor && timeUp && !gameEnded && (
+        <div style={{ textAlign: 'center', position: 'fixed', top: '50%', left: '50%', fontSize: '5rem', transform: 'translate(-50%, -50%)', zIndex: '1', backgroundColor: 'white', border: '1px solid black' }}>
+          Sorry! Time's Up!
+        </div>
+      )}
+      {!starting && roundEnded && result && !gameEnded && (
         <div style={{ textAlign: 'center', position: 'fixed', top: '50%', left: '50%', fontSize: '5rem', transform: 'translate(-50%, -50%)', zIndex: '1', backgroundColor: 'white', border: '1px solid black' }}>
           You did it! <br></br><br></br>
-          Next round drawer: {drawerName}
+          Next round drawer: {nextDrawerName}
         </div>
       )}
       {!starting && !showDrawer && (
@@ -159,11 +190,12 @@ function Game({ socket }) {
                   <>
                     {result != null && messageWin && (
                       <>
-                        {result ? (
+                        {result && !roundEnded && (
                           <div style={{ textAlign: 'center', position: 'fixed', top: '50%', left: '50%', fontSize: '5rem', transform: 'translate(-50%, -50%)', zIndex: '1', backgroundColor: 'white', border: '1px solid black' }}>
                             {messageResponses.wordAttemptSuccess}
                           </div>
-                        ) : (
+                        )}
+                        {!result && (
                           <p>{messageResponses.wordAttemptError}</p>
                         )}
                       </>
