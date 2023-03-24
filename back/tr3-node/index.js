@@ -58,6 +58,7 @@ let i = 0;
 const laravelRoute = "http://127.0.0.1:8000/index.php/";
 
 let lobbies = [];
+let cont = 0;
 
 const maxSettings = {
   maxTime: 120,
@@ -180,13 +181,13 @@ socketIO.on('connection', socket => {
     lobbies.forEach((lobby) => {
 
       if (lobby.lobbyIdentifier == socket.data.current_lobby) {
-        
+
         sockets.forEach(user => {
-            if (user.data.id == lobby.ownerId) {
-              socketIO.to(user.id).emit("is_owner", lobby)
-              
-            } 
+          if (user.data.id == lobby.ownerId) {
+            socketIO.to(user.id).emit("is_owner", lobby)
+
           }
+        }
         );
       }
     });
@@ -356,7 +357,6 @@ socketIO.on('connection', socket => {
 
   socket.on('try_word_attempt', (data) => {
     let wordToCheck;
-    let pointsRound = 0;
 
     lobbies.forEach(lobby => {
       if (lobby.lobbyIdentifier == socket.data.current_lobby) {
@@ -367,27 +367,25 @@ socketIO.on('connection', socket => {
             socketIO.to(socket.id).emit('answer_result', {
               resultsMatch: true,
             })
+            let pointsRound = 0;
+            let userTime = lobby.settings.roundDuration - cont;
 
-            socketIO.to(socket.id).emit('get_time')
-
-            socket.on('calculate_points', (data) => {
-
-              if (lobby.settings.roundDuration - data > lobby.settings.roundDuration - 20) {
-                pointsRound = lobby.settings.roundDuration;
-              }
-              else {
-                pointsRound = lobby.settings.roundDuration - data;
-
-              }
-              console.log("PointsRound", pointsRound);
-            })
+            if (lobby.settings.roundDuration - userTime > lobby.settings.roundDuration - 20) {
+              pointsRound = lobby.settings.roundDuration - 20;
+            }
+            else {
+              pointsRound = lobby.settings.roundDuration - userTime;
+            }
 
             lobby.members.forEach(member => {
-              if (member.idUser == socket.data.id) {
+
+              if (member.username == lobby.currentDrawer) {
+                member.points = member.points + 10;
+              }
+              else if (member.idUser == socket.data.id) {
                 member.lastAnswerCorrect = true;
                 member.lastAnswer = data.word;
                 member.points = member.points + pointsRound;
-                console.log("Member poitns", member.points);
               }
             });
             sendUserList(socket.data.current_lobby)
@@ -420,7 +418,7 @@ function setCounter(lobbyId) {
   let timer;
   lobbies.forEach(lobby => {
     if (lobby.lobbyIdentifier == lobbyId && !lobby.ended) {
-      let cont = lobby.settings.roundDuration
+      cont = lobby.settings.roundDuration
       cont++;
       timer = setInterval(() => {
         cont--;

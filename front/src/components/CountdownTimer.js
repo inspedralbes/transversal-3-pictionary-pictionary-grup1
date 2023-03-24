@@ -10,10 +10,6 @@ function CountdownTimer({socket}) {
       setCounter(data.counter);
     })
 
-    socket.on("get_time", () => {
-      socket.emit("calculate_points", counter);
-    })
-
     socket.on("round_ended", () => {
       setCounter(0);
     })
