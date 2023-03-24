@@ -16,7 +16,6 @@ function Game({ socket }) {
   const [result, setResult] = useState(null);
   const [pintor, setPintor] = useState(false);
   const [spectator, setSpectator] = useState(false);
-  const [userMessages, setUserMessages] = useState([]);
 
   const navigateToEndGame = useNavigate();
 

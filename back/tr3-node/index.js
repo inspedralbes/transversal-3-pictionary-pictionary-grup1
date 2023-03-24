@@ -117,22 +117,31 @@ socketIO.on('connection', socket => {
   })
 
   socket.on("get_categories", () => {
-    console.log("GET CATEGORIES");
     axios
       .post(laravelRoute + "isUserLogged", {
         token: socket.data.token,
       })
       .then(function (response) {
-        if (response.data) {
-          console.log("LOGGED IN");
-        } else {
-          console.log("NOT LOGGED IN");
-        }
+        sendCategoriesToUser(socket, response.data)
       })
       .catch(function (error) {
         console.log(error);
       });
   })
+
+  async function sendCategoriesToUser(socket, both) {
+    let privacy = both?"both":"public";
+    await axios
+      .post(laravelRoute + "getCategories", {
+        privacy: privacy,
+      })
+      .then(function (response) {
+        socketIO.to(socket.id).emit("categories", response.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
 
   socket.on("new_lobby", () => {
     let existeix = false;

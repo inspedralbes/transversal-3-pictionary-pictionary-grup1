@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import "../styles/LobbyCreation.css"
 
 function LobbyCreation({ socket }) {
-    const [categoriesDataLoaded, setCategoriesDataLoaded] = useState(true);
+    const [categoriesDataLoaded, setCategoriesDataLoaded] = useState(false);
     const [lobbyId, setLobbyId] = useState("");
     const [firstTime, setFirstTime] = useState(true);
     const [starting, setStarting] = useState(false);
@@ -61,6 +61,11 @@ function LobbyCreation({ socket }) {
             } else {
                 setStarting(false);
             }
+        })
+
+        socket.on("categories", (data) => {
+            console.log(data);
+            setCategoriesDataLoaded(true);
         })
 
         socket.on("game_started", () => {
