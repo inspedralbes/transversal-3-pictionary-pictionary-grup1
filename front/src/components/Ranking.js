@@ -41,7 +41,7 @@ function Ranking({ socket }) {
               <li className="userList__item item" key={index}>
                 <div className="item__name">
                   <h3 id="list">{user.name}</h3>
-                  <h1>{user.points}</h1>
+                  <h2>Points {user.points}</h2>
                 </div>
               </li>
             );
