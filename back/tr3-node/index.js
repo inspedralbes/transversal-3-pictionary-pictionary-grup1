@@ -80,7 +80,7 @@ socketIO.on('connection', socket => {
 
   const random_hex_color_code = () => {
     let n = Math.floor(Math.random() * 999999);
-    return n.toString();
+    return n.toString().padStart(6, '0');
   };
 
   socket.on("send token", (data) => {
@@ -454,7 +454,7 @@ function setCounter(lobbyId) {
           }
         });
 
-        if (cont == 55 || correct == lobby.members.length - 1) {
+        if (cont == 45 || correct == lobby.members.length - 1) {
           if (lobby.actualRound < lobby.rounds) {
             lobby.actualRound++;
           }
@@ -492,7 +492,6 @@ function acabarRonda(lobbyId) {
       }
     }
   });
-
 }
 
 function joinLobby(socket, lobbyIdentifier, username) {
