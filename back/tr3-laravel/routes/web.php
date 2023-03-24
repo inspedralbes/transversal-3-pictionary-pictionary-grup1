@@ -20,7 +20,7 @@ Route::get('/', function () {
 });
 
 Route::group(['middleware' => ['web']], function () {
-    Route::post('/getWords', [WordController::class, 'getWords']);
+    Route::get('/getWords', [WordController::class, 'getWords']);
 
     Route::post('/register', [UserController::class, 'register']);
 

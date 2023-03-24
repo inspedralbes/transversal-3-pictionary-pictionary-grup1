@@ -9,18 +9,8 @@ class WordController extends Controller
 {
     public function getWords(Request $request)
     {  
-        $category = $request -> category;
-        $difficulty = $request -> difficulty;
-        $amount = $request -> amount;
+        $words = Word::inRandomOrder()->whereIn("category_id", $request -> category)->limit($request -> amount)->get(); 
 
-        if ($category != "null" && $difficulty == "null") {
-            $words = Word::inRandomOrder()->where("category_id", $category)->limit($amount)->get(); 
-        } else if ($category == "" && $difficulty != "") {
-            $words = Word::inRandomOrder()->where("difficulty", $difficulty)->limit($amount)->get();  
-        } else {
-            $words = Word::inRandomOrder()->limit($amount)->get();  
-        }
-        
-        return response()->json(['wordsToCheck' => $words]);
+        return response()->json($words);
     }
 }
