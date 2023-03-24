@@ -666,11 +666,7 @@ async function enviarPintor(room) {
 
   lobbies.forEach((lobby) => {
     if (lobby.lobbyIdentifier == room) {
-      // if (lobby.actualRound === lobby.members.length) {
-      //   lobby.actualRound = 0;
-      // }
       if (lobby.actualRound < lobby.rounds && !lobby.ended) {
-
         sockets.forEach(user => {
           if (user.data.id == lobby.members[lobby.actualRound].idUser) {
             lobby.currentDrawer = lobby.members[lobby.actualRound].username
