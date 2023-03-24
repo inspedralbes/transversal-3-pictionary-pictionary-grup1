@@ -75,7 +75,7 @@ function Settings({ socket, start }) {
     }, [start])
 
     return (
-        <div style={{display:"none"}}>
+        <div >
             {error != "" && (<h1 className="error">{error}</h1>)}
             <form>
                 <label>{"Round duration (seconds)"} <input type="number" value={roundDuration} onChange={handleChangeRoundDuration} /></label><br />
