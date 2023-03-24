@@ -54,6 +54,7 @@ function Game({ socket }) {
         setRoundEnded(false);
         setWordIndex(wordIndex => wordIndex + 1);
         setCountdown(3);
+        socket.emit('round_end');
       }, 3000);
     })
 
@@ -76,6 +77,7 @@ function Game({ socket }) {
         setStarting(false);
         setShowDrawer(false);
         setCountdown(3);
+        socket.emit('countdown_ended');
       }, 3000);
     })
 
