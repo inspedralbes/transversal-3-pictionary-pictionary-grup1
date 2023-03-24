@@ -97,14 +97,15 @@ function Game({ socket }) {
 
           {/* Left column */}
           <div className="game__right">
-            {spectator ? (
+            {spectator ? (<div>
               <Board socket={socket} pintor={pintor} />
+              <CountDownTimer socket={socket} />
+              </div>
             ) : (
               <>
                 {pintor ? (
                   <div>
                     <div>
-                      <CountDownTimer socket={socket} />
                       <WordGuess className="game__word" socket={socket} />
                       <Description className="game__description" socket={socket} />
                       <Board socket={socket} pintor={pintor} />

@@ -6,6 +6,7 @@
 
 .game__left {
     width: 100%;
+    margin: 20% auto;
 }
 
 .game__right {
@@ -45,11 +46,19 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-    width: 100px;
-    height: 100px;
+    width: 90px;
+    height: 90px;
     font-size: 200%;
     transform: rotate(-1deg);
     transition: all 0.2s;
+    margin: 0 auto;
+}
+
+.Board__timer{
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
 }
 
 

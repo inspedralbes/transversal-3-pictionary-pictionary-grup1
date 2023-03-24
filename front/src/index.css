@@ -2,13 +2,17 @@
 
 body {
   margin: 0;
-  -webkit-font-smoothing: antialiased; 
+  -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: none;;
+  background: none;
+  ;
   background-color: #fffaf4;
   width: 100%;
   padding: 0;
   overflow: auto;
 }
 
-
+button {
+  background-color: #5c5b5b;
+  border-color: #5c5b5b;
+}
