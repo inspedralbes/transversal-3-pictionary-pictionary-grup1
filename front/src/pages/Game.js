@@ -97,9 +97,11 @@ function Game({ socket }) {
 
           {/* Left column */}
           <div className="game__right">
-            {spectator ? (<div>
-              <Board socket={socket} pintor={pintor} />
-              <CountDownTimer socket={socket} />
+            {spectator ? (
+              <div>
+                <CountDownTimer socket={socket} />
+
+                <Board socket={socket} pintor={pintor} />
               </div>
             ) : (
               <>
