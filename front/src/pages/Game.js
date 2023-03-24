@@ -19,6 +19,7 @@ function Game({ socket }) {
   const [messageWin, setMessageWin] = useState(false);
   const [spectator, setSpectator] = useState(false);
   const [showDrawer, setShowDrawer] = useState(true);
+  const [nextDrawerName, setNextDrawerName] = useState();
   const [drawerName, setDrawerName] = useState();
   const [roundEnded, setRoundEnded] = useState(false);
   const [wordToCheck, setWordToCheck] = useState("");
@@ -51,6 +52,7 @@ function Game({ socket }) {
 
     socket.on('drawer_name', (data) => {
       setDrawerName(data.name);
+      setNextDrawerName(data.next);
     });
 
     socket.on("round_ended", () => {
@@ -128,13 +130,13 @@ function Game({ socket }) {
       {!starting && roundEnded && !result && (
         <div style={{ textAlign: 'center', position: 'fixed', top: '50%', left: '50%', fontSize: '5rem', transform: 'translate(-50%, -50%)', zIndex: '1', backgroundColor: 'white', border: '1px solid black' }}>
           Last word was: {wordToCheck}<br></br><br></br>
-          Next round drawer: {drawerName}
+          Next round drawer: {nextDrawerName}
         </div>
       )}
       {!starting && roundEnded && result && (
         <div style={{ textAlign: 'center', position: 'fixed', top: '50%', left: '50%', fontSize: '5rem', transform: 'translate(-50%, -50%)', zIndex: '1', backgroundColor: 'white', border: '1px solid black' }}>
           You did it! <br></br><br></br>
-          Next round drawer: {drawerName}
+          Next round drawer: {nextDrawerName}
         </div>
       )}
       {!starting && !showDrawer && (
