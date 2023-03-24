@@ -3,12 +3,13 @@ h1 {
 }
 
 #border {
+    background-color: #fffaf4;
     border: 2px solid #919191;
     border-radius: 255px 15px 255px 15px / 15px 255px 15px 255px;
     width: 70%;
     height: fit-content;
     padding: 20px;
-    margin: 5% auto;
+    margin: 50px auto;
 }
 
 .ldPage__title {
@@ -19,79 +20,86 @@ h1 {
     margin: 100px auto;
 }
 
-span {
+.span {
+    color: #5c5b5b;
     margin-right: 3px;
     margin-left: 3px;
 }
 
-span:nth-child(1):hover {
+.span:nth-child(1):hover {
     color: cornflowerblue;
     transform: translate(0px, -10px);
     display: inline-block;
     transition: all 0.01s ease-in-out;
 }
 
-span:nth-child(2):hover {
+.span:nth-child(2):hover {
     color: #d8d86a;
     transform: translate(0px, -10px);
     display: inline-block;
     transition: all 0.01s ease-in-out;
 }
 
-span:nth-child(3):hover {
+.span:nth-child(3):hover {
     color: #71a071;
     transform: translate(0px, -10px);
     display: inline-block;
     transition: all 0.01s ease-in-out;
 }
 
-span:nth-child(4):hover {
+.span:nth-child(4):hover {
     color: #ff8fc3;
     transform: translate(0px, -10px);
     display: inline-block;
     transition: all 0.01s ease-in-out;
 }
 
-span:nth-child(5):hover {
+.span:nth-child(5):hover {
     color: #c23535;
     transform: translate(0px, -10px);
     display: inline-block;
     transition: all 0.01s ease-in-out;
 }
 
-span:nth-child(6):hover {
+.span:nth-child(6):hover {
     color: #ff7b00;
     transform: translate(0px, -10px);
     display: inline-block;
     transition: all 0.01s ease-in-out;
 }
 
-span:nth-child(7):hover {
+.span:nth-child(7):hover {
     color: #39aa9b;
     transform: translate(0px, -10px);
     display: inline-block;
     transition: all 0.01s ease-in-out;
 }
 
-span:nth-child(8):hover {
+.span:nth-child(8):hover {
     color: #6666e2;
     transform: translate(0px, -10px);
     display: inline-block;
     transition: all 0.01s ease-in-out;
 }
 
-span:nth-child(9):hover {
+.span:nth-child(9):hover {
     color: #7fd457;
     transform: translate(0px, -10px);
     display: inline-block;
     transition: all 0.01s ease-in-out;
 }
 
-span:nth-child(10):hover {
+.span:nth-child(10):hover {
     color: #d066fa;
     transform: translate(0px, -10px);
     display: inline-block;
     transition: all 0.01s ease-in-out;
+}
+
+.span:nth-child(11):hover {
+    color: #9afa66;
+    display: inline-block;
+    transition: all 0.03s ease-in-out;
 }
 
 .ldPage__button1,
@@ -105,7 +113,7 @@ span:nth-child(10):hover {
     border-color: #5c5b5b;
 }
 
-.ldPage__button1:hover {
+.ldPage__button1:hover, .ldPage__button1:focus {
     border: 2px solid #fa75b3;
     background: none;
     color: #32633a;
@@ -114,7 +122,7 @@ span:nth-child(10):hover {
     transition: all 0.7s;
 }
 
-.ldPage__button2:hover {
+.ldPage__button2:hover, .ldPage__button2:focus {
     border: 2px solid #fa8a4a;
     background: none;
     color: #382af5;
@@ -134,6 +142,45 @@ span:nth-child(10):hover {
 .is-drawn {
     animation: draw 2s;
     animation-fill-mode: forwards;
+}
+
+.ldPage__loginRegister{
+    letter-spacing:2px;
+    font-size: 150%;
+    text-align: end;
+    margin: 20px;
+    clear: left;
+}
+
+
+.ldPage__loginRegister:hover a, .ldPage__loginRegister a:focus {
+    animation: colors 2s infinite linear;
+}
+
+
+@keyframes colors {
+    0%{
+        color: #e08906;
+    }
+    10% {
+        color: #920000;
+    }
+    20%{
+        color: #92017f;
+    }
+    40% {
+        color: #21007a;
+    }
+    60%{
+        color: #005485;
+    } 
+    80% {
+        color: #017506;
+    }
+    100%{
+        color: #cf9801;
+    }
+
 }
 
 @keyframes draw {
