@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import "../styles/LobbyCreation.css"
 
 function LobbyCreation({ socket }) {
-    const [categoriesDataLoaded, setCategoriesDataLoaded] = useState(false);
+    const [categoriesDataLoaded, setCategoriesDataLoaded] = useState(true);
     const [lobbyId, setLobbyId] = useState("");
     const [firstTime, setFirstTime] = useState(true);
     const [starting, setStarting] = useState(false);
@@ -14,8 +14,10 @@ function LobbyCreation({ socket }) {
 
     function handleLeave(e) {
         e.preventDefault();
-        //
-        socket.emit("leave_lobby");
+        socket.emit("leave_lobby", {
+            delete: true
+        });
+        navigate("/")
     }
 
     function copyId() {
@@ -53,7 +55,6 @@ function LobbyCreation({ socket }) {
         socket.on("starting_errors", (data) => {
             if (data.valid) {
                 if (!sent) {
-                    console.log("STARTING ERRORS");
                     socket.emit("start_game");
                 }
                 setSent(true)
