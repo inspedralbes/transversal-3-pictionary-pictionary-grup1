@@ -12,6 +12,7 @@ function Board({ socket, pintor }) {
   const canvasRef2 = useRef(null);
   const [currentColor, setCurrentColor] = useState("#000");
   const [brushRadius, setBrushRadius] = useState(5);
+  const [firstTime, setFirstTime] = useState(true);
   let colors = ["black", "#ce0101", "#f7de03", "#5cb351", "#76c1df", "#ffffff"];
   let moreColors = ['#ffbb00', '#ff8800', '#ff3300', '#f8479a', '#bb3acc', '#9242b8', '#6b42b8', '#563de0', '#4e96f3', '#8ad0f8', '#75c7b2', '#5ac560', '#037208', '#6b8316', '#75572a', '#534229', '#5e5a58', '#8b8a8a']
 
@@ -148,6 +149,10 @@ function Board({ socket, pintor }) {
 
   useEffect(() => {
     if (pintor) {
+      if (firstTime) {
+        clearBoard();
+        setFirstTime(false)
+      }
       socket.emit("give_me_the_board");
       const canvas = canvasRef.current;
       if (!canvas) {

@@ -44,6 +44,10 @@ function LobbyCreation({ socket }) {
     }
 
     useEffect(() => {
+        if (firstTime) {
+            socket.emit("new_lobby");
+            setFirstTime(false)
+        }
 
         socket.on("lobby_info", (data) => {
             setLobbyId(data.lobbyIdentifier);
@@ -63,6 +67,7 @@ function LobbyCreation({ socket }) {
 
         socket.on("categories", (data) => {
             setCategoriesDataLoaded(true);
+            console.log(data);
             if (firstTime) {
                 socket.emit("new_lobby");
                 setFirstTime(false)
@@ -102,48 +107,52 @@ function LobbyCreation({ socket }) {
             document.getElementById(tab).classList.add('active');
         });
     });
-    return (
-        <div className="createGame">
-            <button className="createGame__leaveButton" onClick={handleLeave}>Leave and delete lobby </button>
 
+    return (<>
 
-            {/* <Settings socket={socket} start={starting}></Settings> */}
+        {categoriesDataLoaded ?
+            <div className="createGame">
+                <button className="createGame__leaveButton" onClick={handleLeave}>Leave and delete lobby </button>
 
-
-            <div class="container">
-                <div >
-                    <ConnectedUsers socket={socket}></ConnectedUsers>
-                </div>
-                <div class="i7">
-                    <div class="Identi">
-                        {lobbyId && (
-                            <h1 className="identifier"><span className='span'>I</span><span className='span'>D</span><span className='span'>E</span><span className='span'>N</span><span className='span'>T</span><span className='span'>I</span><span className='span'>F</span><span className='span'>I</span><span className='span'>E</span><span className='span'>R</span>: <span className='span' id="copyId" onClick={copyId} onMouseOver={changeColor}><p>CLICK TO COPY THE ID</p>{lobbyId}</span></h1>
-                        )}
+                <div className="container">
+                    <div >
+                        <ConnectedUsers socket={socket}></ConnectedUsers>
                     </div>
+                    <div className="i7">
+                        <div className="Identi">
+                            {lobbyId && (
+                                <h1 className="identifier"><span className='span'>I</span><span className='span'>D</span><span className='span'>E</span><span className='span'>N</span><span className='span'>T</span><span className='span'>I</span><span className='span'>F</span><span className='span'>I</span><span className='span'>E</span><span className='span'>R</span>: <span className='span' id="copyId" onClick={copyId} onMouseOver={changeColor}><p>CLICK TO COPY THE ID</p>{lobbyId}</span></h1>
+                            )}
+                        </div>
 
-                    <div class="Setting">
-                        <section id="main">
-                            <div class="tabs">
-                                <button class="tab-link active" data-tab="tab1">Game Mode</button>
-                                <button class="tab-link" data-tab="tab2">Settings</button>
+                        <div className="Setting">
+                            <section id="main">
+                                <div className="tabs">
+                                    <button className="tab-link active" data-tab="tab1">Game Mode</button>
+                                    <button className="tab-link" data-tab="tab2">Settings</button>
 
-                                <div id="tab1" class="tab-content active">
-                                    <Gamemodes socket={socket} start={starting}></Gamemodes>
+                                    <div id="tab1" className="tab-content active">
+                                        <Gamemodes socket={socket} start={starting}></Gamemodes>
+                                    </div>
+
+                                    <div id="tab2" className="tab-content">
+                                        <div> <Settings socket={socket} start={starting}></Settings></div>
+                                    </div>
                                 </div>
-                                
-                                <div id="tab2" class="tab-content">
-                                    <div> <Settings socket={socket} start={starting}></Settings></div>
-                                </div>
+                            </section>
+                            <div className="createGame__startButtonDiv">
+                                <button className="createGame__startButton" onClick={handleStartGame}>Start game</button>
                             </div>
-                        </section>
-                        <div className="createGame__startButtonDiv">
-                            <button className="createGame__startButton" onClick={handleStartGame}>Start game</button>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-
+            :
+            <div style={{ textAlign: 'center', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', fontSize: '5rem' }}>
+                Creating lobby...
+            </div>}
+        {error != "" && <h1>{error}</h1>}
+    </>
     );
 }
 

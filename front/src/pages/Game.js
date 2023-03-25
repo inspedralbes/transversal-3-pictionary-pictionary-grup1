@@ -142,76 +142,87 @@ function Game({ socket }) {
           Loading
         </div>
       )}
-      {!starting && showDrawer && (
-        <div style={{ textAlign: 'center', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', fontSize: '5rem' }}>
-          {countdown}<br></br><br></br>
-          Drawer: {drawerName}
-        </div>
-      )}
-      {!starting && roundEnded && !result && !pintor && !gameEnded && (
-        <div style={{ textAlign: 'center', position: 'fixed', top: '50%', left: '50%', fontSize: '5rem', transform: 'translate(-50%, -50%)', zIndex: '1', backgroundColor: 'white', border: '1px solid black' }}>
-          Last word was: {wordToCheck}<br></br><br></br>
-          Next round drawer: {nextDrawerName}
-        </div>
-      )}
-      {!starting && roundEnded && !result && pintor && !timeUp && !gameEnded && (
-        <div style={{ textAlign: 'center', position: 'fixed', top: '50%', left: '50%', fontSize: '5rem', transform: 'translate(-50%, -50%)', zIndex: '1', backgroundColor: 'white', border: '1px solid black' }}>
-          {gamemode == "fast"?<>Congratulations! Your drawing was wonderful!</>:<>Congratulations! Everyone got the word!</>}
-        </div>
-      )}
+      {!starting && (
+        <>
+          {roundEnded && !result && !pintor && !gameEnded && (
+            <div style={{ textAlign: 'center', position: 'fixed', top: '50%', left: '50%', fontSize: '5rem', transform: 'translate(-50%, -50%)', zIndex: '1', backgroundColor: 'white', border: '1px solid black' }}>
+              Last word was: {wordToCheck}<br></br><br></br>
+              Next round drawer: {nextDrawerName}
+            </div>
+          )}
 
-      {!starting && roundEnded && !result && pintor && timeUp && !gameEnded && (
-        <div style={{ textAlign: 'center', position: 'fixed', top: '50%', left: '50%', fontSize: '5rem', transform: 'translate(-50%, -50%)', zIndex: '1', backgroundColor: 'white', border: '1px solid black' }}>
-          Sorry! Time's Up!
-        </div>
-      )}
-      {!starting && roundEnded && result && !gameEnded && (
-        <div style={{ textAlign: 'center', position: 'fixed', top: '50%', left: '50%', fontSize: '5rem', transform: 'translate(-50%, -50%)', zIndex: '1', backgroundColor: 'white', border: '1px solid black' }}>
-          You did it! <br></br><br></br>
-          Next round drawer: {nextDrawerName}
-        </div>
-      )}
-      {!starting && !showDrawer && (
-        <div style={{ display: 'flex', pointerEvents: roundEnded ? 'none' : 'auto' }}>
-          <div>
-            <ConnectedUsersInGame socket={socket} pintor={pintor} />
-          </div>
-          <div>
-            {spectator ? (
-              <Board socket={socket} pintor={pintor} />
-            ) : (
-              <>
-                {pintor ? (
-                  <div>
-                    <div>
-                      <WordGuess className="game__word" socket={socket} />
-                      <Description className="game__description" socket={socket} />
-                      <Board socket={socket} pintor={pintor} />
-                    </div>
-                  </div>
+          {roundEnded && !result && pintor && !timeUp && !gameEnded && (
+            <div style={{ textAlign: 'center', position: 'fixed', top: '50%', left: '50%', fontSize: '5rem', transform: 'translate(-50%, -50%)', zIndex: '1', backgroundColor: 'white', border: '1px solid black' }}>
+              {gamemode == "fast" ? <>Congratulations! Your drawing was wonderful!</> : <>Congratulations! Everyone got the word!</>}
+            </div>
+          )}
+
+          {roundEnded && !result && pintor && timeUp && !gameEnded && (
+            <div style={{ textAlign: 'center', position: 'fixed', top: '50%', left: '50%', fontSize: '5rem', transform: 'translate(-50%, -50%)', zIndex: '1', backgroundColor: 'white', border: '1px solid black' }}>
+              Sorry! Time's Up!
+            </div>
+          )}
+
+          {roundEnded && result && !gameEnded && (
+            <div style={{ textAlign: 'center', position: 'fixed', top: '50%', left: '50%', fontSize: '5rem', transform: 'translate(-50%, -50%)', zIndex: '1', backgroundColor: 'white', border: '1px solid black' }}>
+              You did it! <br></br><br></br>
+              Next round drawer: {nextDrawerName}
+            </div>
+          )}
+
+          {showDrawer && (
+            <div style={{ textAlign: 'center', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', fontSize: '5rem' }}>
+              {countdown}<br></br><br></br>
+              Drawer: {drawerName}
+            </div>
+          )}
+
+          {!showDrawer && (
+            <div style={{ display: 'flex', pointerEvents: roundEnded ? 'none' : 'auto' }}>
+              <div>
+                <ConnectedUsersInGame socket={socket} pintor={pintor} />
+              </div>
+              <div>
+                {spectator ? (
+                  <Board socket={socket} pintor={pintor} />
                 ) : (
                   <>
-                    {result != null && messageWin && (
+                    {pintor ? (
+                      <div>
+                        <div>
+                          <WordGuess className="game__word" socket={socket} />
+                          <Description className="game__description" socket={socket} />
+                          <Board socket={socket} pintor={pintor} />
+                        </div>
+                      </div>
+                    ) : (
                       <>
-                        {result && !roundEnded && (
-                          <div style={{ textAlign: 'center', position: 'fixed', top: '50%', left: '50%', fontSize: '5rem', transform: 'translate(-50%, -50%)', zIndex: '1', backgroundColor: 'white', border: '1px solid black' }}>
-                            {messageResponses.wordAttemptSuccess}
-                          </div>
+                        {result != null && messageWin && (
+                          <>
+                            {result && !roundEnded && (
+                              <div style={{ textAlign: 'center', position: 'fixed', top: '50%', left: '50%', fontSize: '5rem', transform: 'translate(-50%, -50%)', zIndex: '1', backgroundColor: 'white', border: '1px solid black' }}>
+                                {messageResponses.wordAttemptSuccess}
+                              </div>
+                            )}
+                            {!result && (
+                              <p>{messageResponses.wordAttemptError}</p>
+                            )}
+                          </>
                         )}
-                        {!result && (
-                          <p>{messageResponses.wordAttemptError}</p>
-                        )}
+                        <Board socket={socket} pintor={pintor} />
+                        <WordForm socket={socket} answerCorrect={result} /><br />
                       </>
                     )}
-                    <Board socket={socket} pintor={pintor} />
-                    <WordForm socket={socket} answerCorrect={result} /><br />
                   </>
                 )}
-              </>
-            )}
-          </div>
-        </div>
+              </div>
+            </div>
+          )}
+        </>
       )}
+
+
+
     </>
   );
 }

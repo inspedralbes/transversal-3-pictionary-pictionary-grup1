@@ -28,7 +28,6 @@ function LobbyJoin({ socket }) {
     function handleSubmit(e) {
         e.preventDefault();
         if (lobbyId != "" && username != "") {
-            console.log("JOINING LOBBY");
             socket.emit("join_room", {
                 lobbyIdentifier: lobbyId,
                 username: username,
@@ -77,6 +76,7 @@ function LobbyJoin({ socket }) {
 
         socket.on("lobby_info", (data) => {
             setInsideLobby(true);
+            setLobbyId(data.lobbyIdentifier)
             setError("");
         })
 

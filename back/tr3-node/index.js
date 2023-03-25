@@ -77,6 +77,7 @@ socketIO.on('connection', socket => {
   socket.data.id = i;
   socket.data.username = ""
   socket.data.token = null
+  socket.data.current_lobby = null
   console.log(socket.data.id + " connected ");
 
   const random_hex_color_code = () => {
@@ -135,42 +136,46 @@ socketIO.on('connection', socket => {
   }
 
   socket.on("new_lobby", () => {
-    let existeix = false;
-    let newLobbyIdentifier;
+    if (socket.data.current_lobby != null) {
+      resetLobbyData(socket.data.current_lobby)
 
-    do {
-      newLobbyIdentifier = random_hex_color_code();
+    } else {
+      let existeix = false;
+      let newLobbyIdentifier;
 
-      lobbies.forEach((element) => {
-        if (element.lobbyIdentifier == newLobbyIdentifier) {
-          existeix = true;
+      do {
+        newLobbyIdentifier = random_hex_color_code();
+
+        lobbies.forEach((element) => {
+          if (element.lobbyIdentifier == newLobbyIdentifier) {
+            existeix = true;
+          }
+        });
+      } while (existeix);
+
+      if (!existeix) {
+        let lobbyData = {
+          lobbyIdentifier: newLobbyIdentifier,
+          ownerId: socket.data.id,
+          members: [],
+          currentDrawer: "",
+          words: [],
+          rounds: 0,
+          actualRound: 0,
+          ended: false,
+          boardData: undefined,
+          started: false,
+          settings: {
+            roundDuration: 60,
+            ownerPlay: false
+          }
         }
-      });
-    } while (existeix);
-
-    if (!existeix) {
-      let lobbyData = {
-        lobbyIdentifier: newLobbyIdentifier,
-        ownerId: socket.data.id,
-        members: [],
-        currentDrawer: "",
-        words: [],
-        rounds: 0,
-        actualRound: 0,
-        ended: false,
-        boardData: undefined,
-        started: false,
-        settings: {
-          roundDuration: 60,
-          ownerPlay: false
-        }
+        lobbies.push(lobbyData);
+        socketIO.to(socket.id).emit("lobby_info", lobbyData)
+        socket.join(newLobbyIdentifier);
+        socket.data.current_lobby = newLobbyIdentifier;
       }
-      lobbies.push(lobbyData);
-      socketIO.to(socket.id).emit("lobby_info", lobbyData)
-      socket.join(newLobbyIdentifier);
-      socket.data.current_lobby = newLobbyIdentifier;
     }
-
   });
 
   socket.on("lobby_data", () => {
@@ -197,29 +202,12 @@ socketIO.on('connection', socket => {
   });
 
   socket.on("use_same_seed", () => {
-    console.log("Hola");
+    socketIO.to(socket.id).emit("");
   });
 
   socket.on("get_owner", () => {
-    getOwner();
+    getOwner(socket.data.current_lobby);
   });
-
-  async function getOwner() {
-    const sockets = await socketIO.in(socket.data.current_lobby).fetchSockets();
-    lobbies.forEach((lobby) => {
-
-      if (lobby.lobbyIdentifier == socket.data.current_lobby) {
-
-        sockets.forEach(user => {
-          if (user.data.id == lobby.ownerId) {
-            socketIO.to(user.id).emit("is_owner", lobby)
-
-          }
-        }
-        );
-      }
-    });
-  }
 
   socket.on("start_game", () => {
     let amountOfRounds;
@@ -379,7 +367,6 @@ socketIO.on('connection', socket => {
         lobby.boardData = arrayDatos;
       }
     });
-    // boardData = arrayDatos;
 
     sendBoardData(socket.data.current_lobby);
   });
@@ -466,10 +453,57 @@ socketIO.on('connection', socket => {
   })
 });
 
+async function resetLobbyData(room) {
+  const sockets = await socketIO.in(room).fetchSockets();
+  let lobby_data;
+
+  socketIO.to(room).emit("GO_BACK_TO_LOBBY");
+
+  lobbies.forEach(lobby => {
+    if (lobby.lobbyIdentifier == room) {
+      lobby.currentDrawer = "";
+      lobby.words = [];
+      lobby.rounds = 0;
+      lobby.actualRound = 0;
+      lobby.ended = false;
+      lobby.boardData = undefined;
+      lobby.started = false;
+      lobby.members.forEach(member => {
+        member.lastAnswerCorrect = false;
+        member.lastAnswer = "";
+        member.points = 0;
+      });
+      lobby_data = lobby;
+    }
+  });
+
+  sockets.forEach(user => {
+    socketIO.to(user.id).emit("lobby_info", lobby_data);
+  })
+  sendUserList(room)
+  sendBoardData(room)
+}
+
+async function getOwner(room) {
+  const sockets = await socketIO.in(room).fetchSockets();
+
+  lobbies.forEach((lobby) => {
+    if (lobby.lobbyIdentifier == room) {
+      sockets.forEach(user => {
+        if (user.data.id == lobby.ownerId) {
+          socketIO.to(user.id).emit("is_owner", lobby)
+        }
+      }
+      );
+    }
+  });
+}
+
 function setCounter(lobbyId) {
   let timer;
   lobbies.forEach(lobby => {
-    if (lobby.lobbyIdentifier == lobbyId && !lobby.ended) {
+    if (lobby.lobbyIdentifier == lobbyId && !lobby.ended && !lobby.counting) {
+      lobby.counting = true;
       cont = lobby.settings.roundDuration
       cont++;
       timer = setInterval(() => {
@@ -485,7 +519,7 @@ function setCounter(lobbyId) {
           }
         });
 
-        if (cont == 45 || correct == lobby.members.length - 1 || (correct == 1 && lobby.gamemode == "fast")) {
+        if (cont <= 0 || correct == lobby.members.length - 1 || (correct == 1 && lobby.gamemode == "fast")) {
           if (lobby.actualRound < lobby.rounds) {
             lobby.actualRound++;
           }
@@ -494,9 +528,10 @@ function setCounter(lobbyId) {
             lobby.ended = true;
             socketIO.to(lobbyId).emit("game_ended")
           } else {
-            let motivo = cont == 45 ? "time" : "perfect"
+            let motivo = cont == 0 ? "time" : "perfect"
             socketIO.to(lobbyId).emit("round_ended", { roundIndex: lobby.actualRound, motivo: motivo, gamemode: lobby.gamemode });
           }
+          lobby.counting = false;
           clearInterval(timer)
         }
       }, 1000)
@@ -639,6 +674,7 @@ function sendUserList(room) {
       });
     }
   });
+
   socketIO.to(room).emit("lobby_user_list", {
     list: list,
     message: "user list",
