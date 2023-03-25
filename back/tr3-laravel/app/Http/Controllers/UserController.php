@@ -176,20 +176,26 @@ class UserController extends Controller
 
         return response() -> json($userFound);
     }    
-
+    
     public function isUserLogged(Request $request)
     {
-        $logged = false;
-        
+        $userLogged = false;
+
+        if ($request -> token == null || $request -> token == "" ) {
+            $userLogged = false;
+        } else {    
+        //Check if the user is logged, returns 'null' if the user is not logged in.
         [$id, $token] = explode('|', $request -> token, 2);
         $accessToken = PersonalAccessToken::find($id);
 
         if (hash_equals($accessToken->token, hash('sha256', $token))) {
-            $logged = true;
+            $userId = $accessToken -> tokenable_id;
+            $request->session()->put('userId', $userId);
+            $userLogged = true;
         }
-
-        return response() -> json($logged);
-    }    
+        }
+        return response() -> json($userLogged);
+    }  
     
     public function getProfile(Request $request)
     {

@@ -5,16 +5,20 @@ import { useNavigate } from "react-router-dom";
 import "../styles/LobbyCreation.css"
 
 function LobbyCreation({ socket }) {
+    const [categoriesDataLoaded, setCategoriesDataLoaded] = useState(false);
     const [lobbyId, setLobbyId] = useState("");
     const [firstTime, setFirstTime] = useState(true);
     const [starting, setStarting] = useState(false);
     const [sent, setSent] = useState(false);
+    const [error, setError] = useState("");
     const navigate = useNavigate();
 
     function handleLeave(e) {
         e.preventDefault();
-        //
-        socket.emit("leave_lobby");
+        socket.emit("leave_lobby", {
+            delete: true
+        });
+        navigate("/")
     }
 
     function copyId() {
@@ -39,10 +43,6 @@ function LobbyCreation({ socket }) {
     }
 
     useEffect(() => {
-        if (firstTime) {
-            socket.emit("new_lobby");
-            setFirstTime(false)
-        }
 
         socket.on("lobby_info", (data) => {
             setLobbyId(data.lobbyIdentifier);
@@ -52,7 +52,6 @@ function LobbyCreation({ socket }) {
         socket.on("starting_errors", (data) => {
             if (data.valid) {
                 if (!sent) {
-                    console.log("STARTING ERRORS");
                     socket.emit("start_game");
                 }
                 setSent(true)
@@ -61,8 +60,21 @@ function LobbyCreation({ socket }) {
             }
         })
 
+        socket.on("categories", (data) => {
+            setCategoriesDataLoaded(true);
+            if (firstTime) {
+                socket.emit("new_lobby");
+                setFirstTime(false)
+            }
+        })
+
         socket.on("game_started", () => {
+            setError("");
             navigate("/game")
+        })
+
+        socket.on("NOT_ENOUGH_PLAYERS", () => {
+            setError("Not enough players to start game");
         })
 
         socket.on("YOU_LEFT_LOBBY", () => {
