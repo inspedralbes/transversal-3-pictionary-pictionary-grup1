@@ -5,16 +5,20 @@ import { useNavigate } from "react-router-dom";
 import "../styles/LobbyCreation.css"
 
 function LobbyCreation({ socket }) {
+    const [categoriesDataLoaded, setCategoriesDataLoaded] = useState(false);
     const [lobbyId, setLobbyId] = useState("");
     const [firstTime, setFirstTime] = useState(true);
     const [starting, setStarting] = useState(false);
     const [sent, setSent] = useState(false);
+    const [error, setError] = useState("");
     const navigate = useNavigate();
 
     function handleLeave(e) {
         e.preventDefault();
-        //
-        socket.emit("leave_lobby");
+        socket.emit("leave_lobby", {
+            delete: true
+        });
+        navigate("/")
     }
 
     function copyId() {
@@ -39,10 +43,6 @@ function LobbyCreation({ socket }) {
     }
 
     useEffect(() => {
-        if (firstTime) {
-            socket.emit("new_lobby");
-            setFirstTime(false)
-        }
 
         socket.on("lobby_info", (data) => {
             setLobbyId(data.lobbyIdentifier);
@@ -52,7 +52,6 @@ function LobbyCreation({ socket }) {
         socket.on("starting_errors", (data) => {
             if (data.valid) {
                 if (!sent) {
-                    console.log("STARTING ERRORS");
                     socket.emit("start_game");
                 }
                 setSent(true)
@@ -61,24 +60,105 @@ function LobbyCreation({ socket }) {
             }
         })
 
+        socket.on("categories", (data) => {
+            setCategoriesDataLoaded(true);
+            if (firstTime) {
+                socket.emit("new_lobby");
+                setFirstTime(false)
+            }
+        })
+
         socket.on("game_started", () => {
+            setError("");
             navigate("/game")
+        })
+
+        socket.on("NOT_ENOUGH_PLAYERS", () => {
+            setError("Not enough players to start game");
         })
 
         socket.on("YOU_LEFT_LOBBY", () => {
             navigate("/")
         })
     }, [navigate, socket, firstTime])
+
+    const tabLinks = document.querySelectorAll('.tab-link');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabLinks.forEach((link) => {
+    link.addEventListener('click', () => {
+        const tab = link.dataset.tab;
+
+        tabLinks.forEach((link) => {
+        link.classList.remove('active');
+        });
+
+        tabContents.forEach((content) => {
+        content.classList.remove('active');
+        });
+
+        link.classList.add('active');
+        document.getElementById(tab).classList.add('active');
+    });
+});
     return (
         <div className="createGame">
             <button className="createGame__leaveButton" onClick={handleLeave}>Leave and delete lobby </button>
-            {lobbyId && (
-                <h1 className="identifier"><span className='span'>I</span><span className='span'>D</span><span className='span'>E</span><span className='span'>N</span><span className='span'>T</span><span className='span'>I</span><span className='span'>F</span><span className='span'>I</span><span className='span'>E</span><span className='span'>R</span>: <span className='span' id="copyId" onClick={copyId} onMouseOver={changeColor}><p>CLICK TO COPY THE ID</p>{lobbyId}</span></h1>
-            )}
-            <Settings socket={socket} start={starting}></Settings>
-            <ConnectedUsers socket={socket}></ConnectedUsers>
-            <div className="createGame__startButtonDiv">
-                <button className="createGame__startButton" onClick={handleStartGame}>Start game</button>
+            
+            
+            {/* <Settings socket={socket} start={starting}></Settings> */}
+            
+            
+            <div class="container">
+                <div >
+                <ConnectedUsers socket={socket}></ConnectedUsers>
+                </div>
+            <div class="i7">
+                <div class="Identi">
+                    {lobbyId && (
+                    <h1 className="identifier"><span className='span'>I</span><span className='span'>D</span><span className='span'>E</span><span className='span'>N</span><span className='span'>T</span><span className='span'>I</span><span className='span'>F</span><span className='span'>I</span><span className='span'>E</span><span className='span'>R</span>: <span className='span' id="copyId" onClick={copyId} onMouseOver={changeColor}><p>CLICK TO COPY THE ID</p>{lobbyId}</span></h1>
+                )}
+                </div>
+
+                <div class="Setting">
+                    <section id="main">
+                        <div class="tabs">
+                            <button class="tab-link active" data-tab="tab1">Game Mode</button>
+                            <button class="tab-link" data-tab="tab2">Settings</button>
+
+                            <div id="tab1" class="tab-content active">
+                                <p> Game mode</p>
+                            </div>
+                            <div id="tab2" class="tab-content">
+                                <div> <Settings socket={socket} start={starting}></Settings></div>
+                            </div>
+                            
+                        </div>
+                        {/* <div class="Setting">
+                            <section id="main">
+                                <div id="tabs">
+                                    <span class="tab" id="uno"></span>
+                                    <button  class="tab-e" data-tab="pnl__game">Game Mode</button>
+                                    <span class="tab" id="dos"></span>
+                                    <a href="#dos" class="tab-e tab-setting">Settings</a>
+                                    
+                                    <div id="pnl__game">
+                                        <div> Game mode</div>
+                                    </div>
+
+                                    <div id="pnl__setting">
+                                        <div> <Settings socket={socket} start={starting}></Settings></div>
+                                    </div>
+                                </div>
+                            </section>
+                            
+                        </div> */}
+                    </section>
+                    <div className="createGame__startButtonDiv">
+                        <button className="createGame__startButton" onClick={handleStartGame}>Start game</button>
+                    </div>
+                </div>
+            </div>
             </div>
         </div>
 

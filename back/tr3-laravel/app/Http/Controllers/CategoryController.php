@@ -34,6 +34,7 @@ class CategoryController extends Controller
     {
         $userId = null;
 
+        if (!($request -> token == null || $request -> token == "" )) {
         //Check if the user is logged, returns 'null' if the user is not logged in.
         [$id, $token] = explode('|', $request -> token, 2);
         $accessToken = PersonalAccessToken::find($id);
@@ -42,6 +43,7 @@ class CategoryController extends Controller
             $userId = $accessToken -> tokenable_id;
             $request->session()->put('userId', $userId);
         }
+    }
 
         return $userId;
     }
@@ -139,4 +141,64 @@ class CategoryController extends Controller
         return response() -> json($sendCategory);
     }
 
+    public function getCategories (Request $request)
+    {  
+        $privateCategories = [];
+        $publicCategories = [];
+        $categories = (object) ['public'=> [], 'private' => []];
+
+        //Check if user is logged
+        $userId = $this->checkUserLogged($request);
+
+        if ($userId != null) {
+            //Get all private categories where the user is the creator.
+            $getPrivate = Category::where('privacy', 'private')
+            -> where('creator_id', $userId)
+            -> get();
+                $creatorName = User::where('id', $request->session()->get('userId')) -> first();
+                for ($i = 0; $i < count($getPrivate); $i ++) { 
+                    $numberWords = Word::where('category_id', $getPrivate[$i] -> id) -> count();
+                    $words = Word::where('category_id', $getPrivate[$i] -> id) -> get();
+                    $category = (object) 
+                    [
+                        'categoryId'=> $getPrivate[$i] -> id,
+                        'categoryName' => $getPrivate[$i] -> name,
+                        'numberOfWords' => $numberWords,
+                        'words' => $words,
+                        'createdBy' => $creatorName,
+                        'createdAt' => $getPrivate[$i] -> created_at -> format('d/m/Y')
+                    ];
+                    $privateCategories[$i] = $category;
+                }
+        }
+
+        //Always get public categories.
+        $getPublic = Category::where('privacy', 'public') -> get();
+            for ($i = 0; $i < count($getPublic); $i ++) { 
+                if ($getPublic[$i] -> creator_id != null) {
+                    $creator = User::where('id', $getPublic[$i] -> creator_id) -> first();
+                    $creatorName = $creator -> name;
+                } else {
+                    $creatorName = 'SYSTEM'; 
+                }
+
+                $numberWords = Word::where('category_id', $getPublic[$i] -> id) -> count();
+                $words = Word::where('category_id', $getPublic[$i] -> id) -> get();
+                $category = (object) 
+                [
+                    'categoryId'=> $getPublic[$i] -> id,
+                    'categoryName' => $getPublic[$i] -> name,
+                    'numberOfWords' => $numberWords,
+                    'words' => $words,
+                    'createdBy' => $creatorName,
+                    'createdAt' => $getPublic[$i] -> created_at -> format('d/m/Y')
+                ];
+                $publicCategories[$i] = $category;
+            }
+
+        $categories -> private = $privateCategories;
+        $categories -> public = $publicCategories;
+
+        return response() -> json($categories);
+    }
 }

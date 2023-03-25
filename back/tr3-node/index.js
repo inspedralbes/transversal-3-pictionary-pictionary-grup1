@@ -1,12 +1,12 @@
-const express = require('express');
+const express = require("express");
 const cors = require("cors");
 const sessions = require("express-session");
 var cookieParser = require("cookie-parser");
 const app = express();
-const http = require('http');
+const http = require("http");
 const server = http.createServer(app);
 const PORT = 7878;
-const host = '0.0.0.0';
+const host = "0.0.0.0";
 const axios = require("axios");
 
 const socketIO = require("socket.io")(server, {
@@ -58,32 +58,34 @@ let i = 0;
 const laravelRoute = "http://127.0.0.1:8000/index.php/";
 
 let lobbies = [];
+let cont = 0;
 
 const maxSettings = {
   maxTime: 120,
   minTime: 30,
   minAmountOfTurns: 1,
-  maxAmountOfTurns: 5
-}
+  maxAmountOfTurns: 5,
+};
 
 var sesiones = [];
 
 // ------------------------------------------------------------------
 
-socketIO.on('connection', socket => {
-
-  i++
+socketIO.on("connection", (socket) => {
+  i++;
   socket.data.id = i;
-  socket.data.username = ""
+  socket.data.username = "";
+  socket.data.token = null;
   console.log(socket.data.id + " connected ");
 
   const random_hex_color_code = () => {
     let n = Math.floor(Math.random() * 999999);
-    return n.toString();
+    return n.toString().padStart(6, "0");
   };
 
   socket.on("send token", (data) => {
     let token = data.token;
+    socket.data.token = token;
 
     axios
       .post(laravelRoute + "getUserInfo", {
@@ -99,7 +101,9 @@ socketIO.on('connection', socket => {
 
         socket.data.dbId = response.data.id;
         socket.data.username = response.data.name;
-        console.log(`database id: ${socket.data.dbId} database name: ${socket.data.username} token: ${token}`);
+        console.log(
+          `database id: ${socket.data.dbId} database name: ${socket.data.username} token: ${token}`
+        );
       })
       .catch(function (error) {
         console.log(error);
@@ -109,10 +113,27 @@ socketIO.on('connection', socket => {
   socket.on("get_username", () => {
     if (socket.data.username != "") {
       socketIO.to(socket.id).emit("username_saved", {
-        name: socket.data.username
-      })
+        name: socket.data.username,
+      });
     }
-  })
+  });
+
+  socket.on("get_categories", () => {
+    sendCategoriesToUser(socket);
+  });
+
+  async function sendCategoriesToUser(socket) {
+    await axios
+      .post(laravelRoute + "getCategories", {
+        token: socket.data.token,
+      })
+      .then(function (response) {
+        socketIO.to(socket.id).emit("categories", response.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
 
   socket.on("new_lobby", () => {
     let existeix = false;
@@ -142,29 +163,37 @@ socketIO.on('connection', socket => {
         started: false,
         settings: {
           roundDuration: 60,
-          ownerPlay: false
-        }
-      }
+          ownerPlay: false,
+        },
+      };
       lobbies.push(lobbyData);
-      socketIO.to(socket.id).emit("lobby_info", lobbyData)
+      socketIO.to(socket.id).emit("lobby_info", lobbyData);
       socket.join(newLobbyIdentifier);
       socket.data.current_lobby = newLobbyIdentifier;
     }
-
   });
 
   socket.on("lobby_data", () => {
-    sendUserList(socket.data.current_lobby)
-  })
-
-  socket.on("join_room", (data) => {
-    socket.data.username = data.username;
-    joinLobby(socket, data.lobbyIdentifier, socket.data.username)
+    sendUserList(socket.data.current_lobby);
   });
 
-  socket.on("leave_lobby", () => {
-    leaveLobby(socket);
-    sendUserList(socket.data.current_lobby);
+  socket.on("join_room", (data) => {
+    console.log(data);
+    socket.data.username = data.username;
+    joinLobby(socket, data.lobbyIdentifier, socket.data.username);
+  });
+
+  socket.on("leave_lobby", (data) => {
+    let lobby = socket.data.current_lobby;
+    if (data.delete) {
+      deleteLobby(socket);
+    } else if (data.wasDeleted) {
+      socket.leave(socket.data.current_lobby);
+      socket.data.current_lobby = null;
+    } else {
+      leaveLobby(socket);
+      sendUserList(lobby);
+    }
   });
 
   socket.on("use_same_seed", () => {
@@ -178,16 +207,12 @@ socketIO.on('connection', socket => {
   async function getOwner() {
     const sockets = await socketIO.in(socket.data.current_lobby).fetchSockets();
     lobbies.forEach((lobby) => {
-
       if (lobby.lobbyIdentifier == socket.data.current_lobby) {
-        
-        sockets.forEach(user => {
-            if (user.data.id == lobby.ownerId) {
-              socketIO.to(user.id).emit("is_owner", lobby)
-              
-            } 
+        sockets.forEach((user) => {
+          if (user.data.id == lobby.ownerId) {
+            socketIO.to(user.id).emit("is_owner", lobby);
           }
-        );
+        });
       }
     });
   }
@@ -195,68 +220,70 @@ socketIO.on('connection', socket => {
   socket.on("start_game", () => {
     let amountOfRounds;
 
-    lobbies.forEach(lobby => {
-      if (lobby.lobbyIdentifier == socket.data.current_lobby && !lobby.started) {
-        // if (lobby.settings.roundDuration > maxSettings.minTime && lobby.settings.roundDuration < maxSettings.maxTime) {
-        lobby.rounds = lobby.members.length;
-        console.log("ROUNDS: " + lobby.rounds);
-        amountOfRounds = lobby.rounds;
-        socketIO.to(socket.data.current_lobby).emit('game_started');
-        setLobbyWord(socket.data.current_lobby, amountOfRounds);
-        enviarPintor(socket.data.current_lobby)
-        sendUserList(socket.data.current_lobby);
-        setCounter(socket.data.current_lobby);
-        // } else {
-        //   socketIO.to(socket.id).emit('INVALID_SETTINGS');
-        // }
-
+    lobbies.forEach((lobby) => {
+      if (
+        lobby.lobbyIdentifier == socket.data.current_lobby &&
+        !lobby.started
+      ) {
+        if (lobby.members.length > 1) {
+          lobby.rounds = lobby.members.length;
+          amountOfRounds = lobby.rounds;
+          socketIO.to(socket.data.current_lobby).emit("game_started");
+          setLobbyWord(socket.data.current_lobby, amountOfRounds);
+          enviarPintor(socket.data.current_lobby);
+          sendUserList(socket.data.current_lobby);
+        } else {
+          socketIO.to(socket.id).emit("NOT_ENOUGH_PLAYERS");
+        }
       }
     });
   });
 
   socket.on("get_game_data", () => {
-    enviarPintor(socket.data.current_lobby)
+    enviarPintor(socket.data.current_lobby);
     let data;
     let word;
-    lobbies.forEach(lobby => {
+    lobbies.forEach((lobby) => {
       if (lobby.lobbyIdentifier == socket.data.current_lobby) {
-        data = lobby
+        data = lobby;
         word = lobby.words[lobby.actualRound];
       }
     });
     // socketIO.to(socket.id).emit('game_data', data);
-    socketIO.to(socket.id).emit('current_word', {
-      word: word
+    socketIO.to(socket.id).emit("current_word", {
+      word: word,
     });
-
   });
 
   socket.on("get_lobby_settings", () => {
     let data;
-    lobbies.forEach(lobby => {
+    lobbies.forEach((lobby) => {
       if (lobby.lobbyIdentifier == socket.data.current_lobby) {
-        data = lobby.settings
+        data = lobby.settings;
       }
     });
 
     if (data != null) {
-      socketIO.to(socket.id).emit('lobby_settings', data);
+      socketIO.to(socket.id).emit("lobby_settings", data);
     }
   });
 
   socket.on("save_settings", (data) => {
     let valid = true;
-    lobbies.forEach(lobby => {
-      if (lobby.lobbyIdentifier == socket.data.current_lobby && lobby.ownerId == socket.data.id) {
+    lobbies.forEach((lobby) => {
+      if (
+        lobby.lobbyIdentifier == socket.data.current_lobby &&
+        lobby.ownerId == socket.data.id
+      ) {
         if (data.roundDuration < maxSettings.minTime) {
-          socketIO.to(socket.id).emit('ROUND_TIME_UNDER_MIN', {
-            min: maxSettings.minTime
+          socketIO.to(socket.id).emit("ROUND_TIME_UNDER_MIN", {
+            min: maxSettings.minTime,
           });
 
           valid = false;
         } else if (data.roundDuration > maxSettings.maxTime) {
-          socketIO.to(socket.id).emit('ROUND_TIME_ABOVE_MAX', {
-            max: maxSettings.maxTime
+          socketIO.to(socket.id).emit("ROUND_TIME_ABOVE_MAX", {
+            max: maxSettings.maxTime,
           });
 
           valid = false;
@@ -269,7 +296,7 @@ socketIO.on('connection', socket => {
           }
 
           if (!lobby.settings.ownerPlay && data.ownerPlay) {
-            lobby.members.forEach(checking_member => {
+            lobby.members.forEach((checking_member) => {
               if (checking_member.username == data.nickname) {
                 valid = false;
                 socketIO.to(socket.id).emit("USER_ALR_CHOSEN_ERROR");
@@ -277,15 +304,16 @@ socketIO.on('connection', socket => {
             });
 
             if (valid) {
-              socket.data.username = data.nickname
+              socket.data.username = data.nickname;
               lobby.members.push({
                 idUser: socket.data.id,
                 username: data.nickname,
                 lastAnswerCorrect: false,
-                lastAnswer: ""
+                lastAnswer: "",
+                points: 0,
               });
 
-              sendUserList(socket.data.current_lobby)
+              sendUserList(socket.data.current_lobby);
             }
           } else if (lobby.settings.ownerPlay && !data.ownerPlay) {
             lobby.members.forEach((member, index) => {
@@ -294,19 +322,19 @@ socketIO.on('connection', socket => {
               }
             });
 
-            sendUserList(socket.data.current_lobby)
+            sendUserList(socket.data.current_lobby);
           } else if (lobby.settings.ownerPlay && data.ownerPlay) {
             lobby.members.forEach((member) => {
               if (member.idUser == socket.data.id) {
                 if (member.username != data.nickname) {
-                  lobby.members.forEach(checking_member => {
+                  lobby.members.forEach((checking_member) => {
                     if (checking_member.username == data.nickname) {
                       valid = false;
                     }
                   });
 
                   if (valid) {
-                    member.username = data.nickname
+                    member.username = data.nickname;
                   } else {
                     socketIO.to(socket.id).emit("USER_ALR_CHOSEN_ERROR");
                   }
@@ -314,23 +342,23 @@ socketIO.on('connection', socket => {
               }
             });
 
-            sendUserList(socket.data.current_lobby)
+            sendUserList(socket.data.current_lobby);
           }
         }
 
         if (valid) {
-          lobby.settings = data
+          lobby.settings = data;
         }
 
         socketIO.to(socket.id).emit("starting_errors", {
-          valid: valid
-        })
+          valid: valid,
+        });
       }
     });
-  })
+  });
 
-  socket.on('save_coord', (arrayDatos) => {
-    lobbies.forEach(lobby => {
+  socket.on("save_coord", (arrayDatos) => {
+    lobbies.forEach((lobby) => {
       if (lobby.lobbyIdentifier == socket.data.current_lobby) {
         lobby.boardData = arrayDatos;
       }
@@ -340,9 +368,9 @@ socketIO.on('connection', socket => {
     sendBoardData(socket.data.current_lobby);
   });
 
-  socket.on('give_me_the_board', () => {
+  socket.on("give_me_the_board", () => {
     let boardData;
-    lobbies.forEach(lobby => {
+    lobbies.forEach((lobby) => {
       if (lobby.lobbyIdentifier == socket.data.current_lobby) {
         boardData = lobby.boardData;
       }
@@ -353,69 +381,97 @@ socketIO.on('connection', socket => {
     }
   });
 
-  socket.on('try_word_attempt', (data) => {
+  socket.on("try_word_attempt", (data) => {
     let wordToCheck;
-    lobbies.forEach(lobby => {
+
+    lobbies.forEach((lobby) => {
       if (lobby.lobbyIdentifier == socket.data.current_lobby) {
         if (!lobby.ended) {
-          wordToCheck = lobby.words[lobby.actualRound].name
+          wordToCheck = lobby.words[lobby.actualRound].name;
 
           if (data.word.toLowerCase() === wordToCheck.toLowerCase()) {
-            socketIO.to(socket.id).emit('answer_result', {
+            socketIO.to(socket.id).emit("answer_result", {
               resultsMatch: true,
-            })
+            });
+            let pointsRound = 0;
+            let userTime = lobby.settings.roundDuration - cont;
 
-            lobby.members.forEach(member => {
-              if (member.idUser == socket.data.id) {
+            if (
+              lobby.settings.roundDuration - userTime >
+              lobby.settings.roundDuration - 20
+            ) {
+              pointsRound = lobby.settings.roundDuration - 20;
+            } else {
+              pointsRound = lobby.settings.roundDuration - userTime;
+            }
+
+            lobby.members.forEach((member) => {
+              if (member.username == lobby.currentDrawer) {
+                member.points = member.points + 10;
+              } else if (member.idUser == socket.data.id) {
                 member.lastAnswerCorrect = true;
                 member.lastAnswer = data.word;
+                member.points = member.points + pointsRound;
               }
             });
-            sendUserList(socket.data.current_lobby)
+            sendUserList(socket.data.current_lobby);
           } else {
-            socketIO.to(socket.id).emit('answer_result', {
+            socketIO.to(socket.id).emit("answer_result", {
               resultsMatch: false,
-            })
+            });
 
-            lobby.members.forEach(member => {
+            lobby.members.forEach((member) => {
               if (member.idUser == socket.data.id) {
                 member.lastAnswerCorrect = false;
                 member.lastAnswer = data.word;
               }
             });
-            sendUserList(socket.data.current_lobby)
+            sendUserList(socket.data.current_lobby);
           }
         }
       }
     });
   });
 
-  socket.on('disconnect', () => {
+  socket.on("round_end", () => {
+    lobbies.forEach((lobby) => {
+      if (
+        lobby.lobbyIdentifier == socket.data.current_lobby &&
+        lobby.ownerId == socket.data.id
+      ) {
+        enviarPintor(socket.data.current_lobby);
+        sendUserList(socket.data.current_lobby);
+        acabarRonda(socket.data.current_lobby);
+      }
+    });
+  });
+
+  socket.on("disconnect", () => {
     console.log(socket.data.id + " disconnected");
     leaveLobby(socket);
-  })
+  });
 });
 
 function setCounter(lobbyId) {
   let timer;
-  lobbies.forEach(lobby => {
+  lobbies.forEach((lobby) => {
     if (lobby.lobbyIdentifier == lobbyId && !lobby.ended) {
-      let cont = lobby.settings.roundDuration
+      cont = lobby.settings.roundDuration;
       cont++;
       timer = setInterval(() => {
         cont--;
         socketIO.to(lobbyId).emit("counter_down", {
-          counter: cont
-        })
+          counter: cont,
+        });
 
         let correct = 0;
-        lobby.members.forEach(member => {
+        lobby.members.forEach((member) => {
           if (member.lastAnswerCorrect) {
             correct++;
           }
         });
 
-        if (cont == 1000000 || correct == lobby.members.length - 1) {
+        if (cont == 50 || correct == lobby.members.length - 1) {
           if (lobby.actualRound < lobby.rounds) {
             lobby.actualRound++;
           }
@@ -423,23 +479,29 @@ function setCounter(lobbyId) {
           if (lobby.actualRound == lobby.rounds) {
             lobby.ended = true;
           } else {
-            socketIO.to(lobbyId).emit("round_ended", { roundIndex: lobby.actualRound });
+            let motivo = cont <= 50 ? "time" : "perfect";
+            socketIO
+              .to(lobbyId)
+              .emit("round_ended", {
+                roundIndex: lobby.actualRound,
+                motivo: motivo,
+              });
           }
 
           enviarPintor(lobbyId);
           acabarRonda(lobbyId);
-          clearInterval(timer)
+          clearInterval(timer);
         }
-      }, 1000)
+      }, 1000);
     }
   });
 }
 
 function acabarRonda(lobbyId) {
-  lobbies.forEach(lobby => {
+  lobbies.forEach((lobby) => {
     if (lobby.lobbyIdentifier == lobbyId) {
       if (!lobby.ended) {
-        lobby.members.forEach(member => {
+        lobby.members.forEach((member) => {
           member.lastAnswerCorrect = false;
           member.lastAnswer = "";
         });
@@ -447,17 +509,16 @@ function acabarRonda(lobbyId) {
         lobby.boardData = {
           arrayDatos: [],
           limpiar: true,
-          cambioDeRonda: true
+          cambioDeRonda: true,
         };
         sendBoardData(lobbyId);
         sendUserList(lobbyId);
         setCounter(lobbyId);
       } else {
-        socketIO.to(lobbyId).emit("game_ended")
+        socketIO.to(lobbyId).emit("game_ended");
       }
     }
   });
-
 }
 
 function joinLobby(socket, lobbyIdentifier, username) {
@@ -465,8 +526,7 @@ function joinLobby(socket, lobbyIdentifier, username) {
   lobbies.forEach((lobby) => {
     if (lobby.lobbyIdentifier == lobbyIdentifier) {
       disponible = true;
-
-      lobby.members.forEach(member => {
+      lobby.members.forEach((member) => {
         if (member.username == username || lobby.ownerId == socket.data.id) {
           disponible = false;
         }
@@ -477,12 +537,13 @@ function joinLobby(socket, lobbyIdentifier, username) {
           idUser: socket.data.id,
           username: username,
           lastAnswerCorrect: false,
-          lastAnswer: ""
+          lastAnswer: "",
+          points: 0,
         });
 
-        socketIO.to(socket.id).emit("lobby_info", lobby)
+        socketIO.to(socket.id).emit("lobby_info", lobby);
       } else {
-        socketIO.to(socket.id).emit("USER_ALR_CHOSEN_ERROR")
+        socketIO.to(socket.id).emit("USER_ALR_CHOSEN_ERROR");
       }
     }
   });
@@ -493,7 +554,6 @@ function joinLobby(socket, lobbyIdentifier, username) {
 
     sendUserList(lobbyIdentifier);
   }
-
 }
 
 function leaveLobby(socket) {
@@ -502,22 +562,28 @@ function leaveLobby(socket) {
       lobby.members.forEach((member, index) => {
         if (member.idUser == socket.data.id) {
           lobby.members.splice(index, 1);
+          console.log(lobby.members);
         }
       });
-      if (lobby.members.length == 0) {
-        lobbies.splice(ind_lobby, 1);
-      } else if (lobby.ownerId == socket.data.id) {
-        lobbies.splice(ind_lobby, 1);
-        socketIO.to(lobby.lobbyIdentifier).emit("lobby_deleted", {
-          message: "Lobby has been deleted by the owner"
-        })
-      }
     }
   });
 
   socket.leave(socket.data.current_lobby);
-  socket.data.current_lobby = null
-  socketIO.to(socket.id).emit("YOU_LEFT_LOBBY")
+  socket.data.current_lobby = null;
+  socketIO.to(socket.id).emit("YOU_LEFT_LOBBY");
+}
+function deleteLobby(socket) {
+  lobbies.forEach((lobby, ind_lobby) => {
+    if (lobby.lobbyIdentifier == socket.data.current_lobby) {
+      lobbies.splice(ind_lobby, 1);
+      socketIO.to(lobby.lobbyIdentifier).emit("lobby_deleted", {
+        message: "Lobby has been deleted by the owner",
+      });
+    }
+  });
+
+  socket.leave(socket.data.current_lobby);
+  socket.data.current_lobby = null;
 }
 
 async function setLobbyWord(room, amount) {
@@ -534,10 +600,10 @@ async function setLobbyWord(room, amount) {
     .post(laravelRoute + "getWords", {
       category: category,
       difficulty: difficulty,
-      amount: amount
+      amount: amount,
     })
     .then(function (response) {
-      words = response.data.wordsToCheck
+      words = response.data.wordsToCheck;
     })
     .catch(function (error) {
       console.log(error);
@@ -546,8 +612,8 @@ async function setLobbyWord(room, amount) {
     if (lobby.lobbyIdentifier == room) {
       lobby.words = words;
       lobby.started = true;
-      socketIO.to(room).emit('started');
-      socketIO.to(room).emit('game_data', lobby);
+      socketIO.to(room).emit("started");
+      socketIO.to(room).emit("game_data", lobby);
     }
   });
 }
@@ -555,14 +621,15 @@ async function setLobbyWord(room, amount) {
 function sendUserList(room) {
   var list = [];
 
-  lobbies.forEach(lobby => {
+  lobbies.forEach((lobby) => {
     if (lobby.lobbyIdentifier == room) {
-      lobby.members.forEach(member => {
+      lobby.members.forEach((member) => {
         list.push({
           name: member.username,
           lastAnswerCorrect: member.lastAnswerCorrect,
           lastAnswer: member.lastAnswer,
-          painting: member.painting
+          painting: member.painting,
+          points: member.points,
         });
       });
     }
@@ -578,23 +645,21 @@ async function sendBoardData(room) {
 
   let boardData;
 
-  lobbies.forEach(lobby => {
+  lobbies.forEach((lobby) => {
     if (lobby.lobbyIdentifier == room) {
       if (lobby.actualRound < lobby.rounds) {
         boardData = lobby.boardData;
 
-        sockets.forEach(user => {
+        sockets.forEach((user) => {
           if (user.data.id != lobby.members[lobby.actualRound].idUser) {
             socketIO.to(user.id).emit("new_board_data", {
-              board: boardData
-            })
+              board: boardData,
+            });
           }
         });
       }
     }
   });
-
-
 }
 
 async function enviarPintor(room) {
@@ -603,18 +668,22 @@ async function enviarPintor(room) {
   lobbies.forEach((lobby) => {
     if (lobby.lobbyIdentifier == room) {
       if (lobby.actualRound < lobby.rounds && !lobby.ended) {
-
-        sockets.forEach(user => {
+        sockets.forEach((user) => {
           if (user.data.id == lobby.members[lobby.actualRound].idUser) {
-            lobby.currentDrawer = lobby.members[lobby.actualRound].username
+            lobby.currentDrawer = lobby.members[lobby.actualRound].username;
+            if (lobby.actualRound < lobby.rounds - 1) {
+              lobby.nextDrawer = lobby.members[lobby.actualRound + 1].username;
+            } else {
+              lobby.nextDrawer = lobby.currentDrawer;
+            }
             socketIO.to(user.id).emit("pintor", {
-              pintor: true
-            })
+              pintor: true,
+            });
             socketIO.to(lobby.lobbyIdentifier).emit("drawer_name", {
-              name: lobby.currentDrawer
-            })
-
-            lobby.members.forEach(member => {
+              name: lobby.currentDrawer,
+              next: lobby.nextDrawer,
+            });
+            lobby.members.forEach((member) => {
               if (member.idUser == user.data.id) {
                 member.painting = true;
               }
@@ -623,20 +692,20 @@ async function enviarPintor(room) {
             if (!lobby.settings.ownerPlay) {
               if (user.data.id != lobby.ownerId) {
                 socketIO.to(user.id).emit("pintor", {
-                  pintor: false
-                })
+                  pintor: false,
+                });
 
-                lobby.members.forEach(member => {
+                lobby.members.forEach((member) => {
                   if (member.idUser == user.data.id) {
                     member.painting = false;
                   }
                 });
               } else {
                 socketIO.to(user.id).emit("spectator", {
-                  spectator: true
-                })
+                  spectator: true,
+                });
 
-                lobby.members.forEach(member => {
+                lobby.members.forEach((member) => {
                   if (member.idUser == user.data.id) {
                     member.painting = false;
                   }
@@ -644,10 +713,10 @@ async function enviarPintor(room) {
               }
             } else {
               socketIO.to(user.id).emit("pintor", {
-                pintor: false
-              })
+                pintor: false,
+              });
 
-              lobby.members.forEach(member => {
+              lobby.members.forEach((member) => {
                 if (member.idUser == user.data.id) {
                   member.painting = false;
                 }

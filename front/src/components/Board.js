@@ -167,6 +167,7 @@ function Board({ socket, pintor }) {
 
       function handleMouseMove(evt) {
         if (!isDrawing) return;
+        arrayRedo = [];
         const newX = evt.offsetX;
         const newY = evt.offsetY;
         context.beginPath();
@@ -190,6 +191,7 @@ function Board({ socket, pintor }) {
 
       function handleMouseOut() {
         isDrawing = false;
+        arrayDatos.push("nuevaLinea");
       }
 
       canvas.addEventListener("mousedown", handleMouseDown);
