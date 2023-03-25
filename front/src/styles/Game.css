@@ -3,18 +3,22 @@
     grid-template-columns: 0.5fr 1.4fr;
     justify-items: center;
 }
-.View{
-    margin-top: 5%;;
+
+.Game__title {
+    margin-top: 2%;
 }
 
 .game__left {
-    width: 100%;
-    margin: 10% auto;
+    width: 80%;
+    margin: 2% auto;
+    margin-left: 5px;
 }
 
 .game__right {
+    border-left: 2px dashed #474747;
     width: 90%;
-    margin-right:10%;
+    margin-right: 10%;
+    height: 100vh;
 }
 
 .WordGuess {
@@ -53,12 +57,12 @@
     font-size: 200%;
     border: 3px solid #575757;
     border-radius: 4% 75% 6% 95%/95% 4% 92% 5%;
-    transform: rotate(1deg);    
+    transform: rotate(1deg);
     transition: all 0.2s;
-    margin: 6% auto;
+    margin: 8% auto;
 }
 
-.Board__timer{
+.Board__timer {
     margin: 0 0 0 50%;
     width: 100%;
     display: flex;
@@ -68,15 +72,124 @@
     padding-bottom: 30px;
 }
 
-
-.WordForm{
+.WordForm {
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
 }
 
-.WordForm__input{
-    width: 60%;
-    height: 30px;
+.WordForm__input {
+    padding-left: 20px;
+    color: #575757;
+    border: 3px solid #575757;
+    width: 65%;
+    font-size: 150%;
+    height: 50px;
+}
+
+.WordForm__input:focus {
+    box-shadow: 0px 10px 34px 0px rgba(0, 0, 0, 0.2);
+}
+
+.WordForm__button {
+    border-color: #575757;
+    background-color: #575757;
+    width: 10%;
+    height: 55px;
+    margin-left: 10px;
+    font-size: 150%;
+}
+
+.WordForm__button:hover,
+.WordForm__button:focus {
+    border: 2px solid #fa75b3;
+    background: none;
+    color: #32633a;
+    box-shadow: 0px 10px 34px 0px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s;
+}
+
+
+.span {
+    color: #5c5b5b;
+    margin-right: 3px;
+    margin-left: 3px;
+    font-size: 100%;
+}
+
+.span:nth-child(1):hover {
+    color: cornflowerblue;
+    transform: translate(0px, -10px);
+    display: inline-block;
+    transition: all 0.01s ease-in-out;
+}
+
+.span:nth-child(2):hover {
+    color: #d8d86a;
+    transform: translate(0px, -10px);
+    display: inline-block;
+    transition: all 0.01s ease-in-out;
+}
+
+.span:nth-child(3):hover {
+    color: #71a071;
+    transform: translate(0px, -10px);
+    display: inline-block;
+    transition: all 0.01s ease-in-out;
+}
+
+.span:nth-child(4):hover {
+    color: #ff8fc3;
+    transform: translate(0px, -10px);
+    display: inline-block;
+    transition: all 0.01s ease-in-out;
+}
+
+.span:nth-child(5):hover {
+    color: #c23535;
+    transform: translate(0px, -10px);
+    display: inline-block;
+    transition: all 0.01s ease-in-out;
+}
+
+.span:nth-child(6):hover {
+    color: #ff7b00;
+    transform: translate(0px, -10px);
+    display: inline-block;
+    transition: all 0.01s ease-in-out;
+}
+
+.span:nth-child(7):hover {
+    color: #39aa9b;
+    transform: translate(0px, -10px);
+    display: inline-block;
+    transition: all 0.01s ease-in-out;
+}
+
+.span:nth-child(8):hover {
+    color: #6666e2;
+    transform: translate(0px, -10px);
+    display: inline-block;
+    transition: all 0.01s ease-in-out;
+}
+
+.span:nth-child(9):hover {
+    color: #7fd457;
+    transform: translate(0px, -10px);
+    display: inline-block;
+    transition: all 0.01s ease-in-out;
+}
+
+.span:nth-child(10):hover {
+    color: #d066fa;
+    transform: translate(0px, -10px);
+    display: inline-block;
+    transition: all 0.01s ease-in-out;
+}
+
+.span:nth-child(11):hover {
+    color: #9afa66;
+    display: inline-block;
+    transition: all 0.03s ease-in-out;
 }

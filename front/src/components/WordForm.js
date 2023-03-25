@@ -26,7 +26,7 @@ function WordForm({ socket, answerCorrect }) {
       <div>
         <form className="WordForm" onSubmit={handleFormSubmit}>
           <input className='WordForm__input' type="text" value={word} onChange={handleChange} placeholder="Enter a word" />
-          <button type="submit">Check</button>
+          <button className='WordForm__button' type="submit">Check</button>
         </form>
       </div>
     );

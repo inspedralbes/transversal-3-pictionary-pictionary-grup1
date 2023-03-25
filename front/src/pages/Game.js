@@ -98,9 +98,9 @@ function Game({ socket }) {
           {/* Left column */}
           <div className="game__right">
             {spectator ? (
-              <div>
+              <div className="Spectator">
                 <CountDownTimer socket={socket} />
-
+                <h1 className='Game__title'><span className='span'>P</span><span className='span'>I</span><span className='span'>C</span><span className='span'>T</span><span className='span'>I</span><span className='span'>O</span><span className='span'>N</span><span className='span'>A</span><span className='span'>R</span><span className='span'>Y</span> </h1>
                 <Board socket={socket} pintor={pintor} />
               </div>
             ) : (
@@ -124,6 +124,7 @@ function Game({ socket }) {
                       </>
                     )}
                     <CountDownTimer socket={socket} />
+                    <h1 className='Game__title'><span className='span'>P</span><span className='span'>I</span><span className='span'>C</span><span className='span'>T</span><span className='span'>I</span><span className='span'>O</span><span className='span'>N</span><span className='span'>A</span><span className='span'>R</span><span className='span'>Y</span> </h1>
                     <Board socket={socket} pintor={pintor} />
                     <WordForm socket={socket} answerCorrect={result} /><br />
                   </>

@@ -12,7 +12,33 @@ body {
   overflow: auto;
 }
 
+* {
+  cursor: url('./img/default.cur'), pointer;
+}
+
+*:active {
+  cursor: url('./img/default-click.cur'), pointer;
+}
+
 button {
   background-color: #5c5b5b;
   border-color: #5c5b5b;
+}
+
+a,
+button,
+input,
+label,
+select,
+textarea {
+  cursor: url('./img/pointer.cur'), pointer;
+}
+
+a:active,
+button:active,
+input:active,
+label:active,
+select:active,
+textarea:active {
+  cursor: url('./img/pointer-active.cur'), pointer;
 }
