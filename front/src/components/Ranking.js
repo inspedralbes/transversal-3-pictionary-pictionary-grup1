@@ -5,7 +5,6 @@ import { render } from "react-dom";
 function Ranking({ socket }) {
   const [userList, setUserList] = useState([]);
   const [firstTime, setFirstTime] = useState(true);
-  const [spectator, setSpectator] = useState(false);
 
 
   useEffect(() => {
@@ -15,13 +14,8 @@ function Ranking({ socket }) {
     }
 
     socket.on("lobby_user_list", (data) => {
-      console.log(data)
       data.list.sort((a, b) => b.points - a.points);
       setUserList(data.list);
-    });
-
-    socket.on('spectator', (data) => {
-      setSpectator(data.spectator);
     });
   }, [firstTime, socket])
 
