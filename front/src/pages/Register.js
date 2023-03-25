@@ -15,6 +15,7 @@ function Register({ socket }) {
         password: "",
         passwordValidation: "",
     });
+    
     const [color, setColor] = useState({
         username: "red",
         email: "red",
@@ -22,7 +23,6 @@ function Register({ socket }) {
         passwordValidation: "red",
     });
 
-    const [errorText, setErrorText] = useState("");
     const cookies = new Cookies();
     const navigate = useNavigate();
 

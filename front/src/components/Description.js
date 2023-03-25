@@ -1,7 +1,6 @@
 import "../App.css";
 import { useState, useEffect } from "react";
 import React from "react";
-//DOCUMENTACIÓ DE DESCRIPCIO: https://dictionaryapi.dev/
 
 function Description({ socket }) {
   const [description, setDescription] = useState("");
@@ -9,7 +8,7 @@ function Description({ socket }) {
   useEffect(() => {
 
     socket.on('game_data', (data) => {
-      if (data.words != undefined) {
+      if (data.words !== undefined) {
         setDescription(data.words[0].description);
       }
     });

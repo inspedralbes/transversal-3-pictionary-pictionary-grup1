@@ -90,8 +90,8 @@ function LobbyCreation({ socket }) {
     const tabLinks = document.querySelectorAll('.tab-link');
     const tabContents = document.querySelectorAll('.tab-content');
 
-    tabLinks.forEach((link) => {
-        link.addEventListener('click', () => {
+    useEffect(() => {
+        const changeClassList = (link) => {
             const tab = link.dataset.tab;
 
             tabLinks.forEach((link) => {
@@ -104,8 +104,18 @@ function LobbyCreation({ socket }) {
 
             link.classList.add('active');
             document.getElementById(tab).classList.add('active');
+        };
+
+        tabLinks.forEach((link) => {
+            link.addEventListener('click', changeClassList(link));
         });
-    });
+
+        return () => {
+            tabLinks.forEach(link => {
+                link.removeEventListener('click', changeClassList(link));
+            });
+        };
+    }, [])
 
     return (<>
 

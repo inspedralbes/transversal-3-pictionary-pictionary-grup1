@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { CirclePicker, SketchPicker } from "react-color";
+import { CirclePicker } from "react-color";
 import "../styles/Board.css";
 import React from "react";
 import CountDownTimer from "./CountdownTimer";
@@ -28,14 +28,14 @@ function Board({ socket, pintor }) {
     if (e.ctrlKey && !e.shiftKey && e.key === "z" && pintor) {
       let i = arrayDatos.length;
       for (i; i >= 0; i--) {
-        if (arrayDatos[i] != "nuevaLinea" && endLine == false) {
+        if (arrayDatos[i] !== "nuevaLinea" && endLine === false) {
           if (arrayDatos[i] != null) {
             arrayRedo.push(arrayDatos[i]);
           }
           arrayDatos.splice(i, 1);
         }
         else {
-          if (auxNum == 1) {
+          if (auxNum === 1) {
             endLine = true;
           }
           else {
@@ -54,7 +54,7 @@ function Board({ socket, pintor }) {
       sendBoardDataToSocketIo();
 
       context.beginPath();
-      if (arrayDatos.length != 0) {
+      if (arrayDatos.length !== 0) {
         context.moveTo(arrayDatos[0].x, arrayDatos[0].y);
       } else {
         return
@@ -83,14 +83,14 @@ function Board({ socket, pintor }) {
       if (arrayRedo.length > 0) {
         for (let i = arrayRedo.length; i >= 0; i--) {
 
-          if (arrayRedo[i] != "nuevaLinea" && endLine == false) {
+          if (arrayRedo[i] !== "nuevaLinea" && endLine === false) {
             if (typeof arrayRedo[i] !== 'undefined') {
               arrayDatos.push(arrayRedo[i]);
               arrayRedo.splice(i, 1);
             }
           }
-          else if (arrayRedo[i] == "nuevaLinea" && endLine == false) {
-            if (auxNum == 1) {
+          else if (arrayRedo[i] === "nuevaLinea" && endLine == false) {
+            if (auxNum === 1) {
               endLine = true;
             }
             else {
@@ -111,7 +111,7 @@ function Board({ socket, pintor }) {
         sendBoardDataToSocketIo();
 
         context.beginPath();
-        if (arrayDatos.length != 0) {
+        if (arrayDatos.length !== 0) {
           context.moveTo(arrayDatos[0].x, arrayDatos[0].y);
         } else {
           return
@@ -226,7 +226,7 @@ function Board({ socket, pintor }) {
         context.lineCap = "round";
         context.lineJoin = 'round';
 
-        if (data.board.arrayDatos.length == 0) {
+        if (data.board.arrayDatos.length === 0) {
           const canvas = canvasRef2.current;
           const context = canvas.getContext("2d");
 
