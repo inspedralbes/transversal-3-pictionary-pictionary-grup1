@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import ConnectedUsers from "../components/ConnectedUsers";
 import Settings from "../components/Settings";
+import Gamemodes from "../components/Gamemodes";
 import { useNavigate } from "react-router-dom";
 import "../styles/LobbyCreation.css"
 
@@ -88,6 +89,7 @@ function LobbyCreation({ socket }) {
                 <h1 className="identifier"><span className='span'>I</span><span className='span'>D</span><span className='span'>E</span><span className='span'>N</span><span className='span'>T</span><span className='span'>I</span><span className='span'>F</span><span className='span'>I</span><span className='span'>E</span><span className='span'>R</span>: <span className='span' id="copyId" onClick={copyId} onMouseOver={changeColor}><p>CLICK TO COPY THE ID</p>{lobbyId}</span></h1>
             )}
             <Settings socket={socket} start={starting}></Settings>
+            <Gamemodes socket={socket} start={starting}></Gamemodes>
             <ConnectedUsers socket={socket}></ConnectedUsers>
             <div className="createGame__startButtonDiv">
                 <button className="createGame__startButton" onClick={handleStartGame}>Start game</button>

@@ -278,6 +278,15 @@ socketIO.on('connection', socket => {
     }
   });
 
+  socket.on("save_gamemode", (data) => {
+    lobbies.forEach(lobby => {
+      if (lobby.lobbyIdentifier == socket.data.current_lobby) {
+        lobby.gamemode = data.gamemode;
+      }
+    });
+    socketIO.to(socket.id).emit("gamemode_setted");
+  })
+
   socket.on("save_settings", (data) => {
     let valid = true;
     lobbies.forEach(lobby => {
@@ -476,7 +485,7 @@ function setCounter(lobbyId) {
           }
         });
 
-        if (cont == 50 || correct == lobby.members.length - 1) {
+        if (cont == 45 || correct == lobby.members.length - 1 || (correct == 1 && lobby.gamemode == "fast")) {
           if (lobby.actualRound < lobby.rounds) {
             lobby.actualRound++;
           }
@@ -485,8 +494,8 @@ function setCounter(lobbyId) {
             lobby.ended = true;
             socketIO.to(lobbyId).emit("game_ended")
           } else {
-            let motivo = cont <= 50 ? "time" : "perfect"
-            socketIO.to(lobbyId).emit("round_ended", { roundIndex: lobby.actualRound, motivo: motivo });
+            let motivo = cont == 45 ? "time" : "perfect"
+            socketIO.to(lobbyId).emit("round_ended", { roundIndex: lobby.actualRound, motivo: motivo, gamemode: lobby.gamemode });
           }
           clearInterval(timer)
         }
@@ -593,7 +602,6 @@ async function setLobbyWord(room, amount) {
   let category = "null";
   let difficulty = "null";
   await axios
-
     .post(laravelRoute + "getWords", {
       category: category,
       difficulty: difficulty,
@@ -669,7 +677,7 @@ async function enviarPintor(room) {
       if (lobby.actualRound < lobby.rounds && !lobby.ended) {
 
         sockets.forEach(user => {
-          if (user.data.id == lobby.members[lobby.actualRound].idUser) {            
+          if (user.data.id == lobby.members[lobby.actualRound].idUser) {
             lobby.currentDrawer = lobby.members[lobby.actualRound].username
             if (lobby.actualRound < lobby.rounds - 1) {
               lobby.nextDrawer = lobby.members[lobby.actualRound + 1].username

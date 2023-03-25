@@ -61,6 +61,15 @@ function Settings({ socket, start }) {
         socket.on("NO_USR_DEFINED", () => {
             setError("You need to choose a nickname in order to play!")
         })
+
+        // socket.on("gamemode_setted", () => {
+        //     setError("")
+        //     socket.emit("save_settings", {
+        //         roundDuration: roundDuration,
+        //         ownerPlay: ownerPlay,
+        //         nickname: nickname
+        //     });
+        // })
     }, [])
 
     useEffect(() => {

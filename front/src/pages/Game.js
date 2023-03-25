@@ -24,6 +24,7 @@ function Game({ socket }) {
   const [roundEnded, setRoundEnded] = useState(false);
   const [timeUp, setTimeUp] = useState(false);
   const [wordToCheck, setWordToCheck] = useState("");
+  const [gamemode, setGamemode] = useState("");
   const [wordIndex, setWordIndex] = useState(0);
   const [words, setWords] = useState([]);
   const [gameEnded, setGameEnded] = useState(false);
@@ -59,6 +60,7 @@ function Game({ socket }) {
 
     socket.on("round_ended", (data) => {
       setRoundEnded(true);
+      setGamemode(data.gamemode)
       if (data.motivo == "time") {
         setTimeUp(true);
       } else {
@@ -154,9 +156,10 @@ function Game({ socket }) {
       )}
       {!starting && roundEnded && !result && pintor && !timeUp && !gameEnded && (
         <div style={{ textAlign: 'center', position: 'fixed', top: '50%', left: '50%', fontSize: '5rem', transform: 'translate(-50%, -50%)', zIndex: '1', backgroundColor: 'white', border: '1px solid black' }}>
-          Congratulations! Everyone got the word!
+          {gamemode == "fast"?<>Congratulations! Your drawing was wonderful!</>:<>Congratulations! Everyone got the word!</>}
         </div>
       )}
+
       {!starting && roundEnded && !result && pintor && timeUp && !gameEnded && (
         <div style={{ textAlign: 'center', position: 'fixed', top: '50%', left: '50%', fontSize: '5rem', transform: 'translate(-50%, -50%)', zIndex: '1', backgroundColor: 'white', border: '1px solid black' }}>
           Sorry! Time's Up!
