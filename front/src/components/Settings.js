@@ -4,6 +4,7 @@ function Settings({ socket, start }) {
     const [roundDuration, setRoundDuration] = useState(0);
     const [ownerPlay, setOwnerPlay] = useState(false);
     const [nickname, setNickname] = useState("");
+    const [turns, setTurns] = useState(0);
     const [error, setError] = useState("");
     const [firstTime, setFirstTime] = useState(true);
 
@@ -17,6 +18,10 @@ function Settings({ socket, start }) {
 
     function handleChangeRoundDuration(e) {
         setRoundDuration(e.target.value);
+    }
+
+    function handleChangeTurns(e) {
+        setTurns(e.target.value);
     }
 
     useEffect(() => {
@@ -43,11 +48,19 @@ function Settings({ socket, start }) {
         })
 
         socket.on("ROUND_TIME_UNDER_MIN", (data) => {
-            setError(`Round duration was too low -> Minimum: ${data.min}`)
+            setError(`Selected round duration was too low -> Minimum: ${data.min}`)
         })
 
         socket.on("ROUND_TIME_ABOVE_MAX", (data) => {
-            setError(`Round duration was too high -> Maximum: ${data.max}`)
+            setError(`Selected round duration was too high -> Maximum: ${data.max}`)
+        })
+
+        socket.on("TURNS_AMT_UNDER_MIN", (data) => {
+            setError(`Selected amount of turns was too low -> Minimum: ${data.min}`)
+        })
+
+        socket.on("TURNS_AMT_ABOVE_MAX", (data) => {
+            setError(`Selected amount of turns was too high -> Maximum: ${data.max}`)
         })
 
         socket.on("INVALID_SETTINGS", () => {
@@ -61,15 +74,6 @@ function Settings({ socket, start }) {
         socket.on("NO_USR_DEFINED", () => {
             setError("You need to choose a nickname in order to play!")
         })
-
-        // socket.on("gamemode_setted", () => {
-        //     setError("")
-        //     socket.emit("save_settings", {
-        //         roundDuration: roundDuration,
-        //         ownerPlay: ownerPlay,
-        //         nickname: nickname
-        //     });
-        // })
     }, [])
 
     useEffect(() => {
@@ -77,6 +81,7 @@ function Settings({ socket, start }) {
             setError("")
             socket.emit("save_settings", {
                 roundDuration: roundDuration,
+                amountOfTurns: turns,
                 ownerPlay: ownerPlay,
                 nickname: nickname
             });
@@ -88,6 +93,7 @@ function Settings({ socket, start }) {
             {error != "" && (<h1 className="error">{error}</h1>)}
             <form>
                 <label>{"Round duration (seconds)"} <input type="number" value={roundDuration} onChange={handleChangeRoundDuration} /></label><br />
+                <label>{"Amount of turns per player:"} <input type="number" value={turns} onChange={handleChangeTurns} /></label><br />
                 <label>{"Will the lobby creator play?"} <input type="checkbox" value={ownerPlay} onChange={handleChangeOwnerPlay} /></label><br />
                 {ownerPlay ?
                     <>

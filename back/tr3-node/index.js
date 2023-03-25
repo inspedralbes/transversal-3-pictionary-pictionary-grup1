@@ -101,7 +101,7 @@ socketIO.on('connection', socket => {
         sesiones.push(user);
 
         socket.data.dbId = response.data.id;
-        socket.data.username = response.data.name; 
+        socket.data.username = response.data.name;
       })
       .catch(function (error) {
         console.log(error);
@@ -165,6 +165,7 @@ socketIO.on('connection', socket => {
           started: false,
           settings: {
             roundDuration: 60,
+            amountOfTurns: 1,
             ownerPlay: false
           }
         }
@@ -288,6 +289,22 @@ socketIO.on('connection', socket => {
           });
 
           valid = false;
+        }
+
+        if (valid) {
+          if (data.amountOfTurns < maxSettings.minAmountOfTurns) {
+            socketIO.to(socket.id).emit('TURNS_AMT_UNDER_MIN', {
+              min: maxSettings.minAmountOfTurns
+            });
+
+            valid = false;
+          } else if (data.amountOfTurns > maxSettings.maxAmountOfTurns) {
+            socketIO.to(socket.id).emit('TURNS_AMT_ABOVE_MAX', {
+              max: maxSettings.maxAmountOfTurns
+            });
+
+            valid = false;
+          }
         }
 
         if (valid) {
