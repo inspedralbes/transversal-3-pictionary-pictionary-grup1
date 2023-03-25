@@ -41,7 +41,6 @@ function Register({ socket }) {
     }, [userData.username]);
 
     useEffect(() => {
-        console.log();
         if (userData.email.length <= 255 && userData.email.includes("@") && userData.email.includes(".")) {
             setColor({ ...color, email: "green" })
         } else {

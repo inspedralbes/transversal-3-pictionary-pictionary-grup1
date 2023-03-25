@@ -47,7 +47,6 @@ app.use(
   cors({
     credentials: true,
     origin: function (origin, callback) {
-      // console.log(origin);
       return callback(null, true);
     },
   })
@@ -102,8 +101,7 @@ socketIO.on('connection', socket => {
         sesiones.push(user);
 
         socket.data.dbId = response.data.id;
-        socket.data.username = response.data.name;
-        console.log(`database id: ${socket.data.dbId} database name: ${socket.data.username} token: ${token}`);
+        socket.data.username = response.data.name; 
       })
       .catch(function (error) {
         console.log(error);
@@ -183,7 +181,6 @@ socketIO.on('connection', socket => {
   })
 
   socket.on("join_room", (data) => {
-    console.log(data);
     socket.data.username = data.username;
     joinLobby(socket, data.lobbyIdentifier, socket.data.username)
   });
@@ -603,7 +600,6 @@ function leaveLobby(socket) {
       lobby.members.forEach((member, index) => {
         if (member.idUser == socket.data.id) {
           lobby.members.splice(index, 1);
-          console.log(lobby.members);
         }
       });
     }

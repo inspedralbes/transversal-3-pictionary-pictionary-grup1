@@ -5,12 +5,10 @@ import React from "react";
 
 function Description({ socket }) {
   const [description, setDescription] = useState("");
-  const [refresh, setRefresh] = useState(0);
 
   useEffect(() => {
 
     socket.on('game_data', (data) => {
-      console.log(data);
       if (data.words != undefined) {
         setDescription(data.words[0].description);
       }

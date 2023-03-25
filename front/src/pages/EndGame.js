@@ -21,7 +21,6 @@ function EndGame({ socket }) {
     }
     socket.on('is_owner', (data) => {
       setOwner(true);
-      console.log("Lobby data", data);
     });
     socket.on('GO_BACK_TO_LOBBY', () => {
       if (!owner) {

@@ -67,7 +67,6 @@ function LobbyCreation({ socket }) {
 
         socket.on("categories", (data) => {
             setCategoriesDataLoaded(true);
-            console.log(data);
             if (firstTime) {
                 socket.emit("new_lobby");
                 setFirstTime(false)
