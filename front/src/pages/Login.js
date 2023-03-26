@@ -13,7 +13,7 @@ function Login({ socket }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (login != 0) {
+    if (login !== 0) {
       const user = new FormData();
       user.append("email", email);
       user.append("password", password);
