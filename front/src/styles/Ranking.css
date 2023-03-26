@@ -1,0 +1,43 @@
+.ranking__container {}
+
+.topLeadersList {}
+
+.ranking__leader {
+    background-color: #fffaf4;
+    border: 2px solid #919191;
+    border-radius: 255px 15px 255px 15px / 15px 255px 15px 255px;
+    /* width: 70%; */
+    /* height: fit-content; */
+    width: 15%;
+    padding: 20px;
+    margin: 50px auto;
+    text-align: center;
+    font-size: 30px;
+}
+
+.topLeadersList>div:nth-child(1)>div:nth-child(1) {
+    background-color: rgb(224, 224, 0);
+    z-index: 2;
+    position: relative;
+}
+
+.topLeadersList>div:nth-child(2)>div:nth-child(1) {
+    background-color: rgb(192, 192, 192);
+    position: relative;
+    top: -90px;
+    left: -200px;
+}
+
+
+.topLeadersList>div:nth-child(3)>div:nth-child(1) {
+    background-color: rgb(252, 158, 64);
+    position: relative;
+    top: -230px;
+    left: 180px;
+}
+
+.ranking__player{
+    
+}
+
+  
