@@ -123,12 +123,14 @@ function Game({ socket }) {
     });
 
     return () => {
-      socket.off("send_guessed_word");
       socket.off("answer_result");
       socket.off("pintor");
       socket.off("drawer_name");
       socket.off("started");
       socket.off("game_data");
+      socket.off("spectator");
+      socket.off("game_ended");
+      socket.off("round_ended");
     };
   }, []);
 
@@ -259,30 +261,16 @@ function Game({ socket }) {
           )}
 
           {!showDrawer && (
-            <div
-              style={{
-                display: "flex",
-                pointerEvents: roundEnded ? "none" : "auto",
-              }}
-            >
-              <div>
+            <div className="game">
+              <div className="game__left">
                 <ConnectedUsersInGame socket={socket} pintor={pintor} />
               </div>
-              <div>
+              <div className="game__right">
                 {spectator ? (
                   <div className="Spectator">
                     <CountDownTimer socket={socket} />
                     <h1 className="Game__title">
-                      <span className="span">P</span>
-                      <span className="span">I</span>
-                      <span className="span">C</span>
-                      <span className="span">T</span>
-                      <span className="span">I</span>
-                      <span className="span">O</span>
-                      <span className="span">N</span>
-                      <span className="span">A</span>
-                      <span className="span">R</span>
-                      <span className="span">Y</span>{" "}
+                      <WordLength socket={socket}></WordLength>
                     </h1>
                     <Board socket={socket} pintor={pintor} />
                   </div>
@@ -300,7 +288,9 @@ function Game({ socket }) {
                     ) : (
                       <>
                         <CountDownTimer socket={socket} />
-                        <WordLength socket={socket}></WordLength>
+                        <h1 className="Game__title">
+                          <WordLength socket={socket}></WordLength>
+                        </h1>
                         <Board socket={socket} pintor={pintor} />
                         <WordForm socket={socket} answerCorrect={result} />
                         <br />
@@ -323,9 +313,9 @@ function Game({ socket }) {
                                 {messageResponses.wordAttemptSuccess}
                               </div>
                             )}
+                            {!result && <p>{messageResponses.wordAttemptError}</p>}
                           </>
                         )}
-                        {!result && <p>{messageResponses.wordAttemptError}</p>}
                       </>
                     )}
                   </>

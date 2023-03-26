@@ -57,7 +57,6 @@ let i = 0;
 const laravelRoute = "http://127.0.0.1:8000/index.php/";
 
 let lobbies = [];
-let cont = 0;
 
 const maxSettings = {
   maxTime: 120,
@@ -163,6 +162,7 @@ socketIO.on("connection", (socket) => {
           ended: false,
           boardData: undefined,
           started: false,
+          cont: 0,
           settings: {
             roundDuration: 60,
             amountOfTurns: 1,
@@ -226,6 +226,14 @@ socketIO.on("connection", (socket) => {
     });
   });
 
+  socket.on("countdown_ended", () => {
+    lobbies.forEach(lobby => {
+      if (lobby.lobbyIdentifier == socket.data.current_lobby && lobby.ownerId == socket.data.id) {
+        setCounter(socket.data.current_lobby);
+      }
+    });
+  })
+
   socket.on("get_game_data", () => {
     enviarPintor(socket.data.current_lobby);
     let word;
@@ -268,17 +276,17 @@ socketIO.on("connection", (socket) => {
           i--;
         }
       }
-      console.log(letterPositions);
+      //console.log(letterPositions);
       socketIO.to(socket.id).emit("word_letters", {
         letter: letters[letterPosition],
         pos: letterPosition,
       });
 
-      console.log(timeCounter);
+      //console.log(timeCounter);
       if (timeCounter == 0) {
-        console.log("TIME CLEAR");
+        //console.log("TIME CLEAR");
         clearInterval(timer);
-        console.log(timer);
+        //console.log(timer);
       }
     }, timeBetweenLetters * 1000);
   });
@@ -446,7 +454,7 @@ socketIO.on("connection", (socket) => {
               resultsMatch: true,
             });
             let pointsRound = 0;
-            let userTime = lobby.settings.roundDuration - cont;
+            let userTime = lobby.settings.roundDuration - lobby.cont;
 
             if (
               lobby.settings.roundDuration - userTime >
@@ -486,10 +494,11 @@ socketIO.on("connection", (socket) => {
   });
 
   socket.on('round_end', () => {
-    lobbies.forEach(lobby => {
-      if (lobby.lobbyIdentifier == socket.data.current_lobby && lobby.ownerId == socket.data.id) {
+    lobbies.forEach((lobby) => {
+      if (lobby.lobbyIdentifier == socket.data.current_lobby && lobby.ownerId == socket.data.id && !lobby.acabando) {
         enviarPintor(socket.data.current_lobby);
         sendUserList(socket.data.current_lobby);
+        console.log("acaba ronda");
         acabarRonda(socket.data.current_lobby);
       }
     });
@@ -513,6 +522,7 @@ async function resetLobbyData(room) {
       lobby.words = [];
       lobby.rounds = 0;
       lobby.actualRound = 0;
+      lobby.cont = 0;
       lobby.ind_drawer = 0;
       lobby.actualTurn = 1;
       lobby.ended = false;
@@ -553,12 +563,13 @@ function setCounter(lobbyId) {
   lobbies.forEach((lobby) => {
     if (lobby.lobbyIdentifier == lobbyId && !lobby.ended && !lobby.counting) {
       lobby.counting = true;
-      cont = lobby.settings.roundDuration;
-      cont++;
+      lobby.cont = lobby.settings.roundDuration;
+      lobby.cont++;
       timer = setInterval(() => {
-        cont--;
+        lobby.cont--;
+        console.log(lobby.cont);
         socketIO.to(lobbyId).emit("counter_down", {
-          counter: cont,
+          counter: lobby.cont,
         });
 
         let correct = 0;
@@ -569,7 +580,7 @@ function setCounter(lobbyId) {
         });
 
         if (
-          cont <= 0 ||
+          lobby.cont <= 0 ||
           correct == lobby.members.length - 1 ||
           (correct == 1 && lobby.gamemode == "fast")
         ) {
@@ -595,7 +606,7 @@ function setCounter(lobbyId) {
               .emit("turn_ended", { turnIndex: lobby.actualTurn });
           }
 
-          let motivo = cont == 0 ? "time" : "perfect";
+          let motivo = lobby.cont == 0 ? "time" : "perfect";
           socketIO
             .to(lobbyId)
             .emit("round_ended", {
@@ -626,11 +637,10 @@ function acabarRonda(lobbyId) {
           limpiar: true,
           cambioDeRonda: true,
         };
+
         sendBoardData(lobbyId);
         sendUserList(lobbyId);
         setCounter(lobbyId);
-      } else {
-        socketIO.to(lobbyId).emit("game_ended");
       }
     }
   });
