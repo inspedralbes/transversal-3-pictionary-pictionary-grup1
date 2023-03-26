@@ -9,6 +9,7 @@ import ConnectedUsersInGame from "../components/ConnectedUsersInGame";
 import WordGuess from "../components/WordGuess";
 import Description from "../components/Description";
 import WordLength from "../components/WordLength";
+import CountDownTimer from "../components/CountdownTimer";
 import { useNavigate } from "react-router-dom";
 
 function Game({ socket }) {
@@ -51,6 +52,7 @@ function Game({ socket }) {
 
     socket.on("pintor", (data) => {
       setPintor(data.pintor);
+      console.log(data);
       setResult(null);
     });
 
@@ -90,6 +92,7 @@ function Game({ socket }) {
     });
 
     socket.on("started", () => {
+      console.log("STARTED");
       setStarting(false);
       const intervalId = setInterval(() => {
         setCountdown((countdown) => countdown - 1);
@@ -140,7 +143,6 @@ function Game({ socket }) {
       {starting && (
         <div
           style={{
-            textAlign: "center",
             position: "absolute",
             top: "50%",
             left: "50%",
@@ -303,16 +305,28 @@ function Game({ socket }) {
                                 {messageResponses.wordAttemptSuccess}
                               </div>
                             )}
-                            {!result && (
-                              <p>{messageResponses.wordAttemptError}</p>
-                            )}
                           </>
                         )}
-                        <Board socket={socket} pintor={pintor} />
-                        <WordForm socket={socket} answerCorrect={result} />
-                        <br />
+
+                        {!result && <p>{messageResponses.wordAttemptError}</p>}
                       </>
                     )}
+                    <CountDownTimer socket={socket} />
+                    <h1 className="Game__title">
+                      <span className="span">P</span>
+                      <span className="span">I</span>
+                      <span className="span">C</span>
+                      <span className="span">T</span>
+                      <span className="span">I</span>
+                      <span className="span">O</span>
+                      <span className="span">N</span>
+                      <span className="span">A</span>
+                      <span className="span">R</span>
+                      <span className="span">Y</span>{" "}
+                    </h1>
+                    <Board socket={socket} pintor={pintor} />
+                    <WordForm socket={socket} answerCorrect={result} />
+                    <br />
                   </>
                 )}
               </div>

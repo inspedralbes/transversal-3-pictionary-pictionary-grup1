@@ -3,6 +3,9 @@ import Ranking from '../components/Ranking';
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
+
+
+
 function EndGame({ socket }) {
   const [owner, setOwner] = useState(false);
   const [firstTime, setFirstTime] = useState(true);
