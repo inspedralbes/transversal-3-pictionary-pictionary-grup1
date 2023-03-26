@@ -7,20 +7,16 @@ function ConnectedUsersInGame({ socket, pintor }) {
 
     const [userList, setUserList] = useState([]);
     const [firstTime, setFirstTime] = useState(true);
-    // const [color, setColor] = useState('#535353');
 
 
     useEffect(() => {
-        // setColor(colors[Math.floor(Math.random() * 31)]);
-        // console.log(color);
-
         if (firstTime) {
             socket.emit("lobby_data");
             setFirstTime(false)
         }
         socket.on("lobby_user_list", (data) => {
             setUserList(data);
-            //console.log(data);
+            data.list.sort((a, b) =>  b.points-a.points);
         });
     }, [])
 
@@ -37,6 +33,7 @@ function ConnectedUsersInGame({ socket, pintor }) {
                                         <>{user.name}  <img className="game__painter" alt="(Painter)" src={pincell}></img> </>
                                         : <>{user.name} {pintor && user.lastAnswer != "" ? `: ${user.lastAnswer}` : ""}</>}
                                     </p>
+                                    <p>{user.points}</p>
                                 </div>
                             </li>
                         );

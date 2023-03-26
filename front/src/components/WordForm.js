@@ -7,6 +7,7 @@ function WordForm({ socket, answerCorrect }) {
   function handleFormSubmit(e) {
     e.preventDefault();
     if (word.trim() !== "") {
+      setWord('')
       socket.emit("try_word_attempt", {
         word: word,
       });

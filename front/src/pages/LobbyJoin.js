@@ -46,7 +46,7 @@ function LobbyJoin({ socket }) {
         });
     }
 
-    
+
     function changeColor() {
         document.getElementById("copyId").addEventListener('mouseover', function () {
             let colors = ["#70a1da", "#70da92", "#cada70", "#858cb7", "#f6a39e", "#ab605c", "#70ab5c", "#ed96f1", "#e05b8c", "#e0ce5b", "#997490", "#9dff4e", "#ffd64e", "#e24eff", "#4ebeff", "#b2b5dc", "#20bf55", "#bf97ff", "#ff9797", "#97e5ff"];
@@ -76,10 +76,16 @@ function LobbyJoin({ socket }) {
 
         socket.on("lobby_info", (data) => {
             setInsideLobby(true);
+            setLobbyId(data.lobbyIdentifier)
             setError("");
         })
 
         socket.on("lobby_deleted", (data) => {
+            socket.emit("leave_lobby", {
+                lobbyIdentifier: lobbyId,
+                wasDeleted: true
+            });
+
             setInsideLobby(false);
             setError(data.message);
             setLobbyId("")
@@ -96,6 +102,14 @@ function LobbyJoin({ socket }) {
         socket.on("USER_ALR_CHOSEN_ERROR", () => {
             setError("The chosen username is already on use")
         })
+
+        return () => {
+            socket.off('username_saved');
+            socket.off('lobby_info');
+            socket.off('lobby_deleted');
+            socket.off('YOU_LEFT_LOBBY');
+            socket.off('USER_ALR_CHOSEN_ERROR');
+        };
     }, [navigate, socket])
 
     if (!insideLobby) {
@@ -108,7 +122,7 @@ function LobbyJoin({ socket }) {
                     {error !== "" && (<h1 className="error">{error}</h1>)}
                     <form className="JoinLobby__form--grid" onSubmit={handleSubmit}>
                         <label className="JoinLobby__nickname--grid">
-                                <div className="form__inputGroup">
+                            <div className="form__inputGroup">
                                 <input
                                     id="nickname"
                                     value={username}
@@ -120,11 +134,11 @@ function LobbyJoin({ socket }) {
                                 ></input>
                                 <span className="form__inputBar"></span>
                                 <label className="form__joinLobby">Introduce your nickname</label>
-                                </div>
+                            </div>
                         </label>
-                            <label className="JoinLobby__id--grid">
+                        <label className="JoinLobby__id--grid">
                             <div className="form__inputGroup">
-                                <input className="form__input"  value={lobbyId} onChange={handleChangeLobbyId}placeholder=" " type="text" required></input>
+                                <input className="form__input" value={lobbyId} onChange={handleChangeLobbyId} placeholder=" " type="text" required></input>
                                 <span className="form__inputBar"></span>
                                 <label className="form__joinLobby">Introduce lobby ID</label>
                             </div>

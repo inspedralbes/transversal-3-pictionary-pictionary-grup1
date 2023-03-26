@@ -1,20 +1,25 @@
 import { useEffect, useState } from "react";
 import ConnectedUsers from "../components/ConnectedUsers";
 import Settings from "../components/Settings";
+import Gamemodes from "../components/Gamemodes";
 import { useNavigate } from "react-router-dom";
 import "../styles/LobbyCreation.css"
 
 function LobbyCreation({ socket }) {
+    const [categoriesDataLoaded, setCategoriesDataLoaded] = useState(false);
     const [lobbyId, setLobbyId] = useState("");
     const [firstTime, setFirstTime] = useState(true);
     const [starting, setStarting] = useState(false);
     const [sent, setSent] = useState(false);
+    const [error, setError] = useState("");
     const navigate = useNavigate();
 
     function handleLeave(e) {
         e.preventDefault();
-        //
-        socket.emit("leave_lobby");
+        socket.emit("leave_lobby", {
+            delete: true
+        });
+        navigate("/")
     }
 
     function copyId() {
@@ -52,7 +57,6 @@ function LobbyCreation({ socket }) {
         socket.on("starting_errors", (data) => {
             if (data.valid) {
                 if (!sent) {
-                    console.log("STARTING ERRORS");
                     socket.emit("start_game");
                 }
                 setSent(true)
@@ -61,27 +65,103 @@ function LobbyCreation({ socket }) {
             }
         })
 
+        socket.on("categories", (data) => {
+            setCategoriesDataLoaded(true);
+            if (firstTime) {
+                socket.emit("new_lobby");
+                setFirstTime(false)
+            }
+        })
+
         socket.on("game_started", () => {
+            setError("");
             navigate("/game")
+        })
+
+        socket.on("NOT_ENOUGH_PLAYERS", () => {
+            setError("Not enough players to start game");
         })
 
         socket.on("YOU_LEFT_LOBBY", () => {
             navigate("/")
         })
     }, [navigate, socket, firstTime])
-    return (
-        <div className="createGame">
-            <button className="createGame__leaveButton" onClick={handleLeave}>Leave and delete lobby </button>
-            {lobbyId && (
-                <h1 className="identifier"><span className='span'>I</span><span className='span'>D</span><span className='span'>E</span><span className='span'>N</span><span className='span'>T</span><span className='span'>I</span><span className='span'>F</span><span className='span'>I</span><span className='span'>E</span><span className='span'>R</span>: <span className='span' id="copyId" onClick={copyId} onMouseOver={changeColor}><p>CLICK TO COPY THE ID</p>{lobbyId}</span></h1>
-            )}
-            <Settings socket={socket} start={starting}></Settings>
-            <ConnectedUsers socket={socket}></ConnectedUsers>
-            <div className="createGame__startButtonDiv">
-                <button className="createGame__startButton" onClick={handleStartGame}>Start game</button>
-            </div>
-        </div>
 
+    const tabLinks = document.querySelectorAll('.tab-link');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    useEffect(() => {
+        const changeClassList = (link) => {
+            const tab = link.dataset.tab;
+
+            tabLinks.forEach((link) => {
+                link.classList.remove('active');
+            });
+
+            tabContents.forEach((content) => {
+                content.classList.remove('active');
+            });
+
+            link.classList.add('active');
+            document.getElementById(tab).classList.add('active');
+        };
+
+        tabLinks.forEach((link) => {
+            link.addEventListener('click', changeClassList(link));
+        });
+
+        return () => {
+            tabLinks.forEach(link => {
+                link.removeEventListener('click', changeClassList(link));
+            });
+        };
+    }, [])
+
+    return (<>
+
+        {categoriesDataLoaded ?
+            <div className="createGame">
+                <button className="createGame__leaveButton" onClick={handleLeave}>Leave and delete lobby </button>
+
+                <div className="container">
+                    <div >
+                        <ConnectedUsers socket={socket}></ConnectedUsers>
+                    </div>
+                    <div className="i7">
+                        <div className="Identi">
+                            {lobbyId && (
+                                <h1 className="identifier"><span className='span'>I</span><span className='span'>D</span><span className='span'>E</span><span className='span'>N</span><span className='span'>T</span><span className='span'>I</span><span className='span'>F</span><span className='span'>I</span><span className='span'>E</span><span className='span'>R</span>: <span className='span' id="copyId" onClick={copyId} onMouseOver={changeColor}><p>CLICK TO COPY THE ID</p>{lobbyId}</span></h1>
+                            )}
+                        </div>
+
+                        <div className="Setting">
+                            <section id="main">
+                                <div className="tabs">
+                                    <button className="tab-link active" data-tab="tab1">Settings</button>
+                                    <button className="tab-link" data-tab="tab2">Game Mode</button>
+
+                                    <div id="tab1" className="tab-content active">
+                                        <div> <Settings socket={socket} start={starting}></Settings></div>
+                                    </div>
+
+                                    <div id="tab2" className="tab-content">
+                                        <Gamemodes socket={socket} start={starting}></Gamemodes>
+                                    </div>
+                                </div>
+                            </section>
+                            <div className="createGame__startButtonDiv">
+                                <button className="createGame__startButton" onClick={handleStartGame}>Start game</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            :
+            <div style={{ textAlign: 'center', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', fontSize: '5rem' }}>
+                Creating lobby...
+            </div>}
+        {error != "" && <h1>{error}</h1>}
+    </>
     );
 }
 
