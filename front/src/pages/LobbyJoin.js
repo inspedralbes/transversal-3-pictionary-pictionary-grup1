@@ -153,7 +153,7 @@ function LobbyJoin({ socket }) {
                   required
                 ></input>
                 <span className="form__inputBar"></span>
-                <label className="form__joinLobby">
+                <label className="form__inputlabel">
                   Introduce your nickname
                 </label>
               </div>
