@@ -8,34 +8,20 @@ use App\Models\Word;
 class WordController extends Controller
 {
     public function getWords(Request $request)
-    {  
-        $enoughWords = true;
-        $randomWords;
-        $returnWords = [];
+    {
+        $category = $request -> category;
+        $difficulty = $request -> difficulty;
+        $amount = $request -> amount;
 
-        //Check if the words in those categories are >= than the amount of words needed.
-        $numberOfWords = Word::whereIn("category_id", $request -> category)->count(); 
-
-        //Check if the number of words from the categories is enough
-        if ( !($numberOfWords >= $request -> amount) ) {
-            $randomWords = $amount - $numberOfWords;
-            $enoughWords = false;
+        if ($category != "null" && $difficulty == "null") {
+            $words = Word::inRandomOrder()->where("category_id", $category)->limit($amount)->get(); 
+        } else if ($category == "" && $difficulty != "") {
+            $words = Word::inRandomOrder()->where("difficulty", $difficulty)->limit($amount)->get();
+        } else {
+            $words = Word::inRandomOrder()->limit($amount)->get();
         }
 
-        $words = Word::inRandomOrder()->whereIn("category_id", $request -> category)->limit($request -> amount)->get(); 
-        for ($i=0; $i < count($words); $i++) { 
-            array_push($returnWords, $words[$i]);
-        }
-
-        //If the number of words in the categories that haven chosen is lower than the words needed we get random words from the DB
-        if (!$enoughWords) {
-            $words2 = Word::inRandomOrder()->whereNotIn("category_id", $request -> category)->limit($randomWords)->get(); 
-            for ($i=0; $i < count($words2); $i++) { 
-                array_push($returnWords, $words2[$i]);
-            }
-        }
-
-        return response() -> json($returnWords);    
+        return response()->json(['wordsToCheck' => $words]);
     }
     
 }

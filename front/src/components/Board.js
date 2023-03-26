@@ -13,6 +13,7 @@ function Board({ socket, pintor }) {
   const canvasRef2 = useRef(null);
   const [currentColor, setCurrentColor] = useState("#000");
   const [brushRadius, setBrushRadius] = useState(5);
+  const [firstTime, setFirstTime] = useState(true);
   let moreColors = ["black", "#ce0101", "#ffffff", '#ffbb00', '#ff8800', '#f8479a', '#bb3acc', '#582e0b', '#9242b8', '#6b42b8', '#563de0', '#4e96f3', '#8ad0f8', '#75c7b2', '#ff3300', '#9df1a1', '#037208', '#6b8316', '#75572a', '#534229', '#5e5a58', '#8b8a8a', "#5cb351", "#76c1df", "#f7de03", '#cd853f', '#920000']
 
 
@@ -255,9 +256,7 @@ function Board({ socket, pintor }) {
   if (pintor) {
     return (
       <div className="Board">
-
         <div className="Board__canvas">
-          <WordGuess className="game__word" socket={socket} />
           <canvas className="Board__draw" ref={canvasRef} width={1000} height={700} style={{ border: "3px solid #575757" }} />
         </div>
         <div className="Board__settings--grid">

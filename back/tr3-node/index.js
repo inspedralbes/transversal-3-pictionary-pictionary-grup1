@@ -210,20 +210,17 @@ socketIO.on("connection", (socket) => {
   socket.on("start_game", () => {
     let amountOfRounds;
 
-    lobbies.forEach((lobby) => {
-      if (
-        lobby.lobbyIdentifier == socket.data.current_lobby &&
-        !lobby.started
-      ) {
+    lobbies.forEach(lobby => {
+      if (lobby.lobbyIdentifier == socket.data.current_lobby && !lobby.started) {
         if (lobby.members.length > 1) {
           lobby.rounds = lobby.members.length * lobby.settings.amountOfTurns;
           amountOfRounds = lobby.rounds;
-          socketIO.to(socket.data.current_lobby).emit("game_started");
+          socketIO.to(socket.data.current_lobby).emit('game_started');
           setLobbyWord(socket.data.current_lobby, amountOfRounds);
-          enviarPintor(socket.data.current_lobby);
+          enviarPintor(socket.data.current_lobby)
           sendUserList(socket.data.current_lobby);
         } else {
-          socketIO.to(socket.id).emit("NOT_ENOUGH_PLAYERS");
+          socketIO.to(socket.id).emit('NOT_ENOUGH_PLAYERS');
         }
       }
     });
@@ -488,18 +485,15 @@ socketIO.on("connection", (socket) => {
     });
   });
 
-  socket.on("round_end", () => {
-    lobbies.forEach((lobby) => {
-      if (
-        lobby.lobbyIdentifier == socket.data.current_lobby &&
-        lobby.ownerId == socket.data.id
-      ) {
+  socket.on('round_end', () => {
+    lobbies.forEach(lobby => {
+      if (lobby.lobbyIdentifier == socket.data.current_lobby && lobby.ownerId == socket.data.id) {
         enviarPintor(socket.data.current_lobby);
         sendUserList(socket.data.current_lobby);
         acabarRonda(socket.data.current_lobby);
       }
     });
-  });
+  })
 
   socket.on("disconnect", () => {
     console.log(socket.data.id + " disconnected");
@@ -722,6 +716,7 @@ async function setLobbyWord(room, amount) {
       amount: amount,
     })
     .then(function (response) {
+      console.log(response.data.wordsToCheck);
       words = response.data.wordsToCheck;
     })
     .catch(function (error) {

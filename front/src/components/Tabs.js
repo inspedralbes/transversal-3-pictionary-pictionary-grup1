@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import Settings from "./Settings";
+import Gamemodes from "./Gamemodes";
 
-function Tabs() {
+function Tabs({ socket, start }) {
   const [activeTab, setActiveTab] = useState(0);
 
   const handleTabClick = (tabIndex) => {
@@ -11,9 +12,12 @@ function Tabs() {
   const tabs = [
     {
       title: "Game Mode",
-      content: "Hola soy Game Mode",
+      content: <Gamemodes socket={socket} start={start} />,
     },
-    { title: "Settings", content: "Hola soy Settings" },
+    {
+      title: "Settings",
+      content: <Settings socket={socket} start={start} />,
+    },
   ];
 
   return (
@@ -34,7 +38,7 @@ function Tabs() {
           id={`tab${index + 1}`}
           className={`tab-content ${activeTab === index ? "active" : ""}`}
         >
-          <p>{tab.content}</p>
+          <div>{tab.content}</div>
         </div>
       ))}
     </div>

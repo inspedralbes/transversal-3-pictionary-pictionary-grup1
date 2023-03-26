@@ -133,7 +133,7 @@ function Game({ socket }) {
   }, []);
 
   useEffect(() => {
-    if (words.length > 0) {
+    if (words != undefined && words.length > 0) {
       setWordToCheck(words[wordIndex].name);
     }
   }, [wordIndex, words]);
@@ -270,13 +270,26 @@ function Game({ socket }) {
               </div>
               <div>
                 {spectator ? (
-                  <Board socket={socket} pintor={pintor} />
+                  <div className="Spectator">
+                    <CountDownTimer socket={socket} />
+                    <h1 className="Game__title">
+                      <span className="span">P</span>
+                      <span className="span">I</span>
+                      <span className="span">C</span>
+                      <span className="span">T</span>
+                      <span className="span">I</span>
+                      <span className="span">O</span>
+                      <span className="span">N</span>
+                      <span className="span">A</span>
+                      <span className="span">R</span>
+                      <span className="span">Y</span>{" "}
+                    </h1>
+                    <Board socket={socket} pintor={pintor} />
+                  </div>
                 ) : (
-                  //NO PINTOR:
                   <>
                     {pintor ? (
                       <div>
-                        <WordLength socket={socket}></WordLength>
                         <WordGuess className="game__word" socket={socket} />
                         <Description
                           className="game__description"
@@ -286,6 +299,11 @@ function Game({ socket }) {
                       </div>
                     ) : (
                       <>
+                        <CountDownTimer socket={socket} />
+                        <WordLength socket={socket}></WordLength>
+                        <Board socket={socket} pintor={pintor} />
+                        <WordForm socket={socket} answerCorrect={result} />
+                        <br />
                         {result != null && messageWin && (
                           <>
                             {result && !roundEnded && (
@@ -307,26 +325,9 @@ function Game({ socket }) {
                             )}
                           </>
                         )}
-
                         {!result && <p>{messageResponses.wordAttemptError}</p>}
                       </>
                     )}
-                    <CountDownTimer socket={socket} />
-                    <h1 className="Game__title">
-                      <span className="span">P</span>
-                      <span className="span">I</span>
-                      <span className="span">C</span>
-                      <span className="span">T</span>
-                      <span className="span">I</span>
-                      <span className="span">O</span>
-                      <span className="span">N</span>
-                      <span className="span">A</span>
-                      <span className="span">R</span>
-                      <span className="span">Y</span>{" "}
-                    </h1>
-                    <Board socket={socket} pintor={pintor} />
-                    <WordForm socket={socket} answerCorrect={result} />
-                    <br />
                   </>
                 )}
               </div>

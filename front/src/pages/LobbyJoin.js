@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
-import ConnectedUsers from "../components/ConnectedUsers";
 import { Link, useNavigate } from "react-router-dom";
 import "../styles/LobbyCreation.css";
+import ConnectedUsers from "../components/ConnectedUsers";
+
 
 function LobbyJoin({ socket }) {
   const [lobbyId, setLobbyId] = useState("");
@@ -153,7 +154,7 @@ function LobbyJoin({ socket }) {
                   required
                 ></input>
                 <span className="form__inputBar"></span>
-                <label className="form__joinLobby">
+                <label className="form__inputlabel">
                   Introduce your nickname
                 </label>
               </div>
@@ -169,7 +170,7 @@ function LobbyJoin({ socket }) {
                   required
                 ></input>
                 <span className="form__inputBar"></span>
-                <label className="form__joinLobby">Introduce lobby ID</label>
+                <label className="form__inputlabel">Introduce lobby ID</label>
               </div>
             </label>
             <div className="JoinLobby__button--grid">
@@ -182,7 +183,36 @@ function LobbyJoin({ socket }) {
       </div>
     );
   } else {
-    setError("You need to fill both input fields.");
+    return (
+      <div>
+        <button className="createGame__leaveButton" onClick={handleLeave}>
+          Leave lobby
+        </button>
+        {error !== "" && <h1 className="error">{error}</h1>}
+        <h1 className="identifier">
+          <span className="span">I</span>
+          <span className="span">D</span>
+          <span className="span">E</span>
+          <span className="span">N</span>
+          <span className="span">T</span>
+          <span className="span">I</span>
+          <span className="span">F</span>
+          <span className="span">I</span>
+          <span className="span">E</span>
+          <span className="span">R</span>:{" "}
+          <span
+            className="span"
+            id="copyId"
+            onClick={copyId}
+            onMouseOver={changeColor}
+          >
+            <p>CLICK TO COPY THE ID</p>
+            {lobbyId}
+          </span>
+        </h1>
+        <ConnectedUsers socket={socket}></ConnectedUsers>
+      </div>
+    );
   }
 }
 

@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import ConnectedUsers from "../components/ConnectedUsers";
 import Tabs from "../components/Tabs";
-import Settings from "../components/Settings";
-import Gamemodes from "../components/Gamemodes";
 import { useNavigate } from "react-router-dom";
 import "../styles/LobbyCreation.css";
 
@@ -67,16 +65,16 @@ function LobbyCreation({ socket }) {
     });
   }
 
-    useEffect(() => {
-        if (firstTime) {
-            socket.emit("new_lobby");
-            setFirstTime(false)
-        }
+  useEffect(() => {
+    if (firstTime) {
+      socket.emit("new_lobby");
+      setFirstTime(false);
+    }
 
-        socket.on("lobby_info", (data) => {
-            setLobbyId(data.lobbyIdentifier);
-            socket.emit("get_lobby_settings");
-        })
+    socket.on("lobby_info", (data) => {
+      setLobbyId(data.lobbyIdentifier);
+      socket.emit("get_lobby_settings");
+    });
 
     socket.on("starting_errors", (data) => {
       if (data.valid) {
@@ -106,45 +104,84 @@ function LobbyCreation({ socket }) {
       setError("Not enough players to start game");
     });
 
-        socket.on("YOU_LEFT_LOBBY", () => {
-            navigate("/")
-        })
-    }, [navigate, socket, firstTime])
+    socket.on("YOU_LEFT_LOBBY", () => {
+      navigate("/");
+    });
+  }, [navigate, socket, firstTime]);
 
-    return (
-      {categoriesDataLoaded ?
+  return (
+    <>
+      {categoriesDataLoaded ? (
         <div className="createGame">
-            <button className="createGame__leaveButton" onClick={handleLeave}>Leave and delete lobby </button>
-            <div class="container">
-              <div >
-                <ConnectedUsers socket={socket}></ConnectedUsers>
-              </div>
-            <div class="i7">
-                <div class="Identi">
-                    {lobbyId && (
-                    <h1 className="identifier"><span className='span'>I</span><span className='span'>D</span><span className='span'>E</span><span className='span'>N</span><span className='span'>T</span><span className='span'>I</span><span className='span'>F</span><span className='span'>I</span><span className='span'>E</span><span className='span'>R</span>: <span className='span' id="copyId" onClick={copyId} onMouseOver={changeColor}><p>CLICK TO COPY THE ID</p>{lobbyId}</span></h1>
+          <button className="createGame__leaveButton" onClick={handleLeave}>
+            Leave and delete lobby{" "}
+          </button>
+          <div className="container">
+            <div>
+              <ConnectedUsers socket={socket}></ConnectedUsers>
+            </div>
+            <div className="i7">
+              <div className="Identi">
+                {lobbyId && (
+                  <h1 className="identifier">
+                    <span className="span">I</span>
+                    <span className="span">D</span>
+                    <span className="span">E</span>
+                    <span className="span">N</span>
+                    <span className="span">T</span>
+                    <span className="span">I</span>
+                    <span className="span">F</span>
+                    <span className="span">I</span>
+                    <span className="span">E</span>
+                    <span className="span">R</span>:{" "}
+                    <span
+                      className="span"
+                      id="copyId"
+                      onClick={copyId}
+                      onMouseOver={changeColor}
+                    >
+                      <p>CLICK TO COPY THE ID</p>
+                      {lobbyId}
+                    </span>
+                  </h1>
                 )}
-                </div>
+              </div>
 
-                <div class="Setting">
-                    <section id="main">
-                    <div>
-                      <Tabs socket={socket} start={starting}></Tabs>
-                    </div>
-                    </section>
-                    <div className="createGame__startButtonDiv">
-                        <button className="createGame__startButton" onClick={handleStartGame}>Start game</button>
-                    </div>
+              <div className="Setting">
+                <section id="main">
+                  <div>
+                    <Tabs socket={socket} start={starting}></Tabs>
+                  </div>
+                </section>
+                <div className="createGame__startButtonDiv">
+                  <button
+                    className="createGame__startButton"
+                    onClick={handleStartGame}
+                  >
+                    Start game
+                  </button>
                 </div>
+              </div>
             </div>
-            </div>
+          </div>
         </div>
-        :
-        <div style={{ textAlign: 'center', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', fontSize: '5rem' }}>
-            Creating lobby...
-        </div>}
-    {error != "" && <h1>{error}</h1>}
-    );
+      ) : (
+        <div
+          style={{
+            textAlign: "center",
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            fontSize: "5rem",
+          }}
+        >
+          Creating lobby...
+        </div>
+      )}
+      {error != "" && <h1>{error}</h1>}
+    </>
+  );
 }
 
 export default LobbyCreation;
