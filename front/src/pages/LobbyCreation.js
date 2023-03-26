@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import ConnectedUsers from "../components/ConnectedUsers";
+import Tabs from "../components/Tabs";
 import Settings from "../components/Settings";
 import { useNavigate } from "react-router-dom";
 import "../styles/LobbyCreation.css";
@@ -104,39 +105,6 @@ function LobbyCreation({ socket }) {
     });
   }, [navigate, socket, firstTime]);
 
-  //   const tabLinks = document.querySelectorAll(".tab-link");
-  //   const tabContents = document.querySelectorAll(".tab-content");
-
-  //   tabLinks.forEach((link) => {
-  //     link.addEventListener("click", () => {
-  //       const tab = link.dataset.tab;
-
-  //       tabLinks.forEach((link) => {
-  //         link.classList.remove("active");
-  //       });
-
-  //       tabContents.forEach((content) => {
-  //         content.classList.remove("active");
-  //       });
-
-  //       link.classList.add("active");
-  //       document.getElementById(tab).classList.add("active");
-  //     });
-  //   });
-
-  function openTab(evt, tabName) {
-    var i, tabcontent, tablinks;
-    tabcontent = document.getElementsByClassName("tabcontent");
-    for (i = 0; i < tabcontent.length; i++) {
-      tabcontent[i].classList.remove("active");
-    }
-    tablinks = document.getElementsByClassName("tablinks");
-    for (i = 0; i < tablinks.length; i++) {
-      tablinks[i].classList.remove("active");
-    }
-    document.getElementById(tabName).classList.add("active");
-    evt.currentTarget.classList.add("active");
-  }
   return (
     <div className="createGame">
       <button className="createGame__leaveButton" onClick={handleLeave}>
@@ -178,44 +146,8 @@ function LobbyCreation({ socket }) {
 
           <div class="Setting">
             <section id="main">
-              {/* <div class="tabs">
-                <button class="tab-link active" data-tab="tab1">
-                  Game Mode
-                </button>
-                <button class="tab-link" data-tab="tab2">
-                  Settings
-                </button>
-
-                <div id="tab1" class="tab-content active">
-                  <p> Game mode</p>
-                </div>
-                <div id="tab2" class="tab-content">
-                  <div>
-                    {" "}
-                    <Settings socket={socket} start={starting}></Settings>
-                  </div>
-                </div>
-              </div> */}
-              <div class="tab">
-                <button
-                  class="tablinks active"
-                  onclick="openTab(event, 'tab1')"
-                >
-                  Tab 1
-                </button>
-                <button class="tablinks" onclick="openTab(event, 'tab2')">
-                  Tab 2
-                </button>
-              </div>
-
-              <div id="tab1" class="tabcontent active">
-                <h3>Tab 1</h3>
-                <p>Contenido de la pestaña 1.</p>
-              </div>
-
-              <div id="tab2" class="tabcontent">
-                <h3>Tab 2</h3>
-                <p>Contenido de la pestaña 2.</p>
+              <div>
+                <Tabs socket={socket} start={starting}></Tabs>
               </div>
             </section>
             <div className="createGame__startButtonDiv">
