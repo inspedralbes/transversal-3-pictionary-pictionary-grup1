@@ -5,11 +5,7 @@ function Ranking({ socket }) {
   const [userList, setUserList] = useState([]);
   const [firstTime, setFirstTime] = useState(true);
   const [spectator, setSpectator] = useState(false);
-
-function Ranking({ socket }) {
-  const [userList, setUserList] = useState([]);
-  const [firstTime, setFirstTime] = useState(true);
-
+  
     socket.on("spectator", (data) => {
       setSpectator(data.spectator);
     });

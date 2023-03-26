@@ -22,7 +22,7 @@ function Description({ socket }) {
     return () => {
       socket.off("word_to_check");
     };
-  }, [socket, word]);
+  }, [socket]);
 
   return (
     <div className="Description">
