@@ -276,17 +276,15 @@ socketIO.on("connection", (socket) => {
           i--;
         }
       }
-      //console.log(letterPositions);
+      console.log(letterPositions);
       socketIO.to(socket.id).emit("word_letters", {
         letter: letters[letterPosition],
         pos: letterPosition,
       });
 
-      //console.log(timeCounter);
+      console.log(timeCounter);
       if (timeCounter == 0) {
-        //console.log("TIME CLEAR");
         clearInterval(timer);
-        //console.log(timer);
       }
     }, timeBetweenLetters * 1000);
   });
@@ -495,10 +493,9 @@ socketIO.on("connection", (socket) => {
 
   socket.on('round_end', () => {
     lobbies.forEach((lobby) => {
-      if (lobby.lobbyIdentifier == socket.data.current_lobby && lobby.ownerId == socket.data.id && !lobby.acabando) {
+      if (lobby.lobbyIdentifier == socket.data.current_lobby && lobby.ownerId == socket.data.id) {
         enviarPintor(socket.data.current_lobby);
         sendUserList(socket.data.current_lobby);
-        console.log("acaba ronda");
         acabarRonda(socket.data.current_lobby);
       }
     });
@@ -567,7 +564,6 @@ function setCounter(lobbyId) {
       lobby.cont++;
       timer = setInterval(() => {
         lobby.cont--;
-        console.log(lobby.cont);
         socketIO.to(lobbyId).emit("counter_down", {
           counter: lobby.cont,
         });
