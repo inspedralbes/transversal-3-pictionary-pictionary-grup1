@@ -7,7 +7,7 @@ function Description({ socket }) {
 
   useEffect(() => {
 
-    socket.on('game_data', (data) => {
+    socket.once('game_data', (data) => {
       if (data.words !== undefined) {
         setDescription(data.words[0].description);
       }

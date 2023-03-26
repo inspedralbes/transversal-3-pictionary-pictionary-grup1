@@ -160,6 +160,8 @@ socketIO.on('connection', socket => {
           words: [],
           rounds: 0,
           actualRound: 0,
+          actualTurn: 1,
+          ind_drawer: 0,
           ended: false,
           boardData: undefined,
           started: false,
@@ -213,7 +215,7 @@ socketIO.on('connection', socket => {
     lobbies.forEach(lobby => {
       if (lobby.lobbyIdentifier == socket.data.current_lobby && !lobby.started) {
         if (lobby.members.length > 1) {
-          lobby.rounds = lobby.members.length;
+          lobby.rounds = lobby.members.length * lobby.settings.amountOfTurns;
           amountOfRounds = lobby.rounds;
           socketIO.to(socket.data.current_lobby).emit('game_started');
           setLobbyWord(socket.data.current_lobby, amountOfRounds);
@@ -236,15 +238,13 @@ socketIO.on('connection', socket => {
 
   socket.on("get_game_data", () => {
     enviarPintor(socket.data.current_lobby)
-    let data;
     let word;
     lobbies.forEach(lobby => {
       if (lobby.lobbyIdentifier == socket.data.current_lobby) {
-        data = lobby
         word = lobby.words[lobby.actualRound];
       }
     });
-    // socketIO.to(socket.id).emit('game_data', data);
+
     socketIO.to(socket.id).emit('current_word', {
       word: word
     });
@@ -479,6 +479,8 @@ async function resetLobbyData(room) {
       lobby.words = [];
       lobby.rounds = 0;
       lobby.actualRound = 0;
+      lobby.ind_drawer = 0;
+      lobby.actualTurn = 1;
       lobby.ended = false;
       lobby.boardData = undefined;
       lobby.started = false;
@@ -536,19 +538,28 @@ function setCounter(lobbyId) {
         if (cont <= 0 || correct == lobby.members.length - 1 || (correct == 1 && lobby.gamemode == "fast")) {
           if (lobby.actualRound < lobby.rounds) {
             lobby.actualRound++;
+            lobby.ind_drawer++;
+
+            if (lobby.actualRound == lobby.members.length * lobby.actualTurn) {
+              lobby.actualTurn++;
+              lobby.ind_drawer = 0;
+            }
           }
 
           if (lobby.actualRound == lobby.rounds) {
             lobby.ended = true;
             socketIO.to(lobbyId).emit("game_ended")
-          } else {
-            let motivo = cont == 0 ? "time" : "perfect"
-            socketIO.to(lobbyId).emit("round_ended", { roundIndex: lobby.actualRound, motivo: motivo, gamemode: lobby.gamemode });
+          } else if (lobby.actualRound == lobby.rounds / lobby.settings.amountOfTurns) {
+            socketIO.to(lobbyId).emit("turn_ended", { turnIndex: lobby.actualTurn })
           }
-          lobby.counting = false;
+
+          let motivo = cont == 0 ? "time" : "perfect"
+          socketIO.to(lobbyId).emit("round_ended", { roundIndex: lobby.actualRound, motivo: motivo, gamemode: lobby.gamemode });
+
           clearInterval(timer)
         }
       }, 1000)
+      lobby.counting = false;
     }
   });
 }
@@ -701,11 +712,11 @@ async function sendBoardData(room) {
 
   lobbies.forEach(lobby => {
     if (lobby.lobbyIdentifier == room) {
-      if (lobby.actualRound < lobby.rounds) {
+      if (lobby.actualRound < lobby.rounds && lobby.ind_drawer < lobby.members.length) {
         boardData = lobby.boardData;
 
         sockets.forEach(user => {
-          if (user.data.id != lobby.members[lobby.actualRound].idUser) {
+          if (user.data.id != lobby.members[lobby.ind_drawer].idUser) {
             socketIO.to(user.id).emit("new_board_data", {
               board: boardData
             })
@@ -723,23 +734,28 @@ async function enviarPintor(room) {
 
   lobbies.forEach((lobby) => {
     if (lobby.lobbyIdentifier == room) {
-      if (lobby.actualRound < lobby.rounds && !lobby.ended) {
+      lobby.enviandoPintor = true;
+      if (lobby.actualRound < lobby.rounds && lobby.ind_drawer < lobby.members.length && !lobby.ended) {
 
         sockets.forEach(user => {
-          if (user.data.id == lobby.members[lobby.actualRound].idUser) {
-            lobby.currentDrawer = lobby.members[lobby.actualRound].username
-            if (lobby.actualRound < lobby.rounds - 1) {
-              lobby.nextDrawer = lobby.members[lobby.actualRound + 1].username
+          if (user.data.id == lobby.members[lobby.ind_drawer].idUser) {
+            lobby.currentDrawer = lobby.members[lobby.ind_drawer].username
+
+            if (lobby.actualRound < lobby.rounds / lobby.settings.amountOfTurns - 1) {
+              lobby.nextDrawer = lobby.members[lobby.ind_drawer + 1].username
             } else {
-              lobby.nextDrawer = lobby.currentDrawer;
+              lobby.nextDrawer = null;
             }
+
             socketIO.to(user.id).emit("pintor", {
               pintor: true
             })
+
             socketIO.to(lobby.lobbyIdentifier).emit("drawer_name", {
               name: lobby.currentDrawer,
               next: lobby.nextDrawer
             })
+
             lobby.members.forEach(member => {
               if (member.idUser == user.data.id) {
                 member.painting = true;
@@ -751,23 +767,17 @@ async function enviarPintor(room) {
                 socketIO.to(user.id).emit("pintor", {
                   pintor: false
                 })
-
-                lobby.members.forEach(member => {
-                  if (member.idUser == user.data.id) {
-                    member.painting = false;
-                  }
-                });
               } else {
                 socketIO.to(user.id).emit("spectator", {
                   spectator: true
                 })
-
-                lobby.members.forEach(member => {
-                  if (member.idUser == user.data.id) {
-                    member.painting = false;
-                  }
-                });
               }
+
+              lobby.members.forEach(member => {
+                if (member.idUser == user.data.id) {
+                  member.painting = false;
+                }
+              });
             } else {
               socketIO.to(user.id).emit("pintor", {
                 pintor: false
@@ -780,7 +790,9 @@ async function enviarPintor(room) {
               });
             }
           }
+          lobby.enviandoPintor = false;
         });
+
         socketIO.to(room).emit("round_change");
       } else {
         lobby.ended = true;

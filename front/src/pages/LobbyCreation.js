@@ -137,15 +137,15 @@ function LobbyCreation({ socket }) {
                         <div className="Setting">
                             <section id="main">
                                 <div className="tabs">
-                                    <button className="tab-link active" data-tab="tab1">Game Mode</button>
-                                    <button className="tab-link" data-tab="tab2">Settings</button>
+                                    <button className="tab-link active" data-tab="tab1">Settings</button>
+                                    <button className="tab-link" data-tab="tab2">Game Mode</button>
 
                                     <div id="tab1" className="tab-content active">
-                                        <Gamemodes socket={socket} start={starting}></Gamemodes>
+                                        <div> <Settings socket={socket} start={starting}></Settings></div>
                                     </div>
 
                                     <div id="tab2" className="tab-content">
-                                        <div> <Settings socket={socket} start={starting}></Settings></div>
+                                        <Gamemodes socket={socket} start={starting}></Gamemodes>
                                     </div>
                                 </div>
                             </section>

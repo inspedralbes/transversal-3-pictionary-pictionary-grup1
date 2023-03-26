@@ -37,6 +37,7 @@ function Settings({ socket, start }) {
 
         socket.on("lobby_settings", (data) => {
             setRoundDuration(data.roundDuration)
+            setTurns(data.amountOfTurns)
         })
 
         socket.on("username_saved", (data) => {

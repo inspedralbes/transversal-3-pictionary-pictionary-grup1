@@ -147,7 +147,7 @@ function Game({ socket }) {
           {roundEnded && !result && !pintor && !gameEnded && (
             <div style={{ textAlign: 'center', position: 'fixed', top: '50%', left: '50%', fontSize: '5rem', transform: 'translate(-50%, -50%)', zIndex: '1', backgroundColor: 'white', border: '1px solid black' }}>
               Last word was: {wordToCheck}<br></br><br></br>
-              Next round drawer: {nextDrawerName}
+              {nextDrawerName != null && <>Next round drawer: {nextDrawerName}</>}
             </div>
           )}
 
@@ -166,7 +166,7 @@ function Game({ socket }) {
           {roundEnded && result && !gameEnded && (
             <div style={{ textAlign: 'center', position: 'fixed', top: '50%', left: '50%', fontSize: '5rem', transform: 'translate(-50%, -50%)', zIndex: '1', backgroundColor: 'white', border: '1px solid black' }}>
               You did it! <br></br><br></br>
-              Next round drawer: {nextDrawerName}
+              {nextDrawerName != null && <>Next round drawer: {nextDrawerName}</>}
             </div>
           )}
 
