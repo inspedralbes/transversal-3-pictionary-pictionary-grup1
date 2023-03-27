@@ -6,6 +6,7 @@ import "../styles/LobbyCreation.css";
 
 function LobbyCreation({ socket }) {
   const [categoriesDataLoaded, setCategoriesDataLoaded] = useState(false);
+  const [categoriesData, setCategoriesData] = useState([]);
   const [lobbyId, setLobbyId] = useState("");
   const [firstTime, setFirstTime] = useState(true);
   const [starting, setStarting] = useState(false);
@@ -89,6 +90,7 @@ function LobbyCreation({ socket }) {
 
     socket.on("categories", (data) => {
       console.log(data);
+      setCategoriesData(data)
       setCategoriesDataLoaded(true);
       if (firstTime) {
         socket.emit("new_lobby");
@@ -151,7 +153,7 @@ function LobbyCreation({ socket }) {
               <div className="Setting">
                 <section id="main">
                   <div>
-                    <Tabs socket={socket} start={starting}></Tabs>
+                    <Tabs socket={socket} start={starting} categoriesData={categoriesData}></Tabs>
                   </div>
                 </section>
                 <div className="createGame__startButtonDiv">
