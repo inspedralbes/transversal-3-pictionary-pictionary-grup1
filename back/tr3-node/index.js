@@ -157,6 +157,7 @@ socketIO.on("connection", (socket) => {
           words: [],
           rounds: 0,
           actualRound: 0,
+          startedWordLength: false,
           actualTurn: 1,
           ind_drawer: 0,
           ended: false,
@@ -238,6 +239,15 @@ socketIO.on("connection", (socket) => {
     lobbies.forEach(lobby => {
       if (lobby.lobbyIdentifier == socket.data.current_lobby && lobby.ownerId == socket.data.id) {
         setCounter(socket.data.current_lobby);
+      }
+    });
+  })
+
+  socket.on("word_length_loaded", () => {
+    lobbies.forEach(lobby => {
+      if (lobby.lobbyIdentifier == socket.data.current_lobby && !lobby.startedWordLength) {
+        lobby.startedWordLength = true;
+        startWordLength(socket.data.current_lobby);
       }
     });
   })
@@ -487,6 +497,7 @@ async function resetLobbyData(room) {
       lobby.words = [];
       lobby.rounds = 0;
       lobby.actualRound = 0;
+      lobby.startedWordLength = false;
       lobby.cont = 0;
       lobby.ind_drawer = 0;
       lobby.actualTurn = 1;
@@ -684,7 +695,6 @@ async function setLobbyWord(room, amount) {
       category = lobby.categories
     }
   });
-  console.log("Pre-axios", category);
 
   await axios
     .post(laravelRoute + "getWords", {
@@ -693,7 +703,6 @@ async function setLobbyWord(room, amount) {
     })
     .then(function (response) {
       words = response.data;
-      startWordLength(room);
     })
     .catch(function (error) {
       console.log(error);
@@ -723,7 +732,8 @@ function startWordLength(room) {
       actualRound = lobby.actualRound;
     }
   });
-  socketIO.to(room).emit("current_word_length", {
+
+  socketIO.to(room).emit("word_length", {
     long: long,
   });
 
@@ -745,7 +755,7 @@ function startWordLength(room) {
       }
     }
     socketIO.to(room).emit("word_letters", {
-      letter: letters[letterPosition],
+      letterNode: letters[letterPosition],
       pos: letterPosition,
     });
 
@@ -758,7 +768,7 @@ function startWordLength(room) {
     });
     if (timeCounter <= 0 || actualRound != roundChanged) {
       clearInterval(timer);
-
+      actualRound = roundChanged;
       socketIO.to(room).emit("clear_word");
     }
   }, timeBetweenLetters * 1000);
