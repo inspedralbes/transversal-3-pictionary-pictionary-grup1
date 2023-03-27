@@ -29,9 +29,9 @@ function Categories({ socket, start, categoriesData }) {
                     ? categoriesData.public.map((item, index) => (
                         <div key={index} className="list__container__text">
                             <input value={item.categoryId} type="checkbox" id={item.categoryId} class="check" onChange={handleCheck} />
-                            <label for="check3" class="label" >
+                            <label for={item.categoryId} class="list__container__text__label" >
                             <svg width="500" height="50" viewBox="0 0 500 100">
-                                {/* <rect x="-220" y="0" width="50" height="50" stroke="black" fill="none" /> */}
+
                                 <g transform="translate(0,-972.36216)">
                                 <path d="m 230,980 -166,5 c -709,22 289,89 215,18 -37,-36 -537,-46 -478,23" stroke="black" fill="none" class="path2" stroke-width="3" />
                                 </g>
