@@ -3,8 +3,12 @@
   width: 80%;
   justify-items: center;
   display: grid;
-  grid-template-columns: 1.7fr 0.3fr;
+  grid-template-columns: 3.6fr 1.1fr;
   justify-items: center;
+}
+
+.Board__canvas{
+  grid-area: 1 / 1 / 2 / 2;
 }
 
 .Board__draw,
@@ -17,7 +21,7 @@
   overflow: hidden;
 }
 
-.View_board{
+.View_board {
   margin-left: 10%;
 }
 
@@ -31,13 +35,13 @@
 
 .Board__settings--grid {
   width: 100%;
-  display: grid; 
-  grid-template-columns: 1fr; 
-  grid-template-rows: 0.2fr 1.5fr; 
-  gap: 0px 0px; 
-  grid-template-areas: 
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 0.2fr 1.5fr;
+  gap: 0px 0px;
+  grid-template-areas:
     "."
-    "."; 
+    ".";
   padding: 20px;
   margin: 0 auto;
 }
@@ -46,7 +50,8 @@
   margin: 0;
 }
 
-.Board__settings{
+.Board__settings {
+  grid-area: 1 / 2 / 2 / 3;
   background-color: #ececec;
   padding: 20px;
   border: 3px dashed #575757;
@@ -59,7 +64,7 @@
   transform: rotate(1deg);
 }
 
-.Board__settings--center{
+.Board__settings--center {
   margin-top: 5%;
 }
 
@@ -70,7 +75,7 @@
   justify-content: center;
 }
 
-.Board__buttons{
+.Board__buttons {
   margin: 10px auto;
   width: 90%;
 }
