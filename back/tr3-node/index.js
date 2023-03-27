@@ -256,49 +256,49 @@ socketIO.on("connection", (socket) => {
     });
   });
 
-  // socket.on("get_word_length", () => {
-  //   let long;
-  //   lobbies.forEach((lobby) => {
-  //     if (lobby.lobbyIdentifier == socket.data.current_lobby) {
-  //       word = lobby.words[lobby.actualRound].name;
-  //       long = lobby.words[lobby.actualRound].name.length;
-  //       time = lobby.settings.roundDuration;
-  //     }
-  //   });
-  //   socketIO.to(socket.id).emit("current_word_length", {
-  //     long: long,
-  //   });
+  socket.on("get_word_length", () => {
+    let long;
+    lobbies.forEach((lobby) => {
+      if (lobby.lobbyIdentifier == socket.data.current_lobby) {
+        word = lobby.words[lobby.actualRound].name;
+        long = lobby.words[lobby.actualRound].name.length;
+        time = lobby.settings.roundDuration;
+      }
+    });
+    socketIO.to(socket.id).emit("current_word_length", {
+      long: long,
+    });
 
-  //   let timeBetweenLetters = time / (Math.trunc(long / 2) + 1);
-  //   let timeCounter = Math.trunc(long / 2);
-  //   let letters = word.split("");
-  //   let letterPositions = [];
-  //   let letterPosition = 0;
+    let timeBetweenLetters = time / (Math.trunc(long / 2) + 1);
+    let timeCounter = Math.trunc(long / 2);
+    let letters = word.split("");
+    let letterPositions = [];
+    let letterPosition = 0;
 
-  //   timer = setInterval(() => {
-  //     timeCounter--;
-  //     for (i = 0; i < 1; i++) {
-  //       letterPosition = Math.trunc(Math.random() * long);
-  //       if (!letterPositions.some((num) => num == letterPosition)) {
-  //         letterPositions.push(letterPosition);
-  //       } else {
-  //         i--;
-  //       }
-  //     }
-  //     //console.log(letterPositions);
-  //     socketIO.to(socket.id).emit("word_letters", {
-  //       letter: letters[letterPosition],
-  //       pos: letterPosition,
-  //     });
+    timer = setInterval(() => {
+      timeCounter--;
+      for (i = 0; i < 1; i++) {
+        letterPosition = Math.trunc(Math.random() * long);
+        if (!letterPositions.some((num) => num == letterPosition)) {
+          letterPositions.push(letterPosition);
+        } else {
+          i--;
+        }
+      }
+      //console.log(letterPositions);
+      socketIO.to(socket.id).emit("word_letters", {
+        letter: letters[letterPosition],
+        pos: letterPosition,
+      });
 
-  //     //console.log(timeCounter);
-  //     if (timeCounter == 0) {
-  //       //console.log("TIME CLEAR");
-  //       clearInterval(timer);
-  //       //console.log(timer);
-  //     }
-  //   }, timeBetweenLetters * 1000);
-  // });
+      //console.log(timeCounter);
+      if (timeCounter == 0) {
+        //console.log("TIME CLEAR");
+        clearInterval(timer);
+        //console.log(timer);
+      }
+    }, timeBetweenLetters * 1000);
+  });
 
   socket.on("get_lobby_settings", () => {
     let data;
