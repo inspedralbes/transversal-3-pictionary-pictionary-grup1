@@ -10,6 +10,11 @@ function Tabs({ socket, start }) {
   };
 
   const tabs = [
+
+    {
+      title: "Categories",
+      content: <Settings socket={socket} start={start} />,
+    },
     {
       title: "Game Mode",
       content: <Gamemodes socket={socket} start={start} />,
