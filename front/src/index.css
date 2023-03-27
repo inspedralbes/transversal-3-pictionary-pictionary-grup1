@@ -1,11 +1,11 @@
-@import "http://fxaeberhard.github.io/handdrawn.css/handdrawn.css";
+/* @import "http://fxaeberhard.github.io/handdrawn.css/handdrawn.css"; */
+@import "./styles/handdrawn/handdrawn.css";
 
 body {
   margin: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background: none;
-  ;
   background-color: #fffaf4;
   width: 100%;
   padding: 0;
