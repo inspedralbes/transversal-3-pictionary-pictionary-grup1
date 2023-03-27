@@ -10,8 +10,7 @@ function WordLength({ socket }) {
     }
 
     useEffect(() => {
-        socket.emit("get_word_length");
-        socket.on("current_word_length", (data) => {
+        socket.on("word_length", (data) => {
             let spaces = [];
             if (data !== undefined) {
                 if (data.long !== 0) {
@@ -21,23 +20,22 @@ function WordLength({ socket }) {
                     updateArray(spaces);
                 }
             }
+            
         });
+        
         socket.on("word_letters", (data) => {
             console.log(letters);
-            let a = letters
-            a[data.pos] = data.letter;
-            //updateArray(a);
+            let a = [...letters]
+            a[data.pos] = data.letterNode;
+            updateArray(a)
         });
 
-        socket.on("clear_word", () => {
-            updateArray([]);
-        });
-    }, [socket]);
+        // socket.on("clear_word", () => {
+        //     updateArray([]);
+        // });
 
-    useEffect(() => {
-        //console.log(letters);
-        //console.log(word);
-    }, [letters]);
+        socket.emit("word_length_loaded");
+    }, []);
 
     return (
         <div>
