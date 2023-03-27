@@ -43,7 +43,7 @@ function ConnectedUsersInGame({ socket, pintor }) {
       <div className="connectedUsersInGame__title">
         <h1 className='game__connectedUsersInGameTitle'><span className='connectedUsersInGame__span'>U</span><span className='connectedUsersInGame__span'>S</span><span className='connectedUsersInGame__span'>E</span><span className='connectedUsersInGame__span'>R</span>  <span className='connectedUsersInGame__span'>L</span><span className='connectedUsersInGame__span'>I</span><span className='connectedUsersInGame__span'>S</span><span className='connectedUsersInGame__span'>T</span></h1>
       </div>
-      <div className="game__connectedUsersInGame" id="style-8">
+      <div className="game__connectedUsersInGame" id="style-8" >
         <ul id="userList" className="connectedUsersInGame__userList userList">
           {Array.isArray(userList.list)
             ? userList.list.map((user, index) => {
