@@ -105,6 +105,7 @@ function LobbyCreation({ socket }) {
 
     socket.on("NOT_ENOUGH_PLAYERS", () => {
       setError("Not enough players to start game");
+      setStarting(false);
     });
 
     socket.on("YOU_LEFT_LOBBY", () => {

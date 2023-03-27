@@ -23,11 +23,20 @@ function Categories({ socket, start, categoriesData }) {
 
     return (
         <div className="checkList">
-            <div className="title">Categorias públicas:</div>
-            <br />
-            <div className="list-container">
+            <div className="list__container-left">
+                <div className="title">Categorias públicas:</div>
                 {Array.isArray(categoriesData.public)
                     ? categoriesData.public.map((item, index) => (
+                        <div key={index}>
+                            <label htmlFor={item.categoryId}>{`${item.categoryName}`}</label>
+                            <input value={item.categoryId} type="checkbox" id={item.categoryId} onChange={handleCheck} />
+                        </div>
+                    )) : null}
+            </div>
+            <div className="list__container-right">
+                <div className="title">Categorias privadas:</div>
+                {Array.isArray(categoriesData.private) && categoriesData.private != []
+                    ? categoriesData.private.map((item, index) => (
                         <div key={index}>
                             <label htmlFor={item.categoryId}>{`${item.categoryName}`}</label>
                             <input value={item.categoryId} type="checkbox" id={item.categoryId} onChange={handleCheck} />

@@ -208,7 +208,6 @@ socketIO.on("connection", (socket) => {
   });
 
   socket.on("set_categories", (data) => {
-    console.log(data.ids);
     lobbies.forEach(lobby => {
       if (lobby.lobbyIdentifier == socket.data.current_lobby) {
         lobby.categories = data.ids;
