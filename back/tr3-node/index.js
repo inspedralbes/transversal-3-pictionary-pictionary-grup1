@@ -247,47 +247,7 @@ socketIO.on("connection", (socket) => {
     });
   });
 
-  socket.on("get_word_length", () => {
-    let long;
-    lobbies.forEach((lobby) => {
-      if (lobby.lobbyIdentifier == socket.data.current_lobby) {
-        word = lobby.words[lobby.actualRound].name;
-        long = lobby.words[lobby.actualRound].name.length;
-        time = lobby.settings.roundDuration;
-      }
-    });
-    socketIO.to(socket.id).emit("current_word_length", {
-      long: long,
-    });
 
-    let timeBetweenLetters = time / (Math.trunc(long / 2) + 1);
-    let timeCounter = Math.trunc(long / 2);
-    let letters = word.split("");
-    let letterPositions = [];
-    let letterPosition = 0;
-
-    timer = setInterval(() => {
-      timeCounter--;
-      for (i = 0; i < 1; i++) {
-        letterPosition = Math.trunc(Math.random() * long);
-        if (!letterPositions.some((num) => num == letterPosition)) {
-          letterPositions.push(letterPosition);
-        } else {
-          i--;
-        }
-      }
-      console.log(letterPositions);
-      socketIO.to(socket.id).emit("word_letters", {
-        letter: letters[letterPosition],
-        pos: letterPosition,
-      });
-
-      console.log(timeCounter);
-      if (timeCounter == 0) {
-        clearInterval(timer);
-      }
-    }, timeBetweenLetters * 1000);
-  });
 
   socket.on("get_lobby_settings", () => {
     let data;
@@ -724,6 +684,7 @@ async function setLobbyWord(room, amount) {
     .then(function (response) {
       console.log(response.data.wordsToCheck);
       words = response.data.wordsToCheck;
+      startWordLength(room);
     })
     .catch(function (error) {
       console.log(error);
@@ -736,6 +697,62 @@ async function setLobbyWord(room, amount) {
       socketIO.to(room).emit("game_data", lobby);
     }
   });
+}
+
+function startWordLength(room) {
+  let long;
+  let timer;
+  let time;
+  let actualRound;
+  let word = "";
+
+  lobbies.forEach((lobby) => {
+    if (lobby.lobbyIdentifier == room) {
+      word = lobby.words[lobby.actualRound].name;
+      long = lobby.words[lobby.actualRound].name.length;
+      time = lobby.settings.roundDuration;
+      actualRound = lobby.actualRound;
+    }
+  });
+  socketIO.to(room).emit("current_word_length", {
+    long: long,
+  });
+
+  let timeBetweenLetters = time / (Math.trunc(long / 2) + 1);
+  let timeCounter = Math.trunc(long / 2);
+  let letters = word.split("");
+  let letterPositions = [];
+  let letterPosition = 0;
+
+  timer = setInterval(() => {
+    timeCounter--;
+    let roundChanged;
+    for (i = 0; i < 1; i++) {
+      letterPosition = Math.trunc(Math.random() * long);
+      if (!letterPositions.some((num) => num == letterPosition)) {
+        letterPositions.push(letterPosition);
+      } else {
+        i--;
+      }
+    }
+    socketIO.to(room).emit("word_letters", {
+      letter: letters[letterPosition],
+      pos: letterPosition,
+    });
+
+    console.log(timeCounter);
+
+    lobbies.forEach((lobby) => {
+      if (lobby.lobbyIdentifier == room) {
+        roundChanged = lobby.actualRound;
+      }
+    });
+    if (timeCounter <= 0 || actualRound != roundChanged) {
+      clearInterval(timer);
+
+      socketIO.to(room).emit("clear_word");
+    }
+  }, timeBetweenLetters * 1000);
 }
 
 function sendUserList(room) {

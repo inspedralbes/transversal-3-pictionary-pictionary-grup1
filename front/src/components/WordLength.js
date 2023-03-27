@@ -4,39 +4,44 @@ import React from "react";
 
 function WordLength({ socket }) {
     const [letters, setLetters] = useState([])
-    const [word, setWord] = useState("");
+
+    const updateArray = (array) => {
+        setLetters(array);
+    }
 
     useEffect(() => {
         socket.emit("get_word_length");
         socket.on("current_word_length", (data) => {
-            let w = [];
+            let spaces = [];
             if (data !== undefined) {
                 if (data.long !== 0) {
                     for (let i = 0; i < data.long; i++) {
-                        w.push("_ ");
+                        spaces.push("_ ");
                     }
-                    setLetters(w)
-                    setWord(w.toString().split(","));
+                    updateArray(spaces);
                 }
             }
         });
         socket.on("word_letters", (data) => {
-                let a = letters
-                a[data.pos] = data.letter;
-                setLetters(a);
-                setWord(a.toString().split(","));
-
+            console.log(letters);
+            let a = letters
+            a[data.pos] = data.letter;
+            //updateArray(a);
         });
-    }, []);
+
+        socket.on("clear_word", () => {
+            updateArray([]);
+        });
+    }, [socket]);
 
     useEffect(() => {
-        console.log(letters);
-        console.log(word);
+        //console.log(letters);
+        //console.log(word);
     }, [letters]);
 
     return (
         <div>
-            <p>{word}</p>
+            <p>{letters}</p>
         </div>
     );
 }
