@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import Ranking from '../components/Ranking';
 import { useState, useEffect } from "react";
+import "../styles/Ranking.css";
 
 function EndGame({ socket }) {
   const [owner, setOwner] = useState(false);
@@ -27,10 +28,10 @@ function EndGame({ socket }) {
         {owner ? (
           <div>
             <NavLink to='/createlobby'><button onClick={onClick}>Go to lobby</button></NavLink>
-            <NavLink to='/'><button>Go to main page</button></NavLink>
+            <NavLink to='/'><button className='back__button'>Go to main page</button></NavLink>
           </div>
         ) : (
-          <NavLink to='/'><button>Go to main page</button></NavLink>
+          <NavLink to='/'><button className='back__button'>Go to main page</button></NavLink>
         )}
       </>
 
