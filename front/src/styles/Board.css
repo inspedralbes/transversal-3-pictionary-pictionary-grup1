@@ -3,7 +3,7 @@
   width: 80%;
   justify-items: center;
   display: grid;
-  grid-template-columns: 3.6fr 1.1fr;
+  grid-template-columns: 1.5fr 4fr;
   justify-items: center;
 }
 
@@ -34,15 +34,10 @@
 }
 
 .Board__settings--grid {
+  transform: translate(0, -13%);
   width: 100%;
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: 0.2fr 1.5fr;
-  gap: 0px 0px;
-  grid-template-areas:
-    "."
-    ".";
-  padding: 20px;
+  height: 100%;
+  padding: 10px;
   margin: 0 auto;
 }
 
@@ -51,7 +46,6 @@
 }
 
 .Board__settings {
-  grid-area: 1 / 2 / 2 / 3;
   background-color: #ececec;
   padding: 20px;
   border: 3px dashed #575757;
@@ -65,7 +59,12 @@
 }
 
 .Board__settings--center {
+  display: flex;
+  align-items: center;
   margin-top: 5%;
+  align-content: flex-start;
+  flex-wrap: wrap;
+  flex-direction: column;
 }
 
 .circle-picker {
