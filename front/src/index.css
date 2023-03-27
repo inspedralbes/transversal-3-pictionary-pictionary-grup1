@@ -34,6 +34,17 @@ textarea {
   cursor: url('./img/pointer.cur'), pointer;
 }
 
+
+a:hover,
+button:hover,
+input:hover,
+label:hover,
+select:hover,
+textarea:hover
+ {
+  cursor: url('./img/pointer.cur'), pointer;
+}
+
 a:active,
 button:active,
 input:active,
