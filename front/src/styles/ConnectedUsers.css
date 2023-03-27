@@ -12,22 +12,19 @@
     color: #000000;
     padding: 10px;
     list-style: none;
+    flex-wrap: wrap;
 }
 
 .userList__item {
     text-align: center;
     font-size: 30px;
-    color: #585858;
-    margin: 0 auto;
-    height: 50vh;
-    padding: 20px;
     border: 2px solid #919191;
     border-radius: 255px 15px 255px 15px / 15px 255px 15px 255px;
-    width: 10%;
+    width: 1%;
     height: fit-content;
     list-style: none;
     padding: 20px;
-    margin: 5% auto;
+    margin: 1% auto;
     animation: draw 2s;
     animation-fill-mode: forwards;
 }
