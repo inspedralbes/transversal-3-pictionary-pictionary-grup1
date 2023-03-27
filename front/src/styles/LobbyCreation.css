@@ -402,3 +402,20 @@
 .tab-content.active {
     display: block;
 }
+
+.checkList {
+    display: grid;
+    grid-template-columns: repeat(2, 50%);
+    grid-template-rows: 1fr;
+    grid-column-gap: 5vw;
+    grid-row-gap: 0px;
+    width: 100%;
+}
+
+.list__container-left {
+    grid-area: 1 / 1 / 2 / 2;
+}
+
+.list__container-right {
+    grid-area: 1 / 2 / 2 / 3;
+}
