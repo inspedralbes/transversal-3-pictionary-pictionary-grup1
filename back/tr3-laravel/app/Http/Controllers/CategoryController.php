@@ -12,19 +12,38 @@ use PhpParser\Node\Expr\Cast\Object_;
 
 class CategoryController extends Controller
 {
-    public function checkCategoryDuplicated($request, $privacy)
+    //Everything related to creating categories
+    public function checkCategoryDuplicated($request, $privacy, $editCategory)
     {
-        $canCreate = true;
+        $canCreate = false;
 
-        //If the user is logged we continue to check if the category is duplicated.
+        //Check if the category is duplicated.
         $findDuplicated = Category::where('name', strtoupper($request -> name))
         ->where('creator_id', $request->session()->get('userId'))
         ->where('privacy', $privacy)
         ->count();
-        
-        //If the category is duplicated or -1 we can't create the category.
-        if ($findDuplicated != 0) {
-            $canCreate = false;
+
+        if ($editCategory) {
+            //If the count is 0 we will edit it. If it's 1 we will check if the repeated name is the category itself. 
+            //This would mean that the category name hasn't been edited.
+            if ($findDuplicated == 1) {
+                //Check if the duplicated name is the category itself
+                $findDuplicatedName = Category::where('id', $request -> category_id)
+                ->where('name', strtoupper($request -> name))
+                ->where('creator_id', $request->session()->get('userId'))
+                ->where('privacy', $privacy)
+                ->count();
+                if ($findDuplicatedName == 1) {
+                    $canCreate = true;
+                }
+            } else if ($findDuplicated == 0){
+                $canCreate = true;
+            }
+        } else {
+            //If the count is 0 it means we can create it because it's not duplicated.
+            if ($findDuplicated == 0) {
+                $canCreate = true;
+            }
         }
 
         return $canCreate;
@@ -35,15 +54,15 @@ class CategoryController extends Controller
         $userId = null;
 
         if (!($request -> token == null || $request -> token == "" )) {
-        //Check if the user is logged, returns 'null' if the user is not logged in.
-        [$id, $token] = explode('|', $request -> token, 2);
-        $accessToken = PersonalAccessToken::find($id);
+            //Check if the user is logged, returns 'null' if the user is not logged in.
+            [$id, $token] = explode('|', $request -> token, 2);
+            $accessToken = PersonalAccessToken::find($id);
 
-        if (hash_equals($accessToken->token, hash('sha256', $token))) {
-            $userId = $accessToken -> tokenable_id;
-            $request->session()->put('userId', $userId);
+            if (hash_equals($accessToken->token, hash('sha256', $token))) {
+                $userId = $accessToken -> tokenable_id;
+                $request->session()->put('userId', $userId);
+            }
         }
-    }
 
         return $userId;
     }
@@ -51,11 +70,10 @@ class CategoryController extends Controller
     public function addCategory(Request $request)
     {
         $wrongWords = [];
-        $userRequest = $request;
-        $privacy = 'private';
         $categoryAdded = (object)[];
-        $repetido = false;
+
         //Set privacy
+        $privacy = 'private';
         if ($request -> public) {
             $privacy = 'public';
         } 
@@ -77,7 +95,8 @@ class CategoryController extends Controller
 
             //If the user is logged in we check if we can create the category.
             if ($userId != null) {
-                $createCategory = $this->checkCategoryDuplicated($request, $privacy);
+                $editCategoryName = false;
+                $createCategory = $this->checkCategoryDuplicated($request, $privacy, $editCategoryName);
             } else {
                 $sendCategory = (object) 
                 ["valid" => false,
@@ -170,7 +189,7 @@ class CategoryController extends Controller
                     ];
                     $privateCategories[$i] = $category;
                 }
-        }
+        } 
 
         //Always get public categories.
         $getPublic = Category::where('privacy', 'public') -> get();
@@ -200,5 +219,201 @@ class CategoryController extends Controller
         $categories -> public = $publicCategories;
 
         return response() -> json($categories);
+    }
+
+    //Get my categories
+    public function getMyCategories (Request $request)
+    {  
+        $categories = [];
+
+        //Check if user is logged
+        $userId = $this->checkUserLogged($request);
+
+        //If the user is logged be return all his private categories.
+        if ($userId != null) {
+            $getPrivate = Category::where('privacy', 'private')
+            -> where('creator_id', $userId)
+            -> get();
+                $creatorName = User::where('id', $request->session()->get('userId')) -> first();
+                for ($i = 0; $i < count($getPrivate); $i ++) { 
+                    $numberWords = Word::where('category_id', $getPrivate[$i] -> id) -> count();
+                    $words = Word::where('category_id', $getPrivate[$i] -> id) -> get();
+                    $category = (object) 
+                    [
+                        'categoryId'=> $getPrivate[$i] -> id,
+                        'categoryName' => $getPrivate[$i] -> name,
+                        'numberOfWords' => $numberWords,
+                        'words' => $words,
+                        'createdBy' => $creatorName,
+                        'createdAt' => $getPrivate[$i] -> created_at -> format('d/m/Y')
+                    ];
+                    $categories[$i] = $category;
+                }
+        }
+
+        return response() -> json($categories);
+    }
+
+    //Edit the category
+    public function editCategory(Request $request)
+    {
+        $wrongWords = [];
+        $categoryEdited = (object)[];
+        $editCategory = false;
+
+        //Check if the user is logged in.
+        $userId = $this->checkUserLogged($request);
+        
+        if ($userId != null) {
+            //Check if the category exists.
+            $doesCategoryExist = Category::where('id', $request -> category_id)
+            -> count();
+
+            //If the category exists check if the owner of the category is the user.
+            if ($doesCategoryExist != 0) {
+                $isTheUserTheOwner = Category::where('id', $request -> category_id)
+                -> where('creator_id', $userId)
+                -> count();
+                if ($isTheUserTheOwner != 0) {
+                    //Set privacy
+                    $privacy = 'private';
+                    if ($request -> public) {
+                        $privacy = 'public';
+                    } 
+                    
+                    //Validate 
+                    $validator =  Validator::make($request->all(), [
+                        'name' => 'required',
+                    ]);
+
+                    //Check if the name is duplicated
+                    $editCategoryName = true;
+                    $editCategory = $this->checkCategoryDuplicated($request, $privacy, $editCategoryName);
+
+                    //If we can edit the category we add it with the user id after checking that all the words are valid.
+                    if ($editCategory) {
+                        //Check for each word if it already exists.
+                        $words = (json_decode($request -> words));
+                        for ($i = 0; $i < count ($words); $i++) { 
+                            $currentWord = $words[$i] -> name;
+                            for ($j = 0; $j < count ($words); $j++) { 
+                                if (($i != $j) && (strcasecmp($currentWord, $words[$j] -> name) == 0)) {
+                                    if (!in_array(strtolower($currentWord), $wrongWords)) {
+                                        array_push($wrongWords, strtolower($currentWord));
+                                    }
+                                }
+                            }
+                        }
+
+                        if ((empty($wrongWords)))  {
+                            Word::where('category_id', $request -> category_id) -> delete();
+                            $category = Category::where('id', $request -> category_id)
+                            -> where('creator_id', $userId)
+                            -> first();
+                            $category -> name = strtoupper($request -> name);
+                            $category -> privacy = $privacy;
+                            $category -> save();
+                            $categoryEdited = $category;
+
+                            for ($i = 0; $i < count ($words); $i++) { 
+                                $word = new Word;
+                                $word -> name = $words[$i] -> name;
+                                $word -> description = $words[$i] -> description;
+                                $word -> category_id = $categoryEdited -> id;
+                                $word -> save();
+                            }
+
+                            $sendCategory = (object) 
+                            ["valid" => true,
+                            'message' => $category,
+                            ];
+
+                        } else {
+                            $sendCategory = (object) 
+                            ["valid" => false,
+                            'message' => 'One or more words are repeated.',
+                            'wrongWords' => $wrongWords,
+                            ];
+                        }
+
+                    } else {
+                        $sendCategory = (object) 
+                        ["valid" => false,
+                        'message' => "Category already exists."
+                        ];
+                    }                    
+                } else {
+                    $sendCategory = (object) 
+                    ["valid" => false,
+                    'message' => "You can't edit a category that isn't yours!",
+                    ];
+                }
+            } else {
+                $sendCategory = (object) 
+                ["valid" => false,
+                'message' => "Category doesn't exist.",
+                ];
+            }
+        } else {
+            $sendCategory = (object) 
+            ["valid" => false,
+            'message' => "User is not logged in.",
+            ];
+        }
+
+        return response() -> json($sendCategory);
+    }
+
+    //Delete the category
+    public function deleteCategory (Request $request)
+    {  
+        $userId = $this->checkUserLogged($request);
+
+        //If the user is logged in.
+        if ($userId != null) {
+
+            //Check if the category exists.
+            $doesCategoryExist = Category::where('id', $request -> category_id)
+            -> count();
+            
+            if ($doesCategoryExist != 0) {
+                //If the category exists check if the user is the owner
+                $isTheUserTheOwner = Category::where('id', $request -> category_id)
+                -> where('creator_id', $userId)
+                -> count();
+
+                if ($isTheUserTheOwner != 0) {
+                    Category::where('id', $request -> category_id) 
+                    ->where('creator_id', $request->session()->get('userId'))
+                    -> delete();
+                    $deleted = (object) 
+                    ["valid" => true,
+                    'message' => "Category ".$request -> category_id." deleted."
+                    ];
+                } else {
+                    $sendCategory = (object) 
+                    ["valid" => false,
+                    'message' => "You can't edit a category that isn't yours!",
+                    ];
+                }
+            } else {
+                $sendCategory = (object) 
+                ["valid" => false,
+                'message' => "Category doesn't exist.",
+                ];
+            }
+
+            $categoryExists = Category::where('id', $request -> category_id)
+            -> where('creator_id', $userId)
+            -> count();
+        } else {
+            //If the user is not logged in.
+            $deleted = (object) 
+            ["valid" => false,
+            'message' => "User is not logged in."
+            ];
+        }
+
+        return response() -> json($deleted);
     }
 }
