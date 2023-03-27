@@ -29,7 +29,7 @@
     animation-fill-mode: forwards;
 }
 
-.userList__item::before {
+.userList__item::before, .game_item::before {
     display: none;
 }
 
@@ -262,6 +262,17 @@
     width: 100%;
 }
 
+.connectedUsersInGameO{
+    width: 90%;
+    font-size: 150%;
+    text-align: center;
+}
+
+.game__connectedUsersInGameOwner{
+    border-right: 2px dashed #3e3e3e;
+    height: 70%;
+}
+
 .connectedUsersInGame__title {
     width: 80%;
     margin-left: 16%;
@@ -270,6 +281,7 @@
 .game__connectedUsersInGame h1 {
     margin-bottom: 0;
 }
+
 
 .userListInGame__item:before {
     display: none;
