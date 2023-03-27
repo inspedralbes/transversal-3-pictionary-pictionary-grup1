@@ -207,6 +207,14 @@ socketIO.on("connection", (socket) => {
     getOwner(socket.data.current_lobby);
   });
 
+  socket.on("set_categories", (data) => {
+    lobbies.forEach(lobby => {
+      if (lobby.lobbyIdentifier == socket.data.current_lobby) {
+        lobby.categories = data.ids;
+      }
+    });
+  })
+
   socket.on("start_game", () => {
     let amountOfRounds;
 
@@ -667,23 +675,24 @@ function deleteLobby(socket) {
 }
 
 async function setLobbyWord(room, amount) {
+  let words;
+  let category = [];
+
   lobbies.forEach((lobby) => {
     if (lobby.lobbyIdentifier == room) {
       lobby.started = true;
+      category = lobby.categories
     }
   });
-  let words;
-  let category = "null";
-  let difficulty = "null";
+  console.log("Pre-axios", category);
+
   await axios
     .post(laravelRoute + "getWords", {
       category: category,
-      difficulty: difficulty,
       amount: amount,
     })
     .then(function (response) {
-      console.log(response.data.wordsToCheck);
-      words = response.data.wordsToCheck;
+      words = response.data;
       startWordLength(room);
     })
     .catch(function (error) {

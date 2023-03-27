@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import Settings from "./Settings";
 import Gamemodes from "./Gamemodes";
+import Categories from "./Categories";
 
-function Tabs({ socket, start }) {
+function Tabs({ socket, start, categoriesData }) {
   const [activeTab, setActiveTab] = useState(0);
 
   const handleTabClick = (tabIndex) => {
@@ -10,6 +11,11 @@ function Tabs({ socket, start }) {
   };
 
   const tabs = [
+
+    {
+      title: "Categories",
+      content: <Categories socket={socket} start={start} categoriesData={categoriesData}/>,
+    },
     {
       title: "Game Mode",
       content: <Gamemodes socket={socket} start={start} />,
