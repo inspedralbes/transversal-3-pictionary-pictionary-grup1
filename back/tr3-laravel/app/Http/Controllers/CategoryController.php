@@ -189,7 +189,7 @@ class CategoryController extends Controller
                         'createdBy' => $creatorName,
                         'createdAt' => $getMine[$i] -> created_at -> format('d/m/Y')
                     ];
-                    $allDefaultCategories[$i] = $category;
+                    $allMyCategories[$i] = $category;
                 }
         } 
 
@@ -210,7 +210,7 @@ class CategoryController extends Controller
                         'createdBy' => $creatorName,
                         'createdAt' => $getDefault[$i] -> created_at -> format('d/m/Y')
                     ];
-                    $allMyCategories[$i] = $category;
+                    $allDefaultCategories[$i] = $category;
                 }
 
         //Always get categories created by other users.
