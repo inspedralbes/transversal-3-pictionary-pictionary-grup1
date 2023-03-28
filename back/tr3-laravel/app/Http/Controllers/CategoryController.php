@@ -422,7 +422,7 @@ class CategoryController extends Controller
                 if ($isTheUserTheOwner != 0) {
                     $getCategory = Category::where('id', $request -> category_id) 
                     -> where('creator_id', $userId)
-                    -> get();
+                    -> first();
                     $categoryName = $getCategory -> name;
                     Category::where('id', $request -> category_id) 
                     -> where('creator_id', $userId)

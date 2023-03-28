@@ -13,6 +13,12 @@ function Categories() {
     const [loadingCategories, setLoadingCategories] = useState(true);
     const [myCategories, setMyCategories] = useState([]);
     const [getCats, setGetCats] = useState(0);
+    const [deleteCat, setDeleteCat] = useState(0);
+    const [editCat, setEditCat] = useState(0);
+    const [idToDelete, setIdToDelete] = useState();
+    const [idToEdit, setIdToEdit] = useState();
+    const [message, setMessage] = useState("");
+
 
 
     const [wordList, setWordList] = useState([{ word: "" }]);
@@ -76,9 +82,7 @@ function Categories() {
     };
 
     const handleGetCats = (event) => {
-        if (event.key === "Enter") {
-            setGetCats(getCats + 1);
-        }
+        setGetCats(getCats + 1);
     };
 
     const handleSubmit = (event) => {
@@ -87,16 +91,18 @@ function Categories() {
         // setAddCategory(!addCategory);
     };
 
-    const handleDelete = (id) => {
-        // setRegistro(registro + 1);
-        // setGetCats(getCats + 1);
-        // setAddCategory(!addCategory);
+    function handleDelete(e) {
+        console.log(e.target);
+        console.log(e.target.id);
+        setIdToDelete(e.target.id);
+        setDeleteCat(deleteCat + 1);
     };
 
-    const handleEdit = (category) => {
-        // setRegistro(registro + 1);
-        // setGetCats(getCats + 1);
-        // setAddCategory(!addCategory);
+    const handleEdit = (e) => {
+        console.log(e.target);
+        console.log(e.target.id);
+        setIdToEdit(e.target.id);
+        setEditCat(editCat + 1);
     };
 
     useEffect(() => {
@@ -160,6 +166,29 @@ function Categories() {
     }, [getCats]);
 
     useEffect(() => {
+        if (deleteCat != 0) {
+            const user = new FormData()
+            user.append("token", cookies.get('token') != undefined ? cookies.get('token') : null);
+            user.append("category_id", idToDelete);
+
+            fetch(routes.fetchLaravel + "deleteCategory", {
+                method: 'POST',
+                mode: 'cors',
+                body: user,
+                credentials: 'include'
+            }).then((response) => response.json()).then((data) => {
+                if (data.valid) {
+                    setGetCats(getCats + 1);
+                    setMessage(data.message);
+                } else {
+                    setMessage(data.message);
+                }
+            }
+            );
+        }
+    }, [deleteCat]);
+
+    useEffect(() => {
         if (firstTime) {
             setGetCats(getCats + 1);
             setFirstTime(false)
@@ -174,36 +203,35 @@ function Categories() {
                         <div>
                             {myCategories.length > 0 ?
                                 <>
-                                    <h1 style={{ textAlign: "center" }}>Categorias</h1>
-                                    <div class="myCategories">
-                                        <table class="myCategories__table">
-                                            <thead class="myCategories__thead">
-                                                <tr class="myCategories__tr">
-                                                    <th class="myCategories__th">Category</th>
-                                                    <th class="myCategories__th">Nº words</th>
-                                                    <th class="myCategories__th">Creation date</th>
-                                                    <th class="myCategories__th">Actions</th>
+                                    <h1 style={{ textAlign: "center" }}>Categories</h1>
+                                    <div className="myCategories">
+                                        <table className="myCategories__table">
+                                            <thead className="myCategories__thead">
+                                                <tr className="myCategories__tr">
+                                                    <th className="myCategories__th">Category</th>
+                                                    <th className="myCategories__th">Nº words</th>
+                                                    <th className="myCategories__th">Creation date</th>
+                                                    <th className="myCategories__th">Actions</th>
                                                 </tr>
                                             </thead>
-                                            {/* <li key={index}>{category.categoryName} <button onClick={handleEdit(category.categoryId)}>Edit category</button><button onClick={handleDelete(category)}>Delete category</button></li> */}
-                                            <tbody class="myCategories__tbody">
+                                            <tbody className="myCategories__tbody">
                                                 {Array.isArray(myCategories)
                                                     ? myCategories.map((category, index) => (
-                                                        <tr class="myCategories__tr" key={index}>
-                                                            <td class="myCategories__td">{category.categoryName}</td>
-                                                            <td class="myCategories__td">{category.numberOfWords}</td>
-                                                            <td class="myCategories__td">{category.createdAt}</td>
-                                                            <td class="myCategories__td"><i class="icon-edit"></i> <i class="icon-trash"></i></td>
+                                                        <tr className="myCategories__tr" key={index}>
+                                                            <td className="myCategories__td">{category.categoryName}</td>
+                                                            <td className="myCategories__td">{category.numberOfWords}</td>
+                                                            <td className="myCategories__td">{category.createdAt}</td>
+                                                            <td className="myCategories__td"><i className="icon-edit" id={category.categoryId} onClick={handleEdit}></i> <i className="icon-trash" id={category.categoryId} onClick={handleDelete}></i></td>
                                                         </tr>
 
                                                     )) : null}
                                             </tbody>
                                             <tfoot>
-                                                <tr class="myCategories__tfoot">
-                                                    <td class="myCategories__td"></td>
-                                                    <td class="myCategories__td"></td>
-                                                    <td class="myCategories__td"></td>
-                                                    <td class="myCategories__addCategoryButton"><button onClick={handleSetAddCategory}><i class="icon-plus"></i>Add category</button></td>
+                                                <tr className="myCategories__tfoot">
+                                                    <td className="myCategories__td"></td>
+                                                    <td className="myCategories__td"></td>
+                                                    <td className="myCategories__td"></td>
+                                                    <td className="myCategories__addCategoryButton"><button onClick={handleSetAddCategory}><i className="icon-plus"></i>Add category</button></td>
                                                 </tr>
                                             </tfoot>
                                         </table>
@@ -212,7 +240,7 @@ function Categories() {
                                 :
                                 <>
                                     <h1 style={{ textAlign: "center" }}>You haven't created any category yet!</h1>
-                                    <button onClick={handleSetAddCategory}><i class="icon-plus"></i>Add category</button>
+                                    <button onClick={handleSetAddCategory}><i className="icon-plus"></i>Add category</button>
                                 </>
                             }
                         </div> :
@@ -225,7 +253,7 @@ function Categories() {
                         <div className="addCategory__form">
                             <label className="addCategory__name">
                                 <span className="addCategory__formSpan">
-                                    <input class="slide-up" id="name" type="text" placeholder="Introduce name" onChange={(e) => setUserData({ ...userData, name: e.target.value })} required /><label className="addCategory__nameLabel" for="name">Name</label>
+                                    <input className="slide-up" id="name" type="text" placeholder="Introduce name" onChange={(e) => setUserData({ ...userData, name: e.target.value })} required /><label className="addCategory__nameLabel" for="name">Name</label>
                                 </span>
                             </label>
                             <label className="addCategory__public"> <p>Do you want the category to be public?</p>
@@ -284,15 +312,13 @@ function Categories() {
 
                         <div className="form__buttonsLinks">
                             <div className="form__buttons">
-                                <Link to="/">
-                                    <div className="form__goBack">
-                                        <div className="form__button--flex">
-                                            <button id="goBack__button" onClick={handleSetAddCategory}>
-                                                <span className="button-text">Category list</span>
-                                            </button>
-                                        </div>
+                                <div className="form__goBack">
+                                    <div className="form__button--flex">
+                                        <button id="goBack__button" onClick={handleSetAddCategory}>
+                                            <span className="button-text">Category list</span>
+                                        </button>
                                     </div>
-                                </Link>
+                                </div>
                                 <div className="form__submit submit">
                                     <button onClick={handleSubmit} id="submit__button">
                                         <span className="button-text">SUBMIT</span>
@@ -302,7 +328,7 @@ function Categories() {
                         </div>
                     </fieldset>
                 </div>}
-
+            {message != "" && <>{message}</>}
         </>
     );
 
