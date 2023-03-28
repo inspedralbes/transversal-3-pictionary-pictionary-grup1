@@ -59,6 +59,12 @@ function WordLength({ socket }) {
     });
 
     socket.emit("word_length_loaded");
+
+    return () => {
+      socket.off('word_length');
+      socket.off('word_letters');
+      socket.off('clear_word');
+    };
   }, []);
 
   return (
