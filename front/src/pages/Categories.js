@@ -213,7 +213,7 @@ function Categories() {
                                                 onChange={(e) => handleDescriptionChange(e, index)}
                                                 required
                                             /></label>
-                                        {wordList.length - 1 === index && wordList.length < 4 && (
+                                        {wordList.length - 1 === index && wordList.length < 100 && (
                                             <button
                                                 type="button"
                                                 onClick={handleWordAdd}
