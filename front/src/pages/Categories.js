@@ -130,7 +130,7 @@ function Categories() {
                 body: user,
                 credentials: 'include'
             }).then((response) => response.json()).then((data) => {
-                console.log(data);
+                setMyCategories(data)
             }
             );
         }
