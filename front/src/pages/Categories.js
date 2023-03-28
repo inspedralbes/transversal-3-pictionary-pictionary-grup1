@@ -88,20 +88,26 @@ function Categories() {
     };
 
     const handleEdit = (e) => {
+        e.preventDefault();
         setIdToEdit(e.target.id);
-        console.log(idToEdit); 
+        console.log(e.target);
         setEditing(true);
         setWordList([]);
         setDescriptionList([]);
-        
+
         myCategories.forEach(category => {
             if (category.categoryId == idToEdit) {
                 console.log(category);
 
+                setUserData({ categoryName: category.categoryName, privacy: category.privacy == "public" ? true : false })
+                let wordList = [];
+                let catList = [];
                 category.words.forEach(word => {
-                    setWordList([...wordList, { word: word.name }]);
-                    setDescriptionList([...descriptionList, { description: word.description }]);
+                    wordList.push({ word: word.name })
+                    catList.push({ description: word.description })
                 });
+                setWordList(wordList);
+                setDescriptionList(catList);
             }
         });
         setAddCategory(!addCategory);
@@ -350,7 +356,7 @@ function Categories() {
                                 </div>
 
                                 <label className="addCategory__public">
-                                    <input className="addCategory__publicCheckbox" type="checkbox" onChange={(e) => setUserData({ ...userData, privacy: e.target.checked })} required></input>
+                                    <input className="addCategory__publicCheckbox" type="checkbox" checked={userData.privacy} onChange={(e) => setUserData({ ...userData, privacy: e.target.checked })} required></input>
                                     <p>Do you want the category to be public?</p>
                                 </label>
                                 <div className="form__submit submit">
