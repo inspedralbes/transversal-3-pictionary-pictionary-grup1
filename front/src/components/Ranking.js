@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { render } from "react-dom";
 import "../styles/Ranking.css"
 
+
 function Ranking({ socket }) {
   const [userList, setUserList] = useState([]);
   const [firstTime, setFirstTime] = useState(true);
@@ -51,25 +52,9 @@ function Ranking({ socket }) {
           {userList.map((leader, index) => (
             <div key={leader.id}>
               {index + 1 <= 3 && (
-                <div>
                   <div className="ranking__leader fade-item">
                     <div className="leader__name">{leader.name}</div>
                     <div className="leader__points">{leader.points} points</div>
-                  </div>
-                  <div className="crown">
-                    <svg
-                      id="crown"
-                      fill="#0f74b5"
-                      data-name="Layer"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 100 50"
-                    >
-                      <polygon
-                        className="cls-1"
-                        points="12.7 50 87.5 50 100 0 75 25 50 0 25.6 25 0 0 12.7 50"
-                      />
-                    </svg>
-                  </div>
                 </div>
               )}
             </div>
