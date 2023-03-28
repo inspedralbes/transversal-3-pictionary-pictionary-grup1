@@ -384,7 +384,7 @@ class CategoryController extends Controller
 
                 if ($isTheUserTheOwner != 0) {
                     Category::where('id', $request -> category_id) 
-                    ->where('creator_id', $request->session()->get('userId'))
+                    -> where('creator_id', $request->session()->get('userId'))
                     -> delete();
                     $deleted = (object) 
                     ["valid" => true,
@@ -393,7 +393,7 @@ class CategoryController extends Controller
                 } else {
                     $sendCategory = (object) 
                     ["valid" => false,
-                    'message' => "You can't edit a category that isn't yours!",
+                    'message' => "You can't delete a category that isn't yours!",
                     ];
                 }
             } else {
@@ -402,10 +402,6 @@ class CategoryController extends Controller
                 'message' => "Category doesn't exist.",
                 ];
             }
-
-            $categoryExists = Category::where('id', $request -> category_id)
-            -> where('creator_id', $userId)
-            -> count();
         } else {
             //If the user is not logged in.
             $deleted = (object) 
