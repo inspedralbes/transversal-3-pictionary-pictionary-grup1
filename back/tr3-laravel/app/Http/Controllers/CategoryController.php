@@ -70,6 +70,7 @@ class CategoryController extends Controller
     public function addCategory(Request $request)
     {
         $wrongWords = [];
+        $invalidWords = [];
         $categoryAdded = (object)[];
 
         //Set privacy
@@ -87,7 +88,7 @@ class CategoryController extends Controller
             $sendCategory = (object)
             [
                 "valid" => false,
-                'message' => "Validation errors."
+                'message' => "The category name should be at least 3 characters long with a maximum of 20."
             ];
         } else {
             //Check if the user is logged in.
@@ -119,11 +120,12 @@ class CategoryController extends Controller
                         'message' => 'There should be at least 3 words in the category, with a maximum of 100.',
                     ];
                 } else {
+                    //Check that each word is valid.
                     for ($i = 0; $i < count($words); $i++) {
                         $currentWord = $words[$i]->name;
                         if (strlen($currentWord) < 3 || strlen($currentWord) > 20) {
-                            if (!in_array(strtolower($currentWord), $wrongWords)) {
-                                array_push($wrongWords, strtolower($currentWord));
+                            if (!in_array(strtolower($currentWord), $invalidWords)) {
+                                array_push($invalidWords, strtolower($currentWord));
                                 $allWordsAreValid = false;
                             }
                         }
@@ -329,6 +331,7 @@ class CategoryController extends Controller
     public function editCategory(Request $request)
     {
         $wrongWords = [];
+        $invalidWords = [];
         $categoryEdited = (object)[];
         $editCategory = false;
 
@@ -361,7 +364,7 @@ class CategoryController extends Controller
                         $sendCategory = (object)
                         [
                             "valid" => false,
-                            'message' => "Validation errors."
+                            'message' => "The category name should be at least 3 characters long with a maximum of 20."
                         ];
                     } else {
                         //Check if the name is duplicated
@@ -380,13 +383,13 @@ class CategoryController extends Controller
                                     'message' => 'There should be at least 3 words in the category, with a maximum of 100.',
                                 ];
                             } else {
-                                //Check for each word if it already exists.
+                                //Check that each word is valid.
                                 $words = (json_decode($request->words));
                                 for ($i = 0; $i < count($words); $i++) {
                                     $currentWord = $words[$i]->name;
                                     if (strlen($currentWord) < 3 || strlen($currentWord) > 20) {
-                                        if (!in_array(strtolower($currentWord), $wrongWords)) {
-                                            array_push($wrongWords, strtolower($currentWord));
+                                        if (!in_array(strtolower($currentWord), $invalidWords)) {
+                                            array_push($invalidWords, strtolower($currentWord));
                                             $allWordsAreValid = false;
                                         }
                                     }
