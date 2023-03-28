@@ -86,6 +86,18 @@ function Categories() {
         // setAddCategory(!addCategory);
     };
 
+    const handleDelete = (id) => {
+        // setRegistro(registro + 1);
+        // setGetCats(getCats + 1);
+        // setAddCategory(!addCategory);
+    };
+
+    const handleEdit = (category) => {
+        // setRegistro(registro + 1);
+        // setGetCats(getCats + 1);
+        // setAddCategory(!addCategory);
+    };
+
     useEffect(() => {
         if (registro != 0) {
             const wordsAndDescription = [];
@@ -164,7 +176,7 @@ return (
                                 <h1 style={{ textAlign: "center" }}>Categorias</h1>
                                 {Array.isArray(myCategories)
                                     ? myCategories.map((category, index) => (
-                                        <li key={index}>{category.categoryName}</li>
+                                        <li key={index}>{category.categoryName} <button onClick={handleEdit(category.categoryId)}>Edit category</button><button onClick={handleDelete(category)}>Delete category</button></li>
                                     )) : null}
                             </>
                             :

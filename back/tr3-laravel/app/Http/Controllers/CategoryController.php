@@ -225,9 +225,12 @@ class CategoryController extends Controller
     //Get my categories
     public function getMyCategories (Request $request)
     {  
-        $categories = (object) 
+        $categories = [];
+
+        $returnCategories = (object) 
         ["valid" => true,
         'message' => "You haven't created any categories yet!",
+        'categories' => $categories
         ];
 
         //Check if user is logged
@@ -242,7 +245,6 @@ class CategoryController extends Controller
                     $words = Word::where('category_id', $getCategories[$i] -> id) -> get();
                     $category = (object) 
                     [
-                        "valid" => true,
                         'categoryId' => $getCategories[$i] -> id,
                         'categoryName' => $getCategories[$i] -> name,
                         'numberOfWords' => $numberWords,
@@ -252,8 +254,17 @@ class CategoryController extends Controller
                     ];
                     $categories[$i] = $category;
                 }
+
+                //Return all my categories.
+                if (count($categories) > 0) {
+                    $returnCategories = (object) 
+                    ["valid" => true,
+                    'categories' => $categories
+                    ];
+                }
+
         } else {
-            $categories = (object) 
+            $returnCategories = (object) 
             ["valid" => false,
             'message' => "User is not logged in.",
             ];
