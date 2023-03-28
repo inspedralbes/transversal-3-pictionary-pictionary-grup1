@@ -78,38 +78,49 @@ class CategoryController extends Controller
             $privacy = 'public';
         } 
          
-        $validatorCategory =  Validator::make($request->all(), [
+        $validator =  Validator::make($request->all(), [
             'name' => 'required|min:3|max:20',
-            'words' => 'required|array|between:2,100'
         ]);
 
         //If the validation does not fail we continue.
-        if ($validatorCategory->fails()) {
+        if ($validator->fails()) {
             $sendCategory = (object) 
             ["valid" => false,
-            'message' => "Validation error in the category name."
+            'message' => "Validation errors."
             ];
         } else {
-                //Check if the user is logged in.
-                $userId = $this->checkUserLogged($request);
-                $createCategory = false;
+            //Check if the user is logged in.
+            $userId = $this->checkUserLogged($request);
+            $createCategory = false;
 
-                //If the user is logged in we check if we can create the category.
-                if ($userId != null) {
-                    $editCategoryName = false;
-                    $createCategory = $this->checkCategoryDuplicated($request, $privacy, $editCategoryName);
-                } else {
-                    $sendCategory = (object) 
-                    ["valid" => false,
-                    'message' => 'User is not logged in.',
-                    ];
+            //If the user is logged in we check if we can create the category.
+            if ($userId != null) {
+                $editCategoryName = false;
+                $createCategory = $this->checkCategoryDuplicated($request, $privacy, $editCategoryName);
+            } else {
+                $sendCategory = (object) 
+                ["valid" => false,
+                'message' => 'User is not logged in.',
+                ];
+            }
+            
+            //If we can create the category we add it with the user id after checking that all the words are valid.
+            if ($createCategory) {
+                $allWordsAreValid = true;
+                $words = (json_decode($request -> words));
+
+                for ($i = 0; $i < count ($words) || !$allWordsAreValid; $i++) { 
+                    $currentWord = $words[$i] -> name;
+                    if (strlen($currentWord) < 3 || strlen($currentWord) > 20) {
+                        if (!in_array(strtolower($currentWord), $wrongWords)) {
+                            array_push($wrongWords, strtolower($currentWord));
+                            $allWordsAreValid = false;
+                        }
+                    }
                 }
-                
-                //If we can create the category we add it with the user id after checking that all the words are valid.
-                if ($createCategory) {
 
+                if ($allWordsAreValid) {
                     //Check for each word if it already exists.
-                    $words = (json_decode($request -> words));
                     for ($i = 0; $i < count ($words); $i++) { 
                         $currentWord = $words[$i] -> name;
                         for ($j = 0; $j < count ($words); $j++) { 
@@ -153,10 +164,18 @@ class CategoryController extends Controller
                 } else {
                     $sendCategory = (object) 
                     ["valid" => false,
-                    'message' => "Category already exists."
+                    'message' => 'Words should be more than 3 characters and less than 20.',
+                    'wrongWords' => $wrongWords,
                     ];
                 }
-            } 
+
+            } else {
+                $sendCategory = (object) 
+                ["valid" => false,
+                'message' => "Category already exists."
+                ];
+            }
+        } 
 
         return response() -> json($sendCategory);
     }
@@ -299,28 +318,15 @@ class CategoryController extends Controller
         $categoryEdited = (object)[];
         $editCategory = false;
 
-        $validatorCategory =  Validator::make($request->all(), [
-            'name' => 'required|min:3|max:20',
-        ]);
+        //Check if the user is logged in.
+        $userId = $this->checkUserLogged($request);
 
-        $validatorWords =  Validator::make($request->all(), [
-            'words' => 'present|array',
-        ]);
-
-        //If the validation does not fail we continue.
-        if ($validatorCategory->fails()) {
+        if ($validator->fails()) {
             $sendCategory = (object) 
             ["valid" => false,
-            'message' => "Validation error in the category name."
+            'message' => "Validation errors."
             ];
-        } else if ($validatorWords->fails()) {
-                $sendCategory = (object) 
-                ["valid" => false,
-                'message' => "Validation error in words, words must be at least 3 characters long and at least have 1 word."
-                ];
         } else {
-            //Check if the user is logged in.
-            $userId = $this->checkUserLogged($request);
             if ($userId != null) {
                 //Check if the category exists.
                 $doesCategoryExist = Category::where('id', $request -> category_id)
