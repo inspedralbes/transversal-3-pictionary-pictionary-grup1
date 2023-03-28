@@ -7,6 +7,7 @@ function WordForm({ socket, answerCorrect }) {
   function handleFormSubmit(e) {
     e.preventDefault();
     if (word.trim() !== "") {
+      setWord('')
       socket.emit("try_word_attempt", {
         word: word,
       });
@@ -25,8 +26,8 @@ function WordForm({ socket, answerCorrect }) {
     return (
       <div>
         <form className="WordForm" onSubmit={handleFormSubmit}>
-          <input type="text" value={word} onChange={handleChange} placeholder="Enter a word" />
-          <button type="submit">Check</button>
+          <input className='WordForm__input' type="text" value={word} onChange={handleChange} placeholder="Enter a word" />
+          <button className='WordForm__button' type="submit">Check</button>
         </form>
       </div>
     );

@@ -20,7 +20,6 @@ function ConnectedUsers({ socket }) {
         }
         socket.on("lobby_user_list", (data) => {
             setUserList(data.list);
-            // console.log(data);
         });
     }, [firstTime, socket])
 

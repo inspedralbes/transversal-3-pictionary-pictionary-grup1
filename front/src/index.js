@@ -36,7 +36,7 @@ root.render(
   <BrowserRouter>
     <Routes>
       <Route path='/'>
-        <Route index element={<LandingPage />} />
+        <Route index element={<LandingPage socket={socket} />} />
         <Route path="/login" element={<Login socket={socket} />} />
         <Route path="/register" element={<Register socket={socket} />} />
         <Route path="/game" element={<Game socket={socket} />} />

@@ -20,6 +20,7 @@ function App({ socket }) {
 
   function handleFormSubmit(word) {
     if (word.trim() !== "") {
+      console.log(word);
       socket.emit("try_word_attempt", {
         word: word,
       });
@@ -58,7 +59,6 @@ function App({ socket }) {
       console.log(data);
       setWordToCheck(data.words[0]);
     });
-    
     return () => {
       socket.off('word_to_check');
       socket.off('send_guessed_word');
@@ -70,10 +70,12 @@ function App({ socket }) {
   if (pintor) {
     return (
       <div>
-        <div>
-          {wordToCheck && <p>{wordToCheck}</p>}
-          {result && <p>{result}</p>}
-          <Board socket={socket}></Board>
+        <div style={{ display: "flex" }}>
+          <div style={{ marginRight: "20px" }}>
+            {wordToCheck && <p>{wordToCheck}</p>}
+            {result && <p>{result}</p>}
+            <Board socket={socket}></Board>
+          </div>
           {userMessages.length > 0 && (
             <div>
               <ul style={{ listStyle: "none" }}>
@@ -84,15 +86,15 @@ function App({ socket }) {
             </div>
           )}
         </div>
-
       </div>
     )
-  } else {
+  }
+  else {
     return (
       <div>
         {result && <p>{result}</p>}
         <WordForm onSubmit={handleFormSubmit} socket={socket} /><br></br>
-        <Board socket={socket}></Board>
+        <Board socket={socket} pintor={pintor}></Board>
       </div>
     )
   }
