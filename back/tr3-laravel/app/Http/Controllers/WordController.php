@@ -8,9 +8,9 @@ use App\Models\Word;
 class WordController extends Controller
 {
     public function getWords(Request $request)
-    {  
+    {
         $enoughWords = true;
-        $randomWords;
+        // $randomWords;
         $returnWords = [];
 
         //Check if the words in those categories are >= than the amount of words needed.
@@ -18,7 +18,7 @@ class WordController extends Controller
 
         //Check if the number of words from the categories is enough
         if ( !($numberOfWords >= $request -> amount) ) {
-            $randomWords = $amount - $numberOfWords;
+            $randomWords = $request -> amount - $numberOfWords;
             $enoughWords = false;
         }
 

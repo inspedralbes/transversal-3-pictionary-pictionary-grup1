@@ -3,13 +3,17 @@ h1 {
 }
 
 #border {
-    background-color: #fffaf4;
-    border: 2px solid #919191;
+    background-color: #fffaf5;
+    border: 2px solid #575757;
     border-radius: 255px 15px 255px 15px / 15px 255px 15px 255px;
     width: 70%;
     height: fit-content;
     padding: 20px;
     margin: 50px auto;
+}
+
+.addCategory__description{
+    margin:0 0 20px 0 ;
 }
 
 .ldPage__title {
@@ -21,6 +25,7 @@ h1 {
 }
 
 .span {
+    cursor: url('../img/default.cur'), pointer;
     color: #5c5b5b;
     margin-right: 3px;
     margin-left: 3px;
@@ -113,7 +118,8 @@ h1 {
     border-color: #5c5b5b;
 }
 
-.ldPage__button1:hover, .ldPage__button1:focus {
+.ldPage__button1:hover,
+.ldPage__button1:focus {
     border: 2px solid #fa75b3;
     background: none;
     color: #32633a;
@@ -122,7 +128,8 @@ h1 {
     transition: all 0.7s;
 }
 
-.ldPage__button2:hover, .ldPage__button2:focus {
+.ldPage__button2:hover,
+.ldPage__button2:focus {
     border: 2px solid #fa8a4a;
     background: none;
     color: #382af5;
@@ -144,40 +151,48 @@ h1 {
     animation-fill-mode: forwards;
 }
 
-.ldPage__loginRegister{
-    letter-spacing:2px;
+.ldPage__loginRegister {
+    letter-spacing: 2px;
     font-size: 150%;
+    text-decoration: underline;
     text-align: end;
     margin: 20px;
-    clear: left;
 }
 
 
-.ldPage__loginRegister:hover a, .ldPage__loginRegister a:focus {
+.ldPage__loginRegister a:hover ,
+.ldPage__loginRegister a:focus {
+
     animation: colors 2s infinite linear;
 }
 
 
 @keyframes colors {
-    0%{
+    0% {
         color: #e08906;
     }
+
     10% {
         color: #920000;
     }
-    20%{
+
+    20% {
         color: #92017f;
     }
+
     40% {
         color: #21007a;
     }
-    60%{
+
+    60% {
         color: #005485;
-    } 
+    }
+
     80% {
         color: #017506;
     }
-    100%{
+
+    100% {
         color: #cf9801;
     }
 

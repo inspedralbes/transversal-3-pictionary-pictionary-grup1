@@ -15,6 +15,7 @@ function Register({ socket }) {
         password: "",
         passwordValidation: "",
     });
+    
     const [color, setColor] = useState({
         username: "red",
         email: "red",
@@ -22,7 +23,6 @@ function Register({ socket }) {
         passwordValidation: "red",
     });
 
-    const [errorText, setErrorText] = useState("");
     const cookies = new Cookies();
     const navigate = useNavigate();
 
@@ -41,7 +41,6 @@ function Register({ socket }) {
     }, [userData.username]);
 
     useEffect(() => {
-        console.log();
         if (userData.email.length <= 255 && userData.email.includes("@") && userData.email.includes(".")) {
             setColor({ ...color, email: "green" })
         } else {
@@ -91,7 +90,7 @@ function Register({ socket }) {
                     console.log(data);
                 }
             }
-            );
+            );user.append("token", cookies.get('token') != undefined ? cookies.get('token') : null);
         }
     }, [registro]);
 
