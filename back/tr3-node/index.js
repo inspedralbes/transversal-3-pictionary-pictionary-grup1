@@ -182,8 +182,12 @@ socketIO.on("connection", (socket) => {
   });
 
   socket.on("join_room", (data) => {
-    socket.data.username = data.username;
-    joinLobby(socket, data.lobbyIdentifier, socket.data.username);
+    if (data.username.length > 8) {
+      socketIO.to(socket.id).emit("USR_NAME_TOO_LONG");
+    } else {
+      socket.data.username = data.username;
+      joinLobby(socket, data.lobbyIdentifier, socket.data.username);
+    }
   });
 
   socket.on("leave_lobby", (data) => {
@@ -208,7 +212,6 @@ socketIO.on("connection", (socket) => {
   });
 
   socket.on("set_categories", (data) => {
-    console.log(data.ids);
     lobbies.forEach(lobby => {
       if (lobby.lobbyIdentifier == socket.data.current_lobby) {
         lobby.categories = data.ids;
@@ -576,7 +579,6 @@ function setCounter(lobbyId) {
       lobby.cont++;
       timer = setInterval(() => {
         lobby.cont--;
-        console.log(lobby.cont);
         socketIO.to(lobbyId).emit("counter_down", {
           counter: lobby.cont,
         });
@@ -730,7 +732,7 @@ async function setLobbyWord(room, amount) {
     }
   });
   console.log("Pre-axios", category);
-  
+
   await axios
     .post(laravelRoute + "getWords", {
       category: category,
