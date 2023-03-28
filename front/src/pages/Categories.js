@@ -9,6 +9,7 @@ function Categories() {
     const [registro, setRegistro] = useState(0);
     const [addCategory, setAddCategory] = useState(false);
     const [firstTime, setFirstTime] = useState(true);
+    const [loadingCategories, setLoadingCategories] = useState(true);
     const [myCategories, setMyCategories] = useState([]);
     const [getCats, setGetCats] = useState(0);
 
@@ -79,6 +80,24 @@ function Categories() {
         }
     };
 
+    const handleSubmit = (event) => {
+        setRegistro(registro + 1);
+        // setGetCats(getCats + 1);
+        // setAddCategory(!addCategory);
+    };
+
+    const handleDelete = (id) => {
+        // setRegistro(registro + 1);
+        // setGetCats(getCats + 1);
+        // setAddCategory(!addCategory);
+    };
+
+    const handleEdit = (category) => {
+        // setRegistro(registro + 1);
+        // setGetCats(getCats + 1);
+        // setAddCategory(!addCategory);
+    };
+
     useEffect(() => {
         if (registro != 0) {
             const wordsAndDescription = [];
@@ -94,7 +113,7 @@ function Categories() {
             const user = new FormData()
             user.append("name", userData.name);
             user.append("public", userData.privacy);
-            user.append("token", cookies.get('token'));
+            user.append("token", cookies.get('token') != undefined ? cookies.get('token') : null);
             user.append("words", JSON.stringify(wordsAndDescription));
 
             fetch(routes.fetchLaravel + "addCategory", {
@@ -110,6 +129,7 @@ function Categories() {
     }, [registro]);
 
     useEffect(() => {
+        setLoadingCategories(true);
         if (getCats != 0) {
             const wordsAndDescription = [];
 
@@ -122,149 +142,152 @@ function Categories() {
             }
 
             const user = new FormData()
-            user.append("token", cookies.get('token'));
+            user.append("token", cookies.get('token') != undefined ? cookies.get('token') : null);
 
-            fetch(routes.fetchLaravel + "getMyCategories", {
-                method: 'POST',
-                mode: 'cors',
-                body: user,
-                credentials: 'include'
-            }).then((response) => response.json()).then((data) => {
-                console.log(data);
-            }
-            );
-        }
+    fetch(routes.fetchLaravel + "getMyCategories", {
+        method: 'POST',
+        mode: 'cors',
+        body: user,
+        credentials: 'include'
+    }).then((response) => response.json()).then((data) => {
+        console.log(data);
+        setMyCategories(data);
+        setLoadingCategories(false);
+    }
+    );
+}
     }, [getCats]);
 
-    useEffect(() => {
-        if (firstTime) {
-            setGetCats(getCats + 1);
-            setFirstTime(false)
-        }
-    }, [])
+useEffect(() => {
+    if (firstTime) {
+        setGetCats(getCats + 1);
+        setFirstTime(false)
+    }
+}, [])
 
-    return (
-        <>
-            {!addCategory ?
-                <>
+return (
+    <>
+        {!addCategory ?
+            <>
+                {!loadingCategories ?
                     <div>
                         {myCategories.length > 0 ?
                             <>
                                 <h1 style={{ textAlign: "center" }}>Categorias</h1>
-                                {myCategories.map((category, index) => (
-                                    <li key={index}>{category.categoryName}</li>
-                                ))}
+                                {Array.isArray(myCategories)
+                                    ? myCategories.map((category, index) => (
+                                        <li key={index}>{category.categoryName} <button onClick={handleEdit(category.categoryId)}>Edit category</button><button onClick={handleDelete(category)}>Delete category</button></li>
+                                    )) : null}
                             </>
                             :
-                            <>
-                                <h1 style={{ textAlign: "center" }}>You haven't created any category yet!</h1>
-                                <div className="form__goBack">
-                                    <div className="form__button--flex">
-                                        <button id="goBack__button" onClick={handleSetAddCategory}>
-                                            <span className="circle" aria-hidden="true">
-                                                <span className="icon arrow"></span>
-                                            </span>
-                                            <span className="button-text">Add category</span>
-                                        </button>
-                                    </div>
-                                </div>
-                            </>
+                            <h1 style={{ textAlign: "center" }}>You haven't created any category yet!</h1>
                         }
-                    </div>
-                </> :
-                <div className="form register">
-                    <h1>ADD NEW CATEGORY</h1>
-                    <br />
-                    <div className="form__form">
-                        <div className="form">
-                            <span className=""></span>
-                            <label className=""> Name
-                                <input className="" style={{ color: color.name }} placeholder=" " type="text" onChange={(e) => setUserData({ ...userData, name: e.target.value })} required></input>
-                            </label>
-                        </div>
-                        <div className="">
-                            <span className=""></span>
-                            <label className=""> Do you want the category to be public?
-                                <input className="" style={{ color: color.privacy }} placeholder=" " type="checkbox" onChange={(e) => setUserData({ ...userData, privacy: e.target.checked })} required></input>
-                            </label>
-                        </div>
-                    </div>
-                    <form className="App" autoComplete="off">
-                        <div className="form-field">
-                            {wordList.map((singleWord, index) => (
-                                <div key={index} className="words">
-                                    <div className="first-division">
-                                        <label>Word(s)
-                                            <input
-                                                name="word"
-                                                type="text"
-                                                id="word"
-                                                value={singleWord.word}
-                                                onChange={(e) => handleWordChange(e, index)}
-                                                required
-                                            /></label>
-                                        <br />
-                                        <label>Description
-                                            <input
-                                                name="description"
-                                                type="text"
-                                                id="description"
-                                                value={descriptionList[index].description}
-                                                onChange={(e) => handleDescriptionChange(e, index)}
-                                                required
-                                            /></label>
-                                        {wordList.length - 1 === index && wordList.length < 100 && (
-                                            <button
-                                                type="button"
-                                                onClick={handleWordAdd}
-                                                className="add-btn"
-                                            >
-                                                <span>Add a Word</span>
-                                            </button>
-                                        )}
-                                    </div>
-                                    <div className="second-division">
-                                        {wordList.length !== 1 && (
-                                            <button
-                                                type="button"
-                                                onClick={() => handleWordRemove(index)}
-                                                className="remove-btn"
-                                            >
-                                                <span>Remove</span>
-                                            </button>
-                                        )}
-                                    </div><br />
-                                </div>
-                            ))}
-                        </div>
-                    </form>
-
-                    <div className="form__buttonsLinks">
-                        <div className="form__buttons">
-                            <div className="form__goBack">
-                                <div className="form__button--flex">
-                                    <button id="goBack__button" onClick={handleSetAddCategory}>
-                                        <span className="circle" aria-hidden="true">
-                                            <span className="icon arrow"></span>
-                                        </span>
-                                        <span className="button-text">Category list</span>
-                                    </button>
-                                </div>
-                            </div>
-                            <div className="form__submit submit">
-                                <button onClick={() => setRegistro(registro + 1)} id="submit__button">
-                                    <span className="circle2" aria-hidden="true">
-                                        <span className="icon2 arrow2"></span>
+                        <div className="form__goBack">
+                            <div className="form__button--flex">
+                                <button id="goBack__button" onClick={handleSetAddCategory}>
+                                    <span className="circle" aria-hidden="true">
+                                        <span className="icon arrow"></span>
                                     </span>
-                                    <span className="button-text">SUBMIT</span>
+                                    <span className="button-text">Add category</span>
                                 </button>
                             </div>
                         </div>
+                    </div> :
+                    <h1>Loading categories...</h1>}
+            </> :
+            <div className="form register">
+                <h1>ADD NEW CATEGORY</h1>
+                <br />
+                <div className="form__form">
+                    <div className="form">
+                        <span className=""></span>
+                        <label className=""> Name
+                            <input className="" style={{ color: color.name }} placeholder=" " type="text" onChange={(e) => setUserData({ ...userData, name: e.target.value })} required></input>
+                        </label>
                     </div>
-                </div>}
+                    <div className="">
+                        <span className=""></span>
+                        <label className=""> Do you want the category to be public?
+                            <input className="" style={{ color: color.privacy }} placeholder=" " type="checkbox" onChange={(e) => setUserData({ ...userData, privacy: e.target.checked })} required></input>
+                        </label>
+                    </div>
+                </div>
+                <form className="App" autoComplete="off">
+                    <div className="form-field">
+                        {wordList.map((singleWord, index) => (
+                            <div key={index} className="words">
+                                <div className="first-division">
+                                    <label>Word(s)
+                                        <input
+                                            name="word"
+                                            type="text"
+                                            id="word"
+                                            value={singleWord.word}
+                                            onChange={(e) => handleWordChange(e, index)}
+                                            required
+                                        /></label>
+                                    <br />
+                                    <label>Description
+                                        <input
+                                            name="description"
+                                            type="text"
+                                            id="description"
+                                            value={descriptionList[index].description}
+                                            onChange={(e) => handleDescriptionChange(e, index)}
+                                            required
+                                        /></label>
+                                    {wordList.length - 1 === index && wordList.length < 100 && (
+                                        <button
+                                            type="button"
+                                            onClick={handleWordAdd}
+                                            className="add-btn"
+                                        >
+                                            <span>Add a Word</span>
+                                        </button>
+                                    )}
+                                </div>
+                                <div className="second-division">
+                                    {wordList.length !== 1 && (
+                                        <button
+                                            type="button"
+                                            onClick={() => handleWordRemove(index)}
+                                            className="remove-btn"
+                                        >
+                                            <span>Remove</span>
+                                        </button>
+                                    )}
+                                </div><br />
+                            </div>
+                        ))}
+                    </div>
+                </form>
 
-        </>
-    );
+                <div className="form__buttonsLinks">
+                    <div className="form__buttons">
+                        <div className="form__goBack">
+                            <div className="form__button--flex">
+                                <button id="goBack__button" onClick={handleSetAddCategory}>
+                                    <span className="circle" aria-hidden="true">
+                                        <span className="icon arrow"></span>
+                                    </span>
+                                    <span className="button-text">Category list</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div className="form__submit submit">
+                            <button onClick={handleSubmit} id="submit__button">
+                                <span className="circle2" aria-hidden="true">
+                                    <span className="icon2 arrow2"></span>
+                                </span>
+                                <span className="button-text">SUBMIT</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>}
+
+    </>
+);
 
 }
 
