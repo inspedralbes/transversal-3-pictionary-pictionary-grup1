@@ -24,8 +24,8 @@ function ConnectedUsersOwner({ socket }) {
         "#915005",
         "#910505",
         "#dd3400",
-      ];
-    
+    ];
+
 
     useEffect(() => {
         if (firstTime) {
@@ -40,15 +40,15 @@ function ConnectedUsersOwner({ socket }) {
 
     return (
         <div className="connectedUsersInGameO">
-            <div className="connectedUsersInGame__title">
-                <h1 className='game__connectedUsersInGameTitle'><span className='connectedUsersInGame__span'>U</span><span className='connectedUsersInGame__span'>S</span><span className='connectedUsersInGame__span'>E</span><span className='connectedUsersInGame__span'>R</span>  <span className='connectedUsersInGame__span'>L</span><span className='connectedUsersInGame__span'>I</span><span className='connectedUsersInGame__span'>S</span><span className='connectedUsersInGame__span'>T</span></h1>
-            </div>
-            <div className="game__connectedUsersInGameOwner" id="style-8">
+            <div className="game__connectedUsersInGameOwner" id="style-Owner">
+                <div className="connectedUsersInGame__title">
+                    <h1 className='game__connectedUsersInGameTitle'><span className='connectedUsersInGame__span'>U</span><span className='connectedUsersInGame__span'>S</span><span className='connectedUsersInGame__span'>E</span><span className='connectedUsersInGame__span'>R</span>  <span className='connectedUsersInGame__span'>L</span><span className='connectedUsersInGame__span'>I</span><span className='connectedUsersInGame__span'>S</span><span className='connectedUsersInGame__span'>T</span></h1>
+                </div>
                 <ul id="userList" className="connectedUsersInGame__userList userList">
                     {userList.map((user, index) => {
                         return (
-                            <li  style={{ color: colors[index] }}
-                            id="bgColor" className="game_item item">
+                            <li style={{ color: colors[index] }}
+                                id="bgColor" className="game_item item">
                                 <div className="GameItem__name">
                                     <p>{user.name}</p>
                                 </div>

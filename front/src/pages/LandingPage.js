@@ -45,9 +45,7 @@ function LandingPage({ socket }) {
   return (
     <div className="ldPage">
       <div className="ldPage__loginRegister">
-        <Link to="/login">
-          <a>Log in/Register</a>
-        </Link>
+        <Link to="/login">Log in/Register</Link>
       </div>
       <div className="border is-drawn" id="border">
         <div className="space-around">
