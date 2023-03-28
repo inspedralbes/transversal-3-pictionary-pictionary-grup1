@@ -231,21 +231,19 @@ class CategoryController extends Controller
 
         //If the user is logged be return all his private categories.
         if ($userId != null) {
-            $getPrivate = Category::where('privacy', 'private')
-            -> where('creator_id', $userId)
-            -> get();
+            $getCategories = Category::where('creator_id', $userId)-> get();
                 $creatorName = User::where('id', $request->session()->get('userId')) -> first();
-                for ($i = 0; $i < count($getPrivate); $i ++) { 
-                    $numberWords = Word::where('category_id', $getPrivate[$i] -> id) -> count();
-                    $words = Word::where('category_id', $getPrivate[$i] -> id) -> get();
+                for ($i = 0; $i < count($getCategories); $i ++) { 
+                    $numberWords = Word::where('category_id', $getCategories[$i] -> id) -> count();
+                    $words = Word::where('category_id', $getCategories[$i] -> id) -> get();
                     $category = (object) 
                     [
-                        'categoryId'=> $getPrivate[$i] -> id,
-                        'categoryName' => $getPrivate[$i] -> name,
+                        'categoryId' => $getCategories[$i] -> id,
+                        'categoryName' => $getCategories[$i] -> name,
                         'numberOfWords' => $numberWords,
                         'words' => $words,
-                        'createdBy' => $creatorName,
-                        'createdAt' => $getPrivate[$i] -> created_at -> format('d/m/Y')
+                        'privacy' => $getCategories[$i] -> privacy,
+                        'createdAt' => $getCategories[$i] -> created_at -> format('d/m/Y')
                     ];
                     $categories[$i] = $category;
                 }
