@@ -437,10 +437,6 @@
     display:block;
 }
 
-.checkbox:not(:last-child){
-    border-bottom:2px solid white;
-}
-
 .check {
     position:absolute;
     opacity:0;
@@ -458,6 +454,11 @@
 .check:checked + label svg g path {
     stroke-dashoffset:0;
 }
+
+input[type="radio"]:checked+ label svg g path {
+    stroke-dashoffset:0;
+}
+
 .list__container__text__label span {
     position:absolute;
     margin-left: -234px;
