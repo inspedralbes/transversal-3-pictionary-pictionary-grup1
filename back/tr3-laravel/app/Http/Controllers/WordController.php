@@ -35,7 +35,7 @@ class WordController extends Controller
             }
         }
 
-        return response() -> json(["wordsToCheck" => $returnWords]);    
+        return response() -> json($returnWords);    
     }
     
 }
