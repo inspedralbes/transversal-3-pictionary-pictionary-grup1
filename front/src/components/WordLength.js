@@ -12,7 +12,6 @@ function WordLength({ socket }) {
       letter: "_ ",
     }
     spaces.push(space)
-
   }
 
   const updateArray = (data) => {      
@@ -30,18 +29,18 @@ function WordLength({ socket }) {
     const lettersToString = spaces.map((s) => {
       return s["letter"].toUpperCase();
     });
-
     setWord(lettersToString);
   }
 
 
   useEffect(() => {
     socket.on("word_length", (data) => {
-      if (data !== undefined) {
+      if (data !== undefined && spaces.length === 0) {
         if (data.long !== 0) {
           for (let i = 0; i < data.long; i++) {
             pushSpaces(i);
           }
+          console.log(spaces);
           arrayToString();
         }
       }
