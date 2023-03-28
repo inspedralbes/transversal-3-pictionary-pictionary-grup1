@@ -1,11 +1,11 @@
-@import "http://fxaeberhard.github.io/handdrawn.css/handdrawn.css";
+/* @import "http://fxaeberhard.github.io/handdrawn.css/handdrawn.css"; */
+@import "./styles/handdrawn/handdrawn.css";
 
 body {
   margin: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background: none;
-  ;
   background-color: #fffaf4;
   width: 100%;
   padding: 0;
@@ -31,6 +31,17 @@ input,
 label,
 select,
 textarea {
+  cursor: url('./img/pointer.cur'), pointer;
+}
+
+
+a:hover,
+button:hover,
+input:hover,
+label:hover,
+select:hover,
+textarea:hover
+ {
   cursor: url('./img/pointer.cur'), pointer;
 }
 
