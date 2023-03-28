@@ -175,35 +175,35 @@ function Categories() {
                             {myCategories.length > 0 ?
                                 <>
                                     <h1 style={{ textAlign: "center" }}>Categorias</h1>
-                                    <div class="myCategories">
-                                        <table class="myCategories__table">
-                                            <thead class="myCategories__thead">
-                                                <tr class="myCategories__tr">
-                                                    <th class="myCategories__th">Category</th>
-                                                    <th class="myCategories__th">Nº words</th>
-                                                    <th class="myCategories__th">Creation date</th>
-                                                    <th class="myCategories__th">Actions</th>
+                                    <div className="myCategories">
+                                        <table className="myCategories__table">
+                                            <thead className="myCategories__thead">
+                                                <tr className="myCategories__tr">
+                                                    <th className="myCategories__th">Category</th>
+                                                    <th className="myCategories__th">Nº words</th>
+                                                    <th className="myCategories__th">Creation date</th>
+                                                    <th className="myCategories__th">Actions</th>
                                                 </tr>
                                             </thead>
                                             {/* <li key={index}>{category.categoryName} <button onClick={handleEdit(category.categoryId)}>Edit category</button><button onClick={handleDelete(category)}>Delete category</button></li> */}
-                                            <tbody class="myCategories__tbody">
+                                            <tbody className="myCategories__tbody">
                                                 {Array.isArray(myCategories)
                                                     ? myCategories.map((category, index) => (
-                                                        <tr class="myCategories__tr" key={index}>
-                                                            <td class="myCategories__td">{category.categoryName}</td>
-                                                            <td class="myCategories__td">{category.numberOfWords}</td>
-                                                            <td class="myCategories__td">{category.createdAt}</td>
-                                                            <td class="myCategories__td"><i class="icon-edit"></i> <i class="icon-trash"></i></td>
+                                                        <tr className="myCategories__tr" key={index}>
+                                                            <td className="myCategories__td">{category.categoryName}</td>
+                                                            <td className="myCategories__td">{category.numberOfWords}</td>
+                                                            <td className="myCategories__td">{category.createdAt}</td>
+                                                            <td className="myCategories__td"><i className="icon-edit"></i> <i className="icon-trash"></i></td>
                                                         </tr>
 
                                                     )) : null}
                                             </tbody>
                                             <tfoot>
-                                                <tr class="myCategories__tfoot">
-                                                    <td class="myCategories__td"></td>
-                                                    <td class="myCategories__td"></td>
-                                                    <td class="myCategories__td"></td>
-                                                    <td class="myCategories__addCategoryButton"><button onClick={handleSetAddCategory}><i class="icon-plus"></i>Add category</button></td>
+                                                <tr className="myCategories__tfoot">
+                                                    <td className="myCategories__td"></td>
+                                                    <td className="myCategories__td"></td>
+                                                    <td className="myCategories__td"></td>
+                                                    <td className="myCategories__addCategoryButton"><button onClick={handleSetAddCategory}><i className="icon-plus"></i>Add category</button></td>
                                                 </tr>
                                             </tfoot>
                                         </table>
@@ -212,7 +212,7 @@ function Categories() {
                                 :
                                 <>
                                     <h1 style={{ textAlign: "center" }}>You haven't created any category yet!</h1>
-                                    <button onClick={handleSetAddCategory}><i class="icon-plus"></i>Add category</button>
+                                    <button onClick={handleSetAddCategory}><i className="icon-plus"></i>Add category</button>
                                 </>
                             }
                         </div> :
@@ -223,60 +223,53 @@ function Categories() {
                         <legend className="addCategory__legend">ADD NEW CATEGORY</legend>
                         <br />
                         <div className="addCategory__form">
-                            <label className="addCategory__name">
+                            <div className="addCategory__name">
                                 <span className="addCategory__formSpan">
-                                    <input class="slide-up" id="name" type="text" placeholder="Introduce name" onChange={(e) => setUserData({ ...userData, name: e.target.value })} required /><label className="addCategory__nameLabel" for="name">Name</label>
+                                    <input className="slide-up" id="name" type="text" placeholder="Introduce name" onChange={(e) => setUserData({ ...userData, name: e.target.value })} required /><label className="addCategory__nameLabel" htmlFor="name">Name</label>
                                 </span>
-                            </label>
-                            <label className="addCategory__public"> <p>Do you want the category to be public?</p>
-                                <input className="addCategory__publicCheckbox" style={{ color: color.privacy }} placeholder=" " type="checkbox" onChange={(e) => setUserData({ ...userData, privacy: e.target.checked })} required></input>
-                            </label>
+                            </div>
                         </div>
                         <form className="App" autoComplete="off">
                             <div className="form-field">
                                 {wordList.map((singleWord, index) => (
                                     <div key={index} className="words">
-                                        <div className="first-division">
-                                            <label>Word(s)
-                                                <input
-                                                    name="word"
-                                                    type="text"
-                                                    id="word"
-                                                    value={singleWord.word}
-                                                    onChange={(e) => handleWordChange(e, index)}
-                                                    required
-                                                /></label>
-                                            <br />
-                                            <label>Description
-                                                <input
-                                                    name="description"
-                                                    type="text"
-                                                    id="description"
-                                                    value={descriptionList[index].description}
-                                                    onChange={(e) => handleDescriptionChange(e, index)}
-                                                    required
-                                                /></label>
-                                            {wordList.length - 1 === index && wordList.length < 100 && (
-                                                <button
-                                                    type="button"
-                                                    onClick={handleWordAdd}
-                                                    className="add-btn"
-                                                >
-                                                    <span>Add a Word</span>
-                                                </button>
-                                            )}
+                                        <div className="wordSettings">
+                                            <div className="addCategory__form">
+                                                <div className="addCategory__nameTA">
+                                                    <span className="addCategory__formSpanTA">
+                                                        <p className="addCategory__Word">Word</p>
+                                                        <input className="input" name="word" type="text" id="word" placeholder="Introduce word" value={singleWord.word} onChange={(e) => handleWordChange(e, index)} required />
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div className="addCategory__form">
+                                                <div className="addCategory__nameTA">
+                                                    <span className="addCategory__formSpanTA">
+                                                        <p className="addCategory__description">Description</p>
+                                                        <textarea className="text-area" name="description" type="text" id="word" placeholder="Add a description :)" value={descriptionList[index].description} onChange={(e) => handleDescriptionChange(e, index)} required />
+                                                    </span>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div className="second-division">
-                                            {wordList.length !== 1 && (
-                                                <button
-                                                    type="button"
-                                                    onClick={() => handleWordRemove(index)}
-                                                    className="remove-btn"
-                                                >
-                                                    <span>Remove</span>
-                                                </button>
-                                            )}
-                                        </div><br />
+                                        {wordList.length - 1 === index && wordList.length < 100 && (
+                                            <button
+                                                type="button"
+                                                onClick={handleWordAdd}
+                                                className="add-btn"
+                                            >
+                                                <span>Add a Word</span>
+                                            </button>
+                                        )}
+                                        {wordList.length !== 1 && (
+                                            <button
+                                                type="button"
+                                                onClick={() => handleWordRemove(index)}
+                                                className="remove-btn"
+                                            >
+                                                <span>Remove</span>
+                                            </button>
+                                        )}
+                                        <br />
                                     </div>
                                 ))}
                             </div>
@@ -284,15 +277,18 @@ function Categories() {
 
                         <div className="form__buttonsLinks">
                             <div className="form__buttons">
-                                <Link to="/">
-                                    <div className="form__goBack">
-                                        <div className="form__button--flex">
-                                            <button id="goBack__button" onClick={handleSetAddCategory}>
-                                                <span className="button-text">Category list</span>
-                                            </button>
-                                        </div>
+                                <div className="form__goBack">
+                                    <div className="form__button--flex">
+                                        <button id="goBack__button" onClick={handleSetAddCategory}>
+                                            <span className="button-text">Category list</span>
+                                        </button>
                                     </div>
-                                </Link>
+                                </div>
+
+                                <label className="addCategory__public">
+                                    <input className="addCategory__publicCheckbox" type="checkbox" onChange={(e) => setUserData({ ...userData, privacy: e.target.checked })} required></input>
+                                    <p>Do you want the category to be public?</p>
+                                </label>
                                 <div className="form__submit submit">
                                     <button onClick={handleSubmit} id="submit__button">
                                         <span className="button-text">SUBMIT</span>
