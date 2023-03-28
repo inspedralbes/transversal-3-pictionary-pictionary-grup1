@@ -213,7 +213,6 @@ function Categories() {
                                                 onChange={(e) => handleDescriptionChange(e, index)}
                                                 required
                                             /></label>
-                                        {wordList.length - 1 === index && wordList.length < 4 && (
                                             <button
                                                 type="button"
                                                 onClick={handleWordAdd}
@@ -221,7 +220,7 @@ function Categories() {
                                             >
                                                 <span>Add a Word</span>
                                             </button>
-                                        )}
+                                        }
                                     </div>
                                     <div className="second-division">
                                         {wordList.length !== 1 && (
