@@ -29,7 +29,9 @@ class WordController extends Controller
 
         //If the number of words in the categories that haven chosen is lower than the words needed we get random words from the DB
         if (!$enoughWords) {
-            $words2 = Word::inRandomOrder()->whereNotIn("category_id", [$request -> category, NULL])->limit($randomWords)->get(); 
+            $words2 = Word::inRandomOrder()->whereNotIn("category_id", $request -> category)
+            ->where("creator_id", "==", NULL)
+            ->limit($randomWords)->get(); 
             for ($i=0; $i < count($words2); $i++) { 
                 array_push($returnWords, $words2[$i]);
             }
