@@ -742,34 +742,40 @@ function startWordLength(room) {
   let letters = word.split("");
   let letterPositions = [];
   let letterPosition = 0;
+  let contTimer = 0;
 
   timer = setInterval(() => {
+    contTimer++;
     let roundChanged;
-    for (i = 0; i < 1; i++) {
-      letterPosition = Math.trunc(Math.random() * long);
-      if (!letterPositions.some((num) => num == letterPosition)) {
-        letterPositions.push(letterPosition);
-      } else {
-        i--;
-      }
-    }
-    socketIO.to(room).emit("word_letters", {
-      letterNode: letters[letterPosition],
-      pos: letterPosition,
-    });
-
 
     lobbies.forEach((lobby) => {
       if (lobby.lobbyIdentifier == room) {
         roundChanged = lobby.actualRound;
       }
     });
+
+    if (contTimer == timeBetweenLetters) {
+      for (i = 0; i < 1; i++) {
+        letterPosition = Math.trunc(Math.random() * long);
+        if (!letterPositions.some((num) => num == letterPosition)) {
+          letterPositions.push(letterPosition);
+        } else {
+          i--;
+        }
+      }
+      socketIO.to(room).emit("word_letters", {
+        letterNode: letters[letterPosition],
+        pos: letterPosition,
+      });
+      contTimer = 0;
+    }
+
     if (actualRound != roundChanged) {
       clearInterval(timer);
       actualRound = roundChanged;
       socketIO.to(room).emit("clear_word");
     }
-  }, timeBetweenLetters * 1000);
+  }, 1000);
 }
 
 function sendUserList(room) {
