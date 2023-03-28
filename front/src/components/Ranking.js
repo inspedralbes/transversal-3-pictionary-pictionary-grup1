@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from "react";
 import { render } from "react-dom";
 import "../styles/Ranking.css"
 
-
 function Ranking({ socket }) {
   const [userList, setUserList] = useState([]);
   const [firstTime, setFirstTime] = useState(true);
@@ -22,25 +21,22 @@ function Ranking({ socket }) {
       item.classList.add('fadein')
     }, delay)
   }
-
+  
   useEffect(() => {
     if (firstTime) {
       socket.emit("lobby_data");
       setFirstTime(false)
     }
+
     socket.on("lobby_user_list", (data) => {
       data.list.sort((a, b) => b.points - a.points);
       setUserList(data.list);
     });
 
-    socket.on('spectator', (data) => {
+    socket.on("spectator", (data) => {
       setSpectator(data.spectator);
     });
-
-    socket.on('spectator', (data) => {
-      console.log("data", data);
-      setSpectator(data.spectator);
-    });
+    
   }, [firstTime, socket])
 
   return (
