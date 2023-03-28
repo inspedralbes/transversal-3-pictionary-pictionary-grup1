@@ -162,61 +162,62 @@ class CategoryController extends Controller
 
     public function getCategories (Request $request)
     {  
-        $privateCategories = [];
-        $publicCategories = [];
-        $categories = (object) ['public'=> [], 'private' => []];
+        $getDefault = [];
+        $getPublic = [];
+        $getMine = [];
+        $allDefaultCategories = [];
+        $allPublicCategories = [];
+        $allMyCategories = [];
+        $categories = (object) ['default' => [], 'public'=> [], 'myCategories' => [] ];
 
         //Check if user is logged
         $userId = $this->checkUserLogged($request);
 
         if ($userId != null) {
-            //Get all private categories where the user is the creator.
-            $getPrivate = Category::where('privacy', 'private')
-            -> where('creator_id', $userId)
-            -> get();
+            //Get all categories where the user is the creator.
+            $getMine = Category::where('creator_id', $userId) -> get();
                 $creatorName = User::where('id', $request->session()->get('userId')) -> first();
-                for ($i = 0; $i < count($getPrivate); $i ++) { 
-                    $numberWords = Word::where('category_id', $getPrivate[$i] -> id) -> count();
-                    $words = Word::where('category_id', $getPrivate[$i] -> id) -> get();
+                for ($i = 0; $i < count($getMine); $i ++) { 
+                    $numberWords = Word::where('category_id', $getMine[$i] -> id) -> count();
+                    $words = Word::where('category_id', $getMine[$i] -> id) -> get();
                     $category = (object) 
                     [
-                        'categoryId'=> $getPrivate[$i] -> id,
-                        'categoryName' => $getPrivate[$i] -> name,
+                        'categoryId'=> $getMine[$i] -> id,
+                        'categoryName' => $getMine[$i] -> name,
                         'numberOfWords' => $numberWords,
                         'words' => $words,
                         'createdBy' => $creatorName,
-                        'createdAt' => $getPrivate[$i] -> created_at -> format('d/m/Y')
+                        'createdAt' => $getMine[$i] -> created_at -> format('d/m/Y')
                     ];
-                    $privateCategories[$i] = $category;
+                    $allMyCategories[$i] = $category;
                 }
         } 
 
-        //Always get public categories.
-        $getPublic = Category::where('privacy', 'public') -> get();
-            for ($i = 0; $i < count($getPublic); $i ++) { 
-                if ($getPublic[$i] -> creator_id != null) {
-                    $creator = User::where('id', $getPublic[$i] -> creator_id) -> first();
-                    $creatorName = $creator -> name;
-                } else {
-                    $creatorName = 'SYSTEM'; 
+        //Always get default categories.
+        $getDefault = Category::where('privacy', 'public') 
+        -> where ('creator_id', NULL)
+        -> get();
+            //Get all categories where the user is the creator.
+            $getMine = Category::where('creator_id', $userId) -> get();
+                $creatorName = User::where('id', $request->session()->get('userId')) -> first();
+                for ($i = 0; $i < count($getMine); $i ++) { 
+                    $numberWords = Word::where('category_id', $getMine[$i] -> id) -> count();
+                    $words = Word::where('category_id', $getMine[$i] -> id) -> get();
+                    $category = (object) 
+                    [
+                        'categoryId'=> $getMine[$i] -> id,
+                        'categoryName' => $getMine[$i] -> name,
+                        'numberOfWords' => $numberWords,
+                        'words' => $words,
+                        'createdBy' => $creatorName,
+                        'createdAt' => $getMine[$i] -> created_at -> format('d/m/Y')
+                    ];
+                    $allMyCategories[$i] = $category;
                 }
-
-                $numberWords = Word::where('category_id', $getPublic[$i] -> id) -> count();
-                $words = Word::where('category_id', $getPublic[$i] -> id) -> get();
-                $category = (object) 
-                [
-                    'categoryId'=> $getPublic[$i] -> id,
-                    'categoryName' => $getPublic[$i] -> name,
-                    'numberOfWords' => $numberWords,
-                    'words' => $words,
-                    'createdBy' => $creatorName,
-                    'createdAt' => $getPublic[$i] -> created_at -> format('d/m/Y')
-                ];
-                $publicCategories[$i] = $category;
-            }
-
-        $categories -> private = $privateCategories;
-        $categories -> public = $publicCategories;
+    
+        $categories -> default = $allDefaultCategories;
+        $categories -> public = $allPublicCategories;
+        $categories -> myCategories = $allMyCategories;
 
         return response() -> json($categories);
     }
