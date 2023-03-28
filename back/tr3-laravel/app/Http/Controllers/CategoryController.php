@@ -116,7 +116,7 @@ class CategoryController extends Controller
                     'message' => 'There should be at least 3 words in the category, with a maximum of 100.',
                     ];
                 } else {
-                    for ($i = 0; $i < count ($words) || !$allWordsAreValid; $i++) { 
+                    for ($i = 0; $i < count ($words); $i++) { 
                         $currentWord = $words[$i] -> name;
                         if (strlen($currentWord) < 3 || strlen($currentWord) > 20) {
                             if (!in_array(strtolower($currentWord), $wrongWords)) {
