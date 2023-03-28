@@ -89,10 +89,10 @@ function Categories() {
 
     const handleEdit = (e) => {
         setIdToEdit(e.target.id);
-        // console.log(idToEdit);
+        console.log(idToEdit); 
         setEditing(true);
-        setWordList();
-        setDescriptionList();
+        setWordList([]);
+        setDescriptionList([]);
         
         myCategories.forEach(category => {
             if (category.categoryId == idToEdit) {
