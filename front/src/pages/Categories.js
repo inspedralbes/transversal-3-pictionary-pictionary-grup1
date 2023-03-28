@@ -57,6 +57,12 @@ function Categories() {
     };
 
     const handleWordAdd = () => {
+        setUserData({
+            name: "",
+            privacy: "",
+            token: "",
+            words: [],
+        });
         setWordList([...wordList, { word: "" }]);
         setDescriptionList([...descriptionList, { description: "" }]);
     };
