@@ -64,8 +64,7 @@ function LandingPage({ socket }) {
       credentials: "include",
     })
       .then((response) => response.json())
-      .then((data) => {
-        console.log("Primer fetch", data);
+      .then(() => {
         setisLogged(false);
       });
 

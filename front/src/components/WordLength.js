@@ -40,7 +40,6 @@ function WordLength({ socket }) {
           for (let i = 0; i < data.long; i++) {
             pushSpaces(i);
           }
-          console.log(spaces);
           arrayToString();
         }
       }
@@ -52,7 +51,6 @@ function WordLength({ socket }) {
     });
 
     socket.on("clear_word", () => {
-      console.log("clear");
       spaces = [];
       setWord("")
     });

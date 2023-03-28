@@ -88,7 +88,6 @@ function Register({ socket }) {
                 body: user,
                 credentials: 'include'
             }).then((response) => response.json()).then((data) => {
-                console.log(data);
             }
             );
         }

@@ -33,7 +33,6 @@ function ConnectedUsersInGame({ socket, pintor }) {
       setFirstTime(false);
     }
     socket.on("lobby_user_list", (data) => {
-      console.log("avatar", data);
       setUserList(data);
       data.list.sort((a, b) => b.points - a.points);
     });

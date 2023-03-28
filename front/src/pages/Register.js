@@ -86,8 +86,6 @@ function Register({ socket }) {
                         token: cookies.get('token')
                     });
                     navigate("/")
-                } else {
-                    console.log(data);
                 }
             }
             );
