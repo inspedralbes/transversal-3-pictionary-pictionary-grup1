@@ -616,6 +616,7 @@ function acabarRonda(lobbyId) {
         sendBoardData(lobbyId);
         sendUserList(lobbyId);
         setCounter(lobbyId);
+        startWordLength(lobbyId);
       }
     }
   });
