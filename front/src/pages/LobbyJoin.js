@@ -124,8 +124,8 @@ function LobbyJoin({ socket }) {
       setError("The chosen username is already on use");
     });
 
-    socket.on("USR_NAME_TOO_LONG", () => {
-      setError("The chosen username is too long");
+    socket.on("USR_NAME_TOO_LONG", (data) => {
+      setError("The chosen username is too long, max length is " + data.max);
     });
 
     return () => {
@@ -134,6 +134,7 @@ function LobbyJoin({ socket }) {
       socket.off("lobby_deleted");
       socket.off("YOU_LEFT_LOBBY");
       socket.off("USER_ALR_CHOSEN_ERROR");
+      socket.off("USR_NAME_TOO_LONG");
     };
   }, [navigate, socket]);
 

@@ -63,6 +63,7 @@ const maxSettings = {
   minTime: 30,
   minAmountOfTurns: 1,
   maxAmountOfTurns: 5,
+  maxUsernameLength: 8,
 };
 
 var sesiones = [];
@@ -182,8 +183,10 @@ socketIO.on("connection", (socket) => {
   });
 
   socket.on("join_room", (data) => {
-    if (data.username.length > 8) {
-      socketIO.to(socket.id).emit("USR_NAME_TOO_LONG");
+    if (data.username.length > maxSettings.maxUsernameLength) {
+      socketIO.to(socket.id).emit("USR_NAME_TOO_LONG", {
+        max: maxSettings.maxUsernameLength
+      });
     } else {
       socket.data.username = data.username;
       joinLobby(socket, data.lobbyIdentifier, socket.data.username);
