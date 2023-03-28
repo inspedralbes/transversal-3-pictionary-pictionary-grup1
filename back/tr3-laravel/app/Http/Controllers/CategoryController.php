@@ -53,7 +53,7 @@ class CategoryController extends Controller
     {
         $userId = null;
 
-        if (!($request -> token == null || $request -> token == "" )) {
+        if (! ($request -> token == null || $request -> token == "" || $request -> token == undefined) ) {
             //Check if the user is logged, returns 'null' if the user is not logged in.
             [$id, $token] = explode('|', $request -> token, 2);
             $accessToken = PersonalAccessToken::find($id);
