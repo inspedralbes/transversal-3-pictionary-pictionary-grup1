@@ -84,7 +84,6 @@ class CategoryController extends Controller
 
         $validatorWords =  Validator::make($request->all(), [
             'words' => 'present|array',
-            'words:name' => 'required|min:3|max:20',
         ]);
 
         //If the validation does not fail we continue.
