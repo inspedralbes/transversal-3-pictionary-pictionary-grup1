@@ -29,6 +29,8 @@ function Ranking({ socket }) {
     }
 
     socket.on("lobby_user_list", (data) => {
+      console.log("avatar rank", data.list);
+
       data.list.sort((a, b) => b.points - a.points);
       setUserList(data.list);
     });
@@ -49,6 +51,7 @@ function Ranking({ socket }) {
             <div key={leader.id}>
               {index + 1 <= 3 && (
                   <div className="ranking__leader fade-item">
+                    <img src={leader.avatar}></img>
                     <div className="leader__name">{leader.name}</div>
                     <div className="leader__points">{leader.points} points</div>
                 </div>
@@ -66,6 +69,7 @@ function Ranking({ socket }) {
 
                     <div>
                       <span>{index}</span>
+                      <img src={leader.avatar}></img>
                       <span className="player__name"> {leader.name} </span>
                       <span className="player__points"> {leader.points} points</span>
                     </div>

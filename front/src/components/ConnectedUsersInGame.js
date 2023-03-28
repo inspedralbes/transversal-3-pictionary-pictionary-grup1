@@ -33,6 +33,7 @@ function ConnectedUsersInGame({ socket, pintor }) {
       setFirstTime(false);
     }
     socket.on("lobby_user_list", (data) => {
+      console.log("avatar", data);
       setUserList(data);
       data.list.sort((a, b) => b.points - a.points);
     });
@@ -55,6 +56,7 @@ function ConnectedUsersInGame({ socket, pintor }) {
                   key={index}
                 >
                   <div className="GameItem__name">
+                  <img src={user.avatar} width="100px" height="100px"></img>
                     <p>
                       {user.painting ? (
                         <>
@@ -67,6 +69,7 @@ function ConnectedUsersInGame({ socket, pintor }) {
                         </>
                       ) : (
                         <>
+                       
                           {user.name}{" "}
                           {pintor && user.lastAnswer != ""
                             ? `: ${user.lastAnswer}`

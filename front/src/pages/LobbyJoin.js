@@ -227,7 +227,7 @@ function LobbyJoin({ socket }) {
           </span>
         </h1>
         <ConnectedUsers socket={socket}></ConnectedUsers>
-        <button className="createGame__leaveButton" onClick={setAvatar}></button>
+        <button className="createGame__leaveButton" onClick={setAvatar}>Change avatar</button>
       </div>
     );
   }
