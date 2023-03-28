@@ -85,19 +85,24 @@ class CategoryController extends Controller
         $validatorWords =  Validator::make($request->all(), [
             'words' => 'required|array|between:2,100'
         ]);
-
-        //If the validation does not fail we continue.
-        if ($validatorCategory->fails()) {
+        
+        if ($validatorWords->fails()) {
             $sendCategory = (object) 
             ["valid" => false,
-            'message' => "Validation error in the category name."
+            'message' => "Validation error in words, words must be at least 3 characters long and at least have 3 words."
             ];
-        } else if ($validatorWords->fails()) {
-                $sendCategory = (object) 
-                ["valid" => false,
-                'message' => "Validation error in words, words must be at least 3 characters long and at least have 3 words."
-                ];
-        } else {
+        // //If the validation does not fail we continue.
+        // if ($validatorCategory->fails()) {
+        //     $sendCategory = (object) 
+        //     ["valid" => false,
+        //     'message' => "Validation error in the category name."
+        //     ];
+        // } else if ($validatorWords->fails()) {
+        //         $sendCategory = (object) 
+        //         ["valid" => false,
+        //         'message' => "Validation error in words, words must be at least 3 characters long and at least have 3 words."
+        //         ];
+        // } else {
                 //Check if the user is logged in.
                 $userId = $this->checkUserLogged($request);
                 $createCategory = false;
