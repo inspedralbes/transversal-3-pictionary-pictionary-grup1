@@ -420,21 +420,25 @@ class CategoryController extends Controller
                 -> count();
 
                 if ($isTheUserTheOwner != 0) {
+                    $getCategory = Category::where('id', $request -> category_id) 
+                    -> where('creator_id', $userId)
+                    -> get();
+                    $categoryName = $getCategory -> name;
                     Category::where('id', $request -> category_id) 
-                    -> where('creator_id', $request->session()->get('userId'))
+                    -> where('creator_id', $userId)
                     -> delete();
                     $deleted = (object) 
                     ["valid" => true,
-                    'message' => "Category ".$request -> category_id." deleted."
+                    'message' => "Category ".$categoryName." deleted."
                     ];
                 } else {
-                    $sendCategory = (object) 
+                    $deleted = (object) 
                     ["valid" => false,
                     'message' => "You can't delete a category that isn't yours!",
                     ];
                 }
             } else {
-                $sendCategory = (object) 
+                $deleted = (object) 
                 ["valid" => false,
                 'message' => "Category doesn't exist.",
                 ];
