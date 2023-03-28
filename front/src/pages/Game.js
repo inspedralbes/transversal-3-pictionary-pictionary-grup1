@@ -143,120 +143,56 @@ function Game({ socket }) {
   return (
     <>
       {starting && (
-        <div
-          style={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            fontSize: "10rem",
-          }}
-        >
+        <div className="Game__modal__loading">
           Loading
         </div>
       )}
       {!starting && (
         <>
           {roundEnded && !result && !pintor && !gameEnded && (
-            <div
-              style={{
-                textAlign: "center",
-                position: "fixed",
-                top: "50%",
-                left: "50%",
-                fontSize: "5rem",
-                transform: "translate(-50%, -50%)",
-                zIndex: "1",
-                backgroundColor: "white",
-                border: "1px solid black",
-              }}
-            >
+            <div className="Game__modal"><p>
               Last word was: {wordToCheck}
               <br></br>
               <br></br>
               {nextDrawerName != null && (
                 <>Next round drawer: {nextDrawerName}</>
-              )}
+              )}</p>
             </div>
           )}
 
           {roundEnded && !result && pintor && !timeUp && !gameEnded && (
-            <div
-              style={{
-                textAlign: "center",
-                position: "fixed",
-                top: "50%",
-                left: "50%",
-                fontSize: "5rem",
-                transform: "translate(-50%, -50%)",
-                zIndex: "1",
-                backgroundColor: "white",
-                border: "1px solid black",
-              }}
-            >
+            <div className="Game__modal"
+            ><p>
               {gamemode == "fast" ? (
-                <>Congratulations! Your drawing was wonderful!</>
+                <p>Congratulations! Your drawing was wonderful!</p>
               ) : (
-                <>Congratulations! Everyone got the word!</>
-              )}
+                <p>Congratulations! Everyone got the word!</p>
+              )}</p>
             </div>
           )}
 
           {roundEnded && !result && pintor && timeUp && !gameEnded && (
-            <div
-              style={{
-                textAlign: "center",
-                position: "fixed",
-                top: "50%",
-                left: "50%",
-                fontSize: "5rem",
-                transform: "translate(-50%, -50%)",
-                zIndex: "1",
-                backgroundColor: "white",
-                border: "1px solid black",
-              }}
-            >
-              Sorry! Time's Up!
+            <div className="Game__modal">
+              <p>Sorry! Time's Up!</p>
             </div>
           )}
 
           {roundEnded && result && !gameEnded && (
-            <div
-              style={{
-                textAlign: "center",
-                position: "fixed",
-                top: "50%",
-                left: "50%",
-                fontSize: "5rem",
-                transform: "translate(-50%, -50%)",
-                zIndex: "1",
-                backgroundColor: "white",
-                border: "1px solid black",
-              }}
-            >
-              You did it! <br></br>
+            <div className="Game__modal">
+              <p>You did it!</p> <br></br>
               <br></br>
               {nextDrawerName != null && (
-                <>Next round drawer: {nextDrawerName}</>
+                <p>Next round drawer: {nextDrawerName}</p>
               )}
             </div>
           )}
 
           {showDrawer && (
-            <div
-              style={{
-                textAlign: "center",
-                position: "absolute",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-                fontSize: "5rem",
-              }}
-            >
-              {countdown}
+            <div className="Game__modal">
+              <p>{countdown}
               <br></br>
               <br></br>
-              Drawer: {drawerName}
+              Drawer: {drawerName}</p>
             </div>
           )}
 
@@ -297,20 +233,8 @@ function Game({ socket }) {
                         {result != null && messageWin && (
                           <>
                             {result && !roundEnded && (
-                              <div
-                                style={{
-                                  textAlign: "center",
-                                  position: "fixed",
-                                  top: "50%",
-                                  left: "50%",
-                                  fontSize: "5rem",
-                                  transform: "translate(-50%, -50%)",
-                                  zIndex: "1",
-                                  backgroundColor: "white",
-                                  border: "1px solid black",
-                                }}
-                              >
-                                {messageResponses.wordAttemptSuccess}
+                              <div className="Game__modal">
+                                <p>{messageResponses.wordAttemptSuccess}</p>
                               </div>
                             )}
                             {!result && <p>{messageResponses.wordAttemptError}</p>}
