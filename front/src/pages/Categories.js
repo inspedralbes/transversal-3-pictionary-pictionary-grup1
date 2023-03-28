@@ -9,15 +9,16 @@ import '../styles/Categories.css';
 function Categories() {
     const [registro, setRegistro] = useState(0);
     const [addCategory, setAddCategory] = useState(false);
+    const [addCategoryMessage, setAddCategoryMessage] = useState("");
     const [firstTime, setFirstTime] = useState(true);
     const [loadingCategories, setLoadingCategories] = useState(true);
     const [myCategories, setMyCategories] = useState([]);
     const [getCats, setGetCats] = useState(0);
     const [deleteCat, setDeleteCat] = useState(0);
     const [editCat, setEditCat] = useState(0);
-    const [idToDelete, setIdToDelete] = useState();
-    const [idToEdit, setIdToEdit] = useState();
-    const [message, setMessage] = useState("");
+    const [idToDelete, setIdToDelete] = useState(0);
+    const [idToEdit, setIdToEdit] = useState(0);
+    const [categoryListMessage, setCategoryListMessage] = useState("");
 
 
 
@@ -61,46 +62,23 @@ function Categories() {
     };
 
     const handleSetAddCategory = () => {
-        setAddCategory(!addCategory)
+        setCategoryListMessage("");
+        setAddCategory(!addCategory);
+        setGetCats(getCats + 1);
     };
-
-    const [color, setColor] = useState({
-        name: "red",
-        privacy: "red",
-        token: "red",
-        words: "red",
-    });
-
-    const [errorText, setErrorText] = useState("");
     const cookies = new Cookies();
     const navigate = useNavigate();
 
-    const handleKeyDown = (event) => {
-        if (event.key === "Enter") {
-            setRegistro(registro + 1);
-        }
-    };
-
-    const handleGetCats = (event) => {
-        setGetCats(getCats + 1);
-    };
-
     const handleSubmit = (event) => {
         setRegistro(registro + 1);
-        // setGetCats(getCats + 1);
-        // setAddCategory(!addCategory);
     };
 
     function handleDelete(e) {
-        // console.log(e.target);
-        // console.log(e.target.id);
         setIdToDelete(e.target.id);
         setDeleteCat(deleteCat + 1);
     };
 
     const handleEdit = (e) => {
-        // console.log(e.target);
-        // console.log(e.target.id);
         setIdToEdit(e.target.id);
         setEditCat(editCat + 1);
     };
@@ -130,6 +108,16 @@ function Categories() {
                 credentials: 'include'
             }).then((response) => response.json()).then((data) => {
                 console.log(data);
+                if (data.valid) {
+                    setAddCategoryMessage(`Category ${data.category.name} added correctly`);
+                    setWordList([{ word: "" }]);
+                    setDescriptionList([{ description: "" }]);
+                } else {
+                    setAddCategoryMessage(data.message)
+                    if (data.wrongWords != null) {
+                        setAddCategoryMessage(`One or more words are repeated. (${data.wrongWords})`)
+                    }
+                }
             }
             );
         }
@@ -166,7 +154,7 @@ function Categories() {
     }, [getCats]);
 
     useEffect(() => {
-        if (deleteCat != 0) {
+        if (deleteCat != 0 && idToDelete != 0) {
             const user = new FormData()
             user.append("token", cookies.get('token') != undefined ? cookies.get('token') : null);
             user.append("category_id", idToDelete);
@@ -179,10 +167,11 @@ function Categories() {
             }).then((response) => response.json()).then((data) => {
                 if (data.valid) {
                     setGetCats(getCats + 1);
-                    setMessage(data.message);
+                    setCategoryListMessage(data.message);
                 } else {
-                    setMessage(data.message);
+                    setCategoryListMessage(data.message);
                 }
+                setIdToDelete(0)
             }
             );
         }
@@ -202,9 +191,9 @@ function Categories() {
             }).then((response) => response.json()).then((data) => {
                 if (data.valid) {
                     setGetCats(getCats + 1);
-                    setMessage(data.message);
+                    setCategoryListMessage(data.message);
                 } else {
-                    setMessage(data.message);
+                    setCategoryListMessage(data.message);
                 }
             }
             );
@@ -227,6 +216,7 @@ function Categories() {
                             {myCategories.length > 0 ?
                                 <>
                                     <h1 style={{ textAlign: "center" }}>Categorias</h1>
+                                    {categoryListMessage != "" && <h3 style={{ textAlign: "center", color: "red" }}>{categoryListMessage}</h3>}
                                     <div className="myCategories">
                                         <table className="myCategories__table">
                                             <thead className="myCategories__thead">
@@ -266,7 +256,6 @@ function Categories() {
                                     <button onClick={handleSetAddCategory}><i className="icon-plus"></i>Add category</button>
                                 </>
                             }
-                            {message != "" && <>{message}</>}
                         </div> :
                         <h1>Loading categories...</h1>}
                 </> :
@@ -274,6 +263,7 @@ function Categories() {
                     <fieldset>
                         <legend className="addCategory__legend">ADD NEW CATEGORY</legend>
                         <br />
+                        {addCategoryMessage != "" && <h3 style={{ textAlign: "center" }}>{addCategoryMessage}</h3>}
                         <div className="addCategory__form">
                             <div className="addCategory__name">
                                 <span className="addCategory__formSpan">
@@ -349,7 +339,6 @@ function Categories() {
                             </div>
                         </div>
                     </fieldset>
-                    {message != "" && <>{message}</>}
                 </div>}
         </>
     );

@@ -157,7 +157,7 @@ class CategoryController extends Controller
     
                             $sendCategory = (object) 
                             ["valid" => true,
-                            'message' => $category,
+                            'category' => $category,
                             ];
     
                         } else {
