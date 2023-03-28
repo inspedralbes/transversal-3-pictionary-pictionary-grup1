@@ -20,6 +20,8 @@ function ConnectedUsers({ socket }) {
         }
         socket.on("lobby_user_list", (data) => {
             setUserList(data.list);
+            console.log(data);
+
         });
     }, [firstTime, socket])
 
@@ -28,9 +30,11 @@ function ConnectedUsers({ socket }) {
         <div className="lobby__connectedUsers">
             <h2 className="connectedUsers_title">Connected users</h2>
             <ul id="userList" className="connectedUsers__userList userList">
+
                 {userList.map((user, index) => {
                     return (
                         <li onMouseOver={changeColor} className="userList__item item" key={index}>
+                            <img src={user.avatar}></img>
                             <div className="item__name">
                                 <h3 id="list">{user.name}</h3>
                             </div>

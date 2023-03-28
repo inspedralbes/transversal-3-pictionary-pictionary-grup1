@@ -84,6 +84,13 @@ function LobbyJoin({ socket }) {
     navigator.clipboard.writeText(lobbyId);
   }
 
+  function setAvatar() {
+    let avatar = Math.floor(Math.random() * 25);
+
+    const avatarurl = `https://api.dicebear.com/6.x/bottts/svg?seed=${avatar}`;
+    socket.emit('set_avatar', { avatar: avatarurl });
+  }
+
   useEffect(() => {
     if (firstTime) {
       socket.emit("get_username");
@@ -99,6 +106,11 @@ function LobbyJoin({ socket }) {
       setInsideLobby(true);
       setLobbyId(data.lobbyIdentifier);
       setError("");
+      setAvatar();
+      let avatar = Math.floor(Math.random() * 25);
+
+      const avatarurl = `https://api.dicebear.com/6.x/bottts/svg?seed=${avatar}`;
+      socket.emit('set_avatar', { avatar: avatarurl });
     });
 
     socket.on("lobby_deleted", (data) => {
@@ -215,6 +227,7 @@ function LobbyJoin({ socket }) {
           </span>
         </h1>
         <ConnectedUsers socket={socket}></ConnectedUsers>
+        <button className="createGame__leaveButton" onClick={setAvatar}></button>
       </div>
     );
   }
