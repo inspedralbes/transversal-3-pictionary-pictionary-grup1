@@ -154,6 +154,7 @@ socketIO.on("connection", (socket) => {
           ownerId: socket.data.id,
           members: [],
           currentDrawer: "",
+          wordLengthUserCount: 0,
           words: [],
           rounds: 0,
           actualRound: 0,
@@ -245,9 +246,12 @@ socketIO.on("connection", (socket) => {
 
   socket.on("word_length_loaded", () => {
     lobbies.forEach(lobby => {
-      if (lobby.lobbyIdentifier == socket.data.current_lobby && !lobby.startedWordLength) {
-        lobby.startedWordLength = true;
-        startWordLength(socket.data.current_lobby);
+      if (lobby.lobbyIdentifier == socket.data.current_lobby) {
+        lobby.wordLengthUserCount++;
+        if ((!lobby.settings.ownerPlay && lobby.wordLengthUserCount == lobby.members.length) || (lobby.settings.ownerPlay && lobby.wordLengthUserCount == lobby.members.length - 1)) {
+          startWordLength(socket.data.current_lobby);
+          lobby.wordLengthUserCount = 0;
+        }
       }
     });
   })
@@ -471,10 +475,19 @@ socketIO.on("connection", (socket) => {
 
   socket.on('round_end', () => {
     lobbies.forEach((lobby) => {
-      if (lobby.lobbyIdentifier == socket.data.current_lobby && lobby.ownerId == socket.data.id) {
-        enviarPintor(socket.data.current_lobby);
-        sendUserList(socket.data.current_lobby);
-        acabarRonda(socket.data.current_lobby);
+      if (lobby.lobbyIdentifier == socket.data.current_lobby) {
+        if (lobby.ownerId == socket.data.id) {
+          enviarPintor(socket.data.current_lobby);
+          sendUserList(socket.data.current_lobby);
+          acabarRonda(socket.data.current_lobby);
+        }
+        if (!lobby.ended) {
+          lobby.wordLengthUserCount++;
+          if (lobby.wordLengthUserCount == lobby.members.length) {
+            startWordLength(socket.data.current_lobby);
+            lobby.wordLengthUserCount = 0;
+          }
+        }
       }
     });
   })
@@ -497,6 +510,7 @@ async function resetLobbyData(room) {
       lobby.words = [];
       lobby.rounds = 0;
       lobby.actualRound = 0;
+      lobby.wordLengthUserCount = 0;
       lobby.startedWordLength = false;
       lobby.cont = 0;
       lobby.ind_drawer = 0;
@@ -616,7 +630,6 @@ function acabarRonda(lobbyId) {
         sendBoardData(lobbyId);
         sendUserList(lobbyId);
         setCounter(lobbyId);
-        startWordLength(lobbyId);
       }
     }
   });
