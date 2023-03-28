@@ -105,68 +105,76 @@ class CategoryController extends Controller
             }
             
             //If we can create the category we add it with the user id after checking that all the words are valid.
+
             if ($createCategory) {
                 $allWordsAreValid = true;
                 $words = (json_decode($request -> words));
 
-                for ($i = 0; $i < count ($words) || !$allWordsAreValid; $i++) { 
-                    $currentWord = $words[$i] -> name;
-                    if (strlen($currentWord) < 3 || strlen($currentWord) > 20) {
-                        if (!in_array(strtolower($currentWord), $wrongWords)) {
-                            array_push($wrongWords, strtolower($currentWord));
-                            $allWordsAreValid = false;
-                        }
-                    }
-                }
-
-                if ($allWordsAreValid) {
-                    //Check for each word if it already exists.
-                    for ($i = 0; $i < count ($words); $i++) { 
+                if (count($words) < 3 || count($words) > 20) {
+                    $sendCategory = (object) 
+                    ["valid" => false,
+                    'message' => 'There should be at least 3 words in the category, with a maximum of 100.',
+                    ];
+                } else {
+                    for ($i = 0; $i < count ($words) || !$allWordsAreValid; $i++) { 
                         $currentWord = $words[$i] -> name;
-                        for ($j = 0; $j < count ($words); $j++) { 
-                            if (($i != $j) && (strcasecmp($currentWord, $words[$j] -> name) == 0)) {
-                                if (!in_array(strtolower($currentWord), $wrongWords)) {
-                                    array_push($wrongWords, strtolower($currentWord));
-                                }
+                        if (strlen($currentWord) < 3 || strlen($currentWord) > 20) {
+                            if (!in_array(strtolower($currentWord), $wrongWords)) {
+                                array_push($wrongWords, strtolower($currentWord));
+                                $allWordsAreValid = false;
                             }
                         }
                     }
-
-                    if ((empty($wrongWords)))  {
-                        $category = new Category;
-                        $category -> name = strtoupper($request -> name);
-                        $category -> creator_id = $request->session()->get('userId');
-                        $category -> privacy = $privacy;
-                        $category -> save();
-                        $categoryAdded = $category;
-
+    
+                    if ($allWordsAreValid) {
+                        //Check for each word if it already exists.
                         for ($i = 0; $i < count ($words); $i++) { 
-                            $word = new Word;
-                            $word -> name = $words[$i] -> name;
-                            $word -> description = $words[$i] -> description;
-                            $word -> category_id = $categoryAdded -> id;
-                            $word -> save();
+                            $currentWord = $words[$i] -> name;
+                            for ($j = 0; $j < count ($words); $j++) { 
+                                if (($i != $j) && (strcasecmp($currentWord, $words[$j] -> name) == 0)) {
+                                    if (!in_array(strtolower($currentWord), $wrongWords)) {
+                                        array_push($wrongWords, strtolower($currentWord));
+                                    }
+                                }
+                            }
                         }
-
-                        $sendCategory = (object) 
-                        ["valid" => true,
-                        'message' => $category,
-                        ];
-
+    
+                        if ((empty($wrongWords)))  {
+                            $category = new Category;
+                            $category -> name = strtoupper($request -> name);
+                            $category -> creator_id = $request->session()->get('userId');
+                            $category -> privacy = $privacy;
+                            $category -> save();
+                            $categoryAdded = $category;
+    
+                            for ($i = 0; $i < count ($words); $i++) { 
+                                $word = new Word;
+                                $word -> name = $words[$i] -> name;
+                                $word -> description = $words[$i] -> description;
+                                $word -> category_id = $categoryAdded -> id;
+                                $word -> save();
+                            }
+    
+                            $sendCategory = (object) 
+                            ["valid" => true,
+                            'message' => $category,
+                            ];
+    
+                        } else {
+                            $sendCategory = (object) 
+                            ["valid" => false,
+                            'message' => 'One or more words are repeated.',
+                            'wrongWords' => $wrongWords,
+                            ];
+                        }
+    
                     } else {
                         $sendCategory = (object) 
                         ["valid" => false,
-                        'message' => 'One or more words are repeated.',
+                        'message' => 'Words should be more than 3 characters and less than 20.',
                         'wrongWords' => $wrongWords,
                         ];
                     }
-
-                } else {
-                    $sendCategory = (object) 
-                    ["valid" => false,
-                    'message' => 'Words should be more than 3 characters and less than 20.',
-                    'wrongWords' => $wrongWords,
-                    ];
                 }
 
             } else {
