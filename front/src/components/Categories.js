@@ -27,26 +27,22 @@ function Categories({ socket, start, categoriesData }) {
             <div className="list__container default">
                 <h3 className="title">Default</h3>
                 <div id="list__container_li">
-                    {Array.isArray(categoriesData.public)
-                        ? categoriesData.public.map((item, index) => (
-                            item.createdBy == "SYSTEM" ?
-                                <div key={index} className="list__container__text">
-                                    <input value={item.categoryId} type="checkbox" id={item.categoryId} class="check" onChange={handleCheck} />
-                                    <label for={item.categoryId} class="list__container__text__label" >
-                                        <svg width="300" height="50" viewBox="0 0 500 100">
-                                            <rect x="0" y="15" width="50" height="50" stroke="black" fill="none" className="list__container__checkbox" />
-                                            <g transform="translate(-10,-962.36218)">
-                                                <path d="m 13,983 c 33,6 40,26 55,48 " stroke="black" stroke-width="3" class="path1" fill="none" />
-                                                <path d="M 75,970 C 51,981 34,1014 25,1031 " stroke="black" stroke-width="3" class="path1" fill="none" />
-                                            </g>
-                                            {/* <g transform="translate(250,-982.36216)">
-                                    <path d="m 210,999 -218,5 c -501,-32 179,121 235,10 -5,-36 -697,-56 -210,75" stroke="black" fill="none" class="path2" stroke-width="2" />
-                                    </g> */}
-                                        </svg>
-                                        <span htmlFor={item.categoryId}>{`${item.categoryName}`}</span>
-                                    </label>
+                    {Array.isArray(categoriesData.default)
+                        ? categoriesData.default.map((item, index) => (
+                            <div key={index} className="list__container__text">
+                                <input value={item.categoryId} type="checkbox" id={item.categoryId} class="check" onChange={handleCheck} />
+                                <label for={item.categoryId} class="list__container__text__label" >
+                                    <svg width="300" height="50" viewBox="0 0 500 100">
+                                        <rect x="0" y="15" width="50" height="50" stroke="black" fill="none" className="list__container__checkbox" />
+                                        <g transform="translate(-10,-962.36218)">
+                                            <path d="m 13,983 c 33,6 40,26 55,48 " stroke="black" stroke-width="3" class="path1" fill="none" />
+                                            <path d="M 75,970 C 51,981 34,1014 25,1031 " stroke="black" stroke-width="3" class="path1" fill="none" />
+                                        </g>
+                                    </svg>
+                                    <span htmlFor={item.categoryId}>{`${item.categoryName}`}</span>
+                                </label>
 
-                                </div> : null
+                            </div>
                         )) : null}
                 </div>
             </div>
@@ -55,31 +51,31 @@ function Categories({ socket, start, categoriesData }) {
                 <div id="list__container_li">
                     {Array.isArray(categoriesData.public) && categoriesData.public != []
                         ? categoriesData.public.map((item, index) => (
-                            item.createdBy != "SYSTEM" ?
-                                <div key={index} className="list__container__text">
-                                    <input value={item.categoryId} type="checkbox" id={item.categoryId} class="check" onChange={handleCheck} />
-                                    <label for={item.categoryId} class="list__container__text__label" >
-                                        <svg width="300" height="50" viewBox="0 0 500 100">
-                                            <rect x="0" y="15" width="50" height="50" stroke="black" fill="none" className="list__container__checkbox" />
-                                            <g transform="translate(-10,-962.36218)">
-                                                <path d="m 13,983 c 33,6 40,26 55,48 " stroke="black" stroke-width="3" class="path1" fill="none" />
-                                                <path d="M 75,970 C 51,981 34,1014 25,1031 " stroke="black" stroke-width="3" class="path1" fill="none" />
-                                            </g>
-                                            {/* <g transform="translate(250,-982.36216)">
-                                    <path d="m 210,999 -218,5 c -501,-32 179,121 235,10 -5,-36 -697,-56 -210,75" stroke="black" fill="none" class="path2" stroke-width="2" />
-                                    </g> */}
-                                        </svg>
-                                        <span htmlFor={item.categoryId}>{`${item.categoryName}`}</span>
-                                    </label>
-                                </div> : null
+                            <div key={index} className="list__container__text">
+                                <input value={item.categoryId} type="checkbox" id={item.categoryId} class="check" onChange={handleCheck} />
+                                <label for={item.categoryId} class="list__container__text__label" >
+                                    <svg width="300" height="50" viewBox="0 0 500 100">
+                                        <rect x="0" y="15" width="50" height="50" stroke="black" fill="none" className="list__container__checkbox" />
+                                        <g transform="translate(-10,-962.36218)">
+                                            <path d="m 13,983 c 33,6 40,26 55,48 " stroke="black" stroke-width="3" class="path1" fill="none" />
+                                            <path d="M 75,970 C 51,981 34,1014 25,1031 " stroke="black" stroke-width="3" class="path1" fill="none" />
+                                        </g>
+                                    </svg>
+                                    <span htmlFor={item.categoryId}>{`${item.categoryName}`}<i class="icon-info-circle">
+                                        <div class="icon-info-circle__content">Create By: {item.createdBy.name}<br />Nº Words: {item.numberOfWords}<br />Words: {Array.isArray(item.words) ? item.words.map((word, index) => (<li>{word.name}</li>)) : <></>}</div></i></span>
+
+                                </label>
+                            </div>
                         )) : null}
+
                 </div>
 
             </div>
+
             <div className="list__container private">
                 <h3 className="title">My categories</h3>
-                {Array.isArray(categoriesData.private) && categoriesData.private != []
-                    ? categoriesData.private.map((item, index) => (
+                {Array.isArray(categoriesData.myCategories) && categoriesData.myCategories != []
+                    ? categoriesData.myCategories.map((item, index) => (
                         <div key={index} className="list__container__text">
                             <input value={item.categoryId} type="checkbox" id={item.categoryId} class="check" onChange={handleCheck} />
                             <label for={item.categoryId} class="list__container__text__label" >
@@ -89,9 +85,6 @@ function Categories({ socket, start, categoriesData }) {
                                         <path d="m 13,983 c 33,6 40,26 55,48 " stroke="black" stroke-width="3" class="path1" fill="none" />
                                         <path d="M 75,970 C 51,981 34,1014 25,1031 " stroke="black" stroke-width="3" class="path1" fill="none" />
                                     </g>
-                                    {/* <g transform="translate(250,-982.36216)">
-                                    <path d="m 210,999 -218,5 c -501,-32 179,121 235,10 -5,-36 -697,-56 -210,75" stroke="black" fill="none" class="path2" stroke-width="2" />
-                                    </g> */}
                                 </svg>
                                 <span htmlFor={item.categoryId}>{`${item.categoryName}`}</span>
                             </label>

@@ -209,11 +209,10 @@
     width: 70%;
     height: 60%;
     background-color: white;    
-    margin: 0 auto;
-}
-.Game__modal>p{
-    margin: 0 auto;
-    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 .Game__modal__loading{
     position: absolute;
