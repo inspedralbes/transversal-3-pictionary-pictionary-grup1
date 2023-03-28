@@ -96,7 +96,7 @@ class CategoryController extends Controller
         } else if ($validatorWords->fails()) {
                 $sendCategory = (object) 
                 ["valid" => false,
-                'message' => "Validation error in words, words must be at least 3 characters long and at least have 1 word."
+                'message' => "Validation error in words, words must be at least 3 characters long and at least have 3 words."
                 ];
         } else {
                 //Check if the user is logged in.
@@ -308,15 +308,29 @@ class CategoryController extends Controller
         $categoryEdited = (object)[];
         $editCategory = false;
 
-        //Check if the user is logged in.
-        $userId = $this->checkUserLogged($request);
+        $validatorCategory =  Validator::make($request->all(), [
+            'name' => 'required|min:3|max:20',
+        ]);
 
-        if ($validator->fails()) {
+        $validatorWords =  Validator::make($request->all(), [
+            'words' => 'present|array',
+            'words:name' => 'required|min:3|max:20',
+        ]);
+
+        //If the validation does not fail we continue.
+        if ($validatorCategory->fails()) {
             $sendCategory = (object) 
             ["valid" => false,
-            'message' => "Validation errors."
+            'message' => "Validation error in the category name."
             ];
+        } else if ($validatorWords->fails()) {
+                $sendCategory = (object) 
+                ["valid" => false,
+                'message' => "Validation error in words, words must be at least 3 characters long and at least have 1 word."
+                ];
         } else {
+            //Check if the user is logged in.
+            $userId = $this->checkUserLogged($request);
             if ($userId != null) {
                 //Check if the category exists.
                 $doesCategoryExist = Category::where('id', $request -> category_id)
