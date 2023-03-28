@@ -224,9 +224,12 @@ class CategoryController extends Controller
     //Get my categories
     public function getMyCategories (Request $request)
     {  
+        $categories = [];
+        
         $returnCategories = (object) 
         ["valid" => true,
         'message' => "You haven't created any categories yet!",
+        'categories' => $categories
         ];
 
         //Check if user is logged
