@@ -75,6 +75,8 @@ socketIO.on("connection", (socket) => {
   socket.data.username = "";
   socket.data.token = null;
   socket.data.current_lobby = null;
+  socket.data.avatar = "";
+
   console.log(socket.data.id + " connected ");
 
   const random_hex_color_code = () => {
@@ -184,9 +186,29 @@ socketIO.on("connection", (socket) => {
   });
 
   socket.on("join_room", (data) => {
-    socket.data.username = data.username;
-    joinLobby(socket, data.lobbyIdentifier, socket.data.username);
+    if (data.username.length > 8) {
+      socketIO.to(socket.id).emit("USR_NAME_TOO_LONG");
+    } else {
+      socket.data.username = data.username;
+      joinLobby(socket, data.lobbyIdentifier, socket.data.username);
+    }
   });
+
+  socket.on("set_avatar", (data) => {
+    socket.data.avatar = data.avatar;
+    lobbies.forEach((lobby) => {
+      if (lobby.lobbyIdentifier == socket.data.current_lobby) {
+        lobby.members.forEach((member) => {
+          if (member.idUser == socket.data.id) {
+            member.avatar = data.avatar;
+          }
+        });
+      }
+    });
+    sendUserList(socket.data.current_lobby)
+  });
+
+
 
   socket.on("leave_lobby", (data) => {
     let lobby = socket.data.current_lobby;
@@ -522,6 +544,7 @@ async function resetLobbyData(room) {
         member.lastAnswerCorrect = false;
         member.lastAnswer = "";
         member.points = 0;
+        member.avatar = "";
       });
       lobby_data = lobby;
     }
@@ -653,6 +676,7 @@ function joinLobby(socket, lobbyIdentifier, username) {
           lastAnswerCorrect: false,
           lastAnswer: "",
           points: 0,
+          avatar: "",
         });
 
         socketIO.to(socket.id).emit("lobby_info", lobby);
@@ -709,6 +733,7 @@ async function setLobbyWord(room, amount) {
       category = lobby.categories
     }
   });
+  console.log("Pre-axios", category);
 
   await axios
     .post(laravelRoute + "getWords", {
@@ -803,6 +828,7 @@ function sendUserList(room) {
           lastAnswer: member.lastAnswer,
           painting: member.painting,
           points: member.points,
+          avatar: member.avatar
         });
       });
     }
