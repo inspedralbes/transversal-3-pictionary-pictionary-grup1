@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import "../styles/LobbyCreation.css";
 
+
 function Categories({ socket, start, categoriesData }) {
 
     const [checked, setChecked] = useState([]);
@@ -25,40 +26,76 @@ function Categories({ socket, start, categoriesData }) {
         <div className="checkList">
             <div className="list__container default">
                 <h3 className="title">Default</h3>
-                {Array.isArray(categoriesData.public)
-                    ? categoriesData.public.map((item, index) => (
-                        <div key={index} className="list__container__text">
-                            <input value={item.categoryId} type="checkbox" id={item.categoryId} class="check" onChange={handleCheck} />
-                            <label for={item.categoryId} class="list__container__text__label" >
-                            <svg width="300" height="50" viewBox="0 0 150 100">
-                                <g transform="translate(0,-972.36216)">
-                                <path d="m 230,980 -166,5 c -709,22 289,89 215,18 -37,-36 -537,-46 -478,23" stroke="black" fill="none" class="path2" stroke-width="3" />
-                                </g>
-                            </svg>
-                            <span htmlFor={item.categoryId}>{`${item.categoryName}`}</span>
-                            </label>
-                            
-                        </div>
-                    )) : null}
+                <div id="list__container_li">
+                    {Array.isArray(categoriesData.public)
+                        ? categoriesData.public.map((item, index) => (
+                            <div key={index} className="list__container__text">
+                                <input value={item.categoryId} type="checkbox" id={item.categoryId} class="check" onChange={handleCheck} />
+                                <label for={item.categoryId} class="list__container__text__label" >
+                                    <svg width="300" height="50" viewBox="0 0 500 100">
+                                        <rect x="0" y="15" width="50" height="50" stroke="black" fill="none" className="list__container__checkbox" />
+                                        <g transform="translate(-10,-962.36218)">
+                                            <path d="m 13,983 c 33,6 40,26 55,48 " stroke="black" stroke-width="3" class="path1" fill="none" />
+                                            <path d="M 75,970 C 51,981 34,1014 25,1031 " stroke="black" stroke-width="3" class="path1" fill="none" />
+                                        </g>
+                                        {/* <g transform="translate(250,-982.36216)">
+                                    <path d="m 210,999 -218,5 c -501,-32 179,121 235,10 -5,-36 -697,-56 -210,75" stroke="black" fill="none" class="path2" stroke-width="2" />
+                                    </g> */}
+                                    </svg>
+                                    <span htmlFor={item.categoryId}>{`${item.categoryName}`}</span>
+                                </label>
+
+                            </div>
+                        )) : null}
+                </div>
             </div>
             <div className="list__container public">
                 <h3 className="title">Public</h3>
-                {Array.isArray(categoriesData.private) && categoriesData.private != []
-                    ? categoriesData.private.map((item, index) => (
-                        <div key={index} className="list__container__text">
-                            <label htmlFor={item.categoryId}>{`${item.categoryName}`}</label>
-                            <input value={item.categoryId} type="checkbox" id={item.categoryId} onChange={handleCheck} />
-                        </div>
-                    )) : null}
+                <div id="list__container_li">
+                    {Array.isArray(categoriesData.public) && categoriesData.public != []
+                        ? categoriesData.public.map((item, index) => (
+                            categoriesData.public.createdBy == "SYSTEM" ?
+                            <div key={index} className="list__container__text">
+                                <input value={item.categoryId} type="checkbox" id={item.categoryId} class="check" onChange={handleCheck} />
+                                <label for={item.categoryId} class="list__container__text__label" >
+                                    <svg width="300" height="50" viewBox="0 0 500 100">
+                                        <rect x="0" y="15" width="50" height="50" stroke="black" fill="none" className="list__container__checkbox" />
+                                        <g transform="translate(-10,-962.36218)">
+                                            <path d="m 13,983 c 33,6 40,26 55,48 " stroke="black" stroke-width="3" class="path1" fill="none" />
+                                            <path d="M 75,970 C 51,981 34,1014 25,1031 " stroke="black" stroke-width="3" class="path1" fill="none" />
+                                        </g>
+                                        {/* <g transform="translate(250,-982.36216)">
+                                    <path d="m 210,999 -218,5 c -501,-32 179,121 235,10 -5,-36 -697,-56 -210,75" stroke="black" fill="none" class="path2" stroke-width="2" />
+                                    </g> */}
+                                    </svg>
+                                    <span htmlFor={item.categoryId}>{`${item.categoryName}`}</span>
+                                </label>
+                            </div>:null
+                        )) : null}
+                </div>
+
             </div>
             <div className="list__container private">
                 <h3 className="title">Private</h3>
                 {Array.isArray(categoriesData.private) && categoriesData.private != []
                     ? categoriesData.private.map((item, index) => (
                         <div key={index} className="list__container__text">
-                            <label htmlFor={item.categoryId}>{`${item.categoryName}`}</label>
-                            <input value={item.categoryId} type="checkbox" id={item.categoryId} onChange={handleCheck} />
-                        </div>
+                                <input value={item.categoryId} type="checkbox" id={item.categoryId} class="check" onChange={handleCheck} />
+                                <label for={item.categoryId} class="list__container__text__label" >
+                                    <svg width="300" height="50" viewBox="0 0 500 100">
+                                        <rect x="0" y="15" width="50" height="50" stroke="black" fill="none" className="list__container__checkbox" />
+                                        <g transform="translate(-10,-962.36218)">
+                                            <path d="m 13,983 c 33,6 40,26 55,48 " stroke="black" stroke-width="3" class="path1" fill="none" />
+                                            <path d="M 75,970 C 51,981 34,1014 25,1031 " stroke="black" stroke-width="3" class="path1" fill="none" />
+                                        </g>
+                                        {/* <g transform="translate(250,-982.36216)">
+                                    <path d="m 210,999 -218,5 c -501,-32 179,121 235,10 -5,-36 -697,-56 -210,75" stroke="black" fill="none" class="path2" stroke-width="2" />
+                                    </g> */}
+                                    </svg>
+                                    <span htmlFor={item.categoryId}>{`${item.categoryName}`}</span>
+                                </label>
+
+                            </div>
                     )) : null}
             </div>
         </div>
