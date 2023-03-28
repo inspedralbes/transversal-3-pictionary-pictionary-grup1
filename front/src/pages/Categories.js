@@ -92,15 +92,15 @@ function Categories() {
     };
 
     function handleDelete(e) {
-        console.log(e.target);
-        console.log(e.target.id);
+        // console.log(e.target);
+        // console.log(e.target.id);
         setIdToDelete(e.target.id);
         setDeleteCat(deleteCat + 1);
     };
 
     const handleEdit = (e) => {
-        console.log(e.target);
-        console.log(e.target.id);
+        // console.log(e.target);
+        // console.log(e.target.id);
         setIdToEdit(e.target.id);
         setEditCat(editCat + 1);
     };
