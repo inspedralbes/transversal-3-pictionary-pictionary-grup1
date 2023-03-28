@@ -3,11 +3,12 @@ import { useState, useEffect } from "react";
 import Cookies from 'universal-cookie';
 import { useNavigate } from "react-router-dom"; //Rutas
 import routes from "../index";
+import '../styles/Categories.css';
 
 
 function Register({ socket }) {
     const [registro, setRegistro] = useState(0);
-    
+
     const [wordList, setWordList] = useState([{ word: "" }]);
     const [descriptionList, setDescriptionList] = useState([{ description: "" }]);
 
@@ -23,16 +24,16 @@ function Register({ socket }) {
         const list = [...wordList];
         list[index][name] = value;
         setWordList(list);
-      };
-    
-      const handleDescriptionChange = (e, index) => {
+    };
+
+    const handleDescriptionChange = (e, index) => {
         const { name, value } = e.target;
         const list = [...descriptionList];
         list[index][name] = value;
         setDescriptionList(list);
-      };
+    };
 
-      const handleWordRemove = (index) => {
+    const handleWordRemove = (index) => {
         const list = [...wordList];
         list.splice(index, 1);
         setWordList(list);
@@ -40,12 +41,12 @@ function Register({ socket }) {
         const list2 = [...descriptionList];
         list2.splice(index, 1);
         setDescriptionList(list2);
-      };
-    
-      const handleWordAdd = () => {
+    };
+
+    const handleWordAdd = () => {
         setWordList([...wordList, { word: "" }]);
         setDescriptionList([...descriptionList, { description: "" }]);
-      };
+    };
 
     const [color, setColor] = useState({
         name: "red",
@@ -95,97 +96,87 @@ function Register({ socket }) {
     }, [registro]);
 
     return (
-        <div className="form register">
-            <h1>ADD NEW CATEGORY</h1>
-            <br />
-            <div className="form__form">
-                <div className="form">
-                    <span className=""></span>
-                    <label className=""> Name
-                        <input className="" style={{ color: color.name }} placeholder=" " type="text" onChange={(e) => setUserData({ ...userData, name: e.target.value })} required></input>
+        <div className="addCategory">
+            <fieldset>
+                <legend className="addCategory__legend">ADD NEW CATEGORY</legend>
+                <br />
+                <div className="addCategory__form">
+                    <label className="addCategory__name">
+                    <span className="addCategory__formSpan">
+                        <input class="slide-up" id="name" type="text"  placeholder="Introduce name" onChange={(e) => setUserData({ ...userData, name: e.target.value })} required /><label className="addCategory__nameLabel" for="name">Name</label>
+                    </span>
+                    </label>
+                    <label className="addCategory__public"> <p>Do you want the category to be public?</p>
+                        <input className="addCategory__publicCheckbox" style={{ color: color.privacy }} placeholder=" " type="checkbox" onChange={(e) => setUserData({ ...userData, privacy: e.target.checked })} required></input>
                     </label>
                 </div>
-                <div className="">
-                    <span className=""></span>
-                    <label className=""> Do you want the category to be public?
-                        <input className="" style={{ color: color.privacy }} placeholder=" " type="checkbox" onChange={(e) => setUserData({ ...userData, privacy: e.target.checked })} required></input>
-                    </label>
-                </div>
-            </div>
-            <form className="App" autoComplete="off">
-                <div className="form-field">
-                    {wordList.map((singleWord, index) => (
-                    <div key={index} className="words">
-                        <div className="first-division">
-                        <label>Word(s)
-                        <input
-                            name="word"
-                            type="text"
-                            id="word"
-                            value={singleWord.word}
-                            onChange={(e) => handleWordChange(e, index)}
-                            required
-                        /></label>
-                        <br/>
-                        <label>Description
-                        <input
-                            name="description"
-                            type="text"
-                            id="description"
-                            value={descriptionList[index].description}
-                            onChange={(e) => handleDescriptionChange(e, index)}
-                            required
-                        /></label>
-                        {wordList.length - 1 === index && wordList.length < 4 && (
-                            <button
-                            type="button"
-                            onClick={handleWordAdd}
-                            className="add-btn"
-                            >
-                            <span>Add a Word</span>
-                            </button>
-                        )}
-                        </div>
-                        <div className="second-division">
-                        {wordList.length !== 1 && (
-                            <button
-                            type="button"
-                            onClick={() => handleWordRemove(index)}
-                            className="remove-btn"
-                            >
-                            <span>Remove</span>
-                            </button>
-                        )}
-                        </div><br/>
-                    </div>
-                    ))}
-                </div>
-            </form>
-
-            <div className="form__buttonsLinks">
-                <div className="form__buttons">
-                    <Link to="/">
-                        <div className="form__goBack">
-                            <div className="form__button--flex">
-                                <button id="goBack__button">
-                                    <span className="circle" aria-hidden="true">
-                                        <span className="icon arrow"></span>
-                                    </span>
-                                    <span className="button-text">GO BACK</span>
-                                </button>
+                <form className="App" autoComplete="off">
+                    <div className="form-field">
+                        {wordList.map((singleWord, index) => (
+                            <div key={index} className="words">
+                                <div className="first-division">
+                                    <label><p>Word(s)</p>
+                                        <input
+                                            name="word"
+                                            type="text"
+                                            id="word"
+                                            value={singleWord.word}
+                                            onChange={(e) => handleWordChange(e, index)}
+                                            required
+                                        /></label>
+                                    <br />
+                                    <label><p>Description</p>
+                                        <input
+                                            name="description"
+                                            type="text"
+                                            id="description"
+                                            value={descriptionList[index].description}
+                                            onChange={(e) => handleDescriptionChange(e, index)}
+                                            required
+                                        /></label>
+                                    {wordList.length - 1 === index && wordList.length < 4 && (
+                                        <button
+                                            type="button"
+                                            onClick={handleWordAdd}
+                                            className="add-btn"
+                                        >Add a Word</button>
+                                    )}
+                                </div>
+                                <div className="second-division">
+                                    {wordList.length !== 1 && (
+                                        <button
+                                            type="button"
+                                            onClick={() => handleWordRemove(index)}
+                                            className="remove-btn"
+                                        >
+                                            <span>Remove</span>
+                                        </button>
+                                    )}
+                                </div><br />
                             </div>
+                        ))}
+                    </div>
+                </form>
+
+                <div className="form__buttonsLinks">
+                    <div className="form__buttons">
+                        <Link to="/">
+                            <div className="form__goBack">
+                                <div className="form__button--flex">
+                                    <button id="goBack__button">
+                                        <span className="button-text">GO BACK</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </Link>
+                        <div className="form__submit submit">
+                            <button onClick={() => setRegistro(registro + 1)} id="submit__button">
+                                <span className="button-text">SUBMIT</span>
+                            </button>
                         </div>
-                    </Link>
-                    <div className="form__submit submit">
-                        <button onClick={() => setRegistro(registro + 1)} id="submit__button">
-                            <span className="circle2" aria-hidden="true">
-                                <span className="icon2 arrow2"></span>
-                            </span>
-                            <span className="button-text">SUBMIT</span>
-                        </button>
                     </div>
                 </div>
-            </div>
+            </fieldset>
         </div>
 
     );
