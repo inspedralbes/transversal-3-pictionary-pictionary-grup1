@@ -157,7 +157,7 @@ function Categories() {
                 body: user,
                 credentials: 'include'
             }).then((response) => response.json()).then((data) => {
-                console.log(data);
+                // console.log(data);
                 setMyCategories(data);
                 setLoadingCategories(false);
             }
@@ -187,6 +187,29 @@ function Categories() {
             );
         }
     }, [deleteCat]);
+
+    useEffect(() => {
+        if (editCat != 0) {
+            const user = new FormData()
+            user.append("token", cookies.get('token') != undefined ? cookies.get('token') : null);
+            user.append("category_id", idToEdit);
+
+            fetch(routes.fetchLaravel + "editCategory", {
+                method: 'POST',
+                mode: 'cors',
+                body: user,
+                credentials: 'include'
+            }).then((response) => response.json()).then((data) => {
+                if (data.valid) {
+                    setGetCats(getCats + 1);
+                    setMessage(data.message);
+                } else {
+                    setMessage(data.message);
+                }
+            }
+            );
+        }
+    }, [editCat]);
 
     useEffect(() => {
         if (firstTime) {
@@ -243,6 +266,7 @@ function Categories() {
                                     <button onClick={handleSetAddCategory}><i className="icon-plus"></i>Add category</button>
                                 </>
                             }
+                            {message != "" && <>{message}</>}
                         </div> :
                         <h1>Loading categories...</h1>}
                 </> :
@@ -327,8 +351,8 @@ function Categories() {
                             </div>
                         </div>
                     </fieldset>
+                    {message != "" && <>{message}</>}
                 </div>}
-            {message != "" && <>{message}</>}
         </>
     );
 
