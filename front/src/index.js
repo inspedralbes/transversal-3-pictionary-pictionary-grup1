@@ -9,7 +9,7 @@ import Game from './pages/Game';
 import LobbyCreation from './pages/LobbyCreation';
 import LobbyJoin from './pages/LobbyJoin';
 import EndGame from './pages/EndGame';
-import AddCategory from './pages/AddCategory';
+import Categories from './pages/Categories';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import socketIO from "socket.io-client";
 
@@ -42,7 +42,7 @@ root.render(
         <Route path="/createlobby" element={<LobbyCreation socket={socket} />} />
         <Route path="/joinlobby" element={<LobbyJoin socket={socket} />} />
         <Route path="/endGame" element={<EndGame socket={socket} />} />
-        <Route path="/addCategory" element={<AddCategory />} />
+        <Route path="/categories" element={<Categories />} />
       </Route>
     </Routes>
   </BrowserRouter>
