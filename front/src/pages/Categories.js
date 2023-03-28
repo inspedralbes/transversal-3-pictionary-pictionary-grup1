@@ -113,7 +113,7 @@ function Categories() {
             const user = new FormData()
             user.append("name", userData.name);
             user.append("public", userData.privacy);
-            user.append("token", cookies.get('token'));
+            user.append("token", cookies.get('token') != undefined ? cookies.get('token') : null);
             user.append("words", JSON.stringify(wordsAndDescription));
 
             fetch(routes.fetchLaravel + "addCategory", {
