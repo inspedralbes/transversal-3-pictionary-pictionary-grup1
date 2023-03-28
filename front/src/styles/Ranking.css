@@ -8,16 +8,11 @@
     border: 2px solid #919191;
     border-radius: 255px 15px 255px 15px / 15px 255px 15px 255px;
     width: 35%;
-    height: 100px;
+    height: 60px;
     padding: 20px;
     margin: 50px auto;
     text-align: center;
     font-size: 30px;
-}
-
-.crown {
-    height: 20px;
-    width: 20px;
 }
 
 .topLeadersList>div:nth-child(1)>div:nth-child(1) {
@@ -38,7 +33,7 @@
     top: 3px;
     left: -25%;
     z-index: 2;
-    height: 70px;
+    height: 50px;
     width: 30%;
     font-size: 30px
 }
@@ -53,7 +48,7 @@
     position: relative;
     top: -140px;
     left: 25%;
-    height: 50px;
+    height: 40px;
     width: 30%;
 }
 
@@ -64,9 +59,6 @@
 
 .topLeadersList > div:nth-child(3) > div:nth-child(1) > div:nth-child(2) {
     top: -25px;
-}
-.crown {
-    display: none;
 }
 
 .ranking__listPlayers {
@@ -124,4 +116,9 @@ div.player:nth-child(odd)>span:nth-child(1)>div:nth-child(1) {
     100% {
         opacity: 1;
     }
+}
+
+
+.leader__avatar{
+    width: 80px;
 }
