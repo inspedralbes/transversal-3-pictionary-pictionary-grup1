@@ -29,8 +29,6 @@ function Ranking({ socket }) {
     }
 
     socket.on("lobby_user_list", (data) => {
-      console.log("avatar rank", data.list);
-
       data.list.sort((a, b) => b.points - a.points);
       setUserList(data.list);
     });

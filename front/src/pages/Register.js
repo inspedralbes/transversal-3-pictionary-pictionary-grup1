@@ -86,11 +86,9 @@ function Register({ socket }) {
                         token: cookies.get('token')
                     });
                     navigate("/")
-                } else {
-                    console.log(data);
                 }
             }
-            );
+            );user.append("token", cookies.get('token') != undefined ? cookies.get('token') : null);
         }
     }, [registro]);
 

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Settings from "./Settings";
 import Gamemodes from "./Gamemodes";
 import Categories from "./Categories";
+import '../index.css'
 
 function Tabs({ socket, start, categoriesData }) {
   const [activeTab, setActiveTab] = useState(0);
