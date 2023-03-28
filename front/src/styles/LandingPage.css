@@ -150,14 +150,15 @@ h1 {
 .ldPage__loginRegister {
     letter-spacing: 2px;
     font-size: 150%;
+    text-decoration: underline;
     text-align: end;
     margin: 20px;
-    clear: left;
 }
 
 
-.ldPage__loginRegister:hover a,
+.ldPage__loginRegister a:hover ,
 .ldPage__loginRegister a:focus {
+
     animation: colors 2s infinite linear;
 }
 
