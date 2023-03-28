@@ -53,7 +53,7 @@ class CategoryController extends Controller
     {
         $userId = null;
 
-        if  ( $request -> token != "" || !isset($request -> token) ) {
+        if ($request -> token != null && $request -> token != "null") {
             //Check if the user is logged, returns 'null' if the user is not logged in.
             [$id, $token] = explode('|', $request -> token, 2);
             $accessToken = PersonalAccessToken::find($id);
@@ -224,12 +224,9 @@ class CategoryController extends Controller
     //Get my categories
     public function getMyCategories (Request $request)
     {  
-        $categories = [];
-
-        $returnCategories = (object) 
+        $categories = (object) 
         ["valid" => true,
         'message' => "You haven't created any categories yet!",
-        'categories' => $categories
         ];
 
         //Check if user is logged
@@ -244,6 +241,7 @@ class CategoryController extends Controller
                     $words = Word::where('category_id', $getCategories[$i] -> id) -> get();
                     $category = (object) 
                     [
+                        "valid" => true,
                         'categoryId' => $getCategories[$i] -> id,
                         'categoryName' => $getCategories[$i] -> name,
                         'numberOfWords' => $numberWords,
@@ -253,17 +251,8 @@ class CategoryController extends Controller
                     ];
                     $categories[$i] = $category;
                 }
-
-                //Return all my categories.
-                if (count($categories) > 0) {
-                    $returnCategories = (object) 
-                    ["valid" => true,
-                    'categories' => $categories
-                    ];
-                }
-
         } else {
-            $returnCategories = (object) 
+            $categories = (object) 
             ["valid" => false,
             'message' => "User is not logged in.",
             ];
