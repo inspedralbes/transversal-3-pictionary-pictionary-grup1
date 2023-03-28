@@ -1,9 +1,21 @@
 import { Link } from "react-router-dom";
+import Cookies from 'universal-cookie';
 import "../styles/normalize.css";
 import "../styles/LandingPage.css";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import routes from "../index";
+
 
 function LandingPage({ socket }) {
+  const [isLogged, setisLogged] = useState(false);
+  const [menuBarClass, setMenuBarClass] = useState(false);
+  const [menuBgClass, setMenuBgClass] = useState(false);
+  const [navClass, setNavClass] = useState(false);
+
+
+  const cookies = new Cookies();
+
+
   function changeColor() {
     document.getElementById("brush").addEventListener("mouseover", function () {
       let colors = [
@@ -41,12 +53,83 @@ function LandingPage({ socket }) {
   function enviarGetCategories() {
     socket.emit("get_categories");
   }
+  function Logout() {
+    const user = new FormData()
+    user.append("token", cookies.get('token') != undefined ? cookies.get('token') : null);
+
+    fetch(routes.fetchLaravel + "logout", {
+      method: "POST",
+      mode: "cors",
+      body: user,
+      credentials: "include",
+    })
+      .then((response) => response.json())
+      .then(() => {
+        setisLogged(false);
+      });
+
+      cookies.remove('token');  
+    }
+
+  function menuOnClick() {
+    setMenuBarClass(!menuBarClass);
+    setMenuBgClass(!menuBgClass);
+    setNavClass(!navClass);
+  }
+
+  async function DoFetch() {
+    const user = new FormData()
+    user.append("token", cookies.get('token') != undefined ? cookies.get('token') : null);
+
+    const response = await fetch(routes.fetchLaravel + "isUserLogged", {
+      method: "POST",
+      mode: "cors",
+      body: user,
+      credentials: "include",
+    });
+
+    const data = await response.json();
+    if (data) {
+        setisLogged(true);
+    }
+    else {
+      setisLogged(false);
+    }
+  }
+
+  useEffect(() => {
+    DoFetch();
+  }, [])
 
   return (
     <div className="ldPage">
-      <div className="ldPage__loginRegister">
-        <Link to="/login">Log in/Register</Link>
-      </div>
+      {isLogged ?
+        <div>
+          <div id="menu">
+            <div id="menu-bar" className={`menu-bar${menuBarClass ? " change" : ""}`} onClick={menuOnClick}>
+              <div id="bar1" className="bar"></div>
+              <div id="bar2" className="bar"></div>
+              <div id="bar3" className="bar"></div>
+            </div>
+            <nav className={`nav${navClass ? " change" : ""}`} id="nav">
+              <ol>
+                <li><Link to="/addCategory">Categories</Link></li>
+                <li onClick={Logout}><Link to="/">Logout</Link></li>
+              </ol>
+            </nav>
+          </div>
+
+          <div className={`menu-bg${menuBgClass ? " change-bg" : ""}`} id="menu-bg"></div>
+        </div>
+        :
+        <div>
+          <Link to="/login">
+            <div className="ldPage__loginRegister">
+              <>Log in/Register</>
+            </div>
+          </Link>
+        </div>
+      }
       <div className="border is-drawn" id="border">
         <div className="space-around">
           <h1 className="ldPage__title">
