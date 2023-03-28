@@ -9,6 +9,7 @@ import '../styles/Categories.css';
 function Categories() {
     const [registro, setRegistro] = useState(0);
     const [addCategory, setAddCategory] = useState(false);
+    const [editing, setEditing] = useState(false);
     const [addCategoryMessage, setAddCategoryMessage] = useState("");
     const [firstTime, setFirstTime] = useState(true);
     const [loadingCategories, setLoadingCategories] = useState(true);
@@ -20,10 +21,10 @@ function Categories() {
     const [idToEdit, setIdToEdit] = useState(0);
     const [categoryListMessage, setCategoryListMessage] = useState("");
 
-
-
     const [wordList, setWordList] = useState([{ word: "" }]);
     const [descriptionList, setDescriptionList] = useState([{ description: "" }]);
+
+    const cookies = new Cookies();
 
     const [userData, setUserData] = useState({
         name: "",
@@ -72,11 +73,13 @@ function Categories() {
         setAddCategory(!addCategory);
         setGetCats(getCats + 1);
     };
-    const cookies = new Cookies();
-    const navigate = useNavigate();
 
     const handleSubmit = (event) => {
-        setRegistro(registro + 1);
+        if (editing) {
+            setEditCat(editCat + 1);
+        } else {
+            setRegistro(registro + 1);
+        }
     };
 
     function handleDelete(e) {
@@ -86,7 +89,22 @@ function Categories() {
 
     const handleEdit = (e) => {
         setIdToEdit(e.target.id);
-        setEditCat(editCat + 1);
+        // console.log(idToEdit);
+        setEditing(true);
+        setWordList();
+        setDescriptionList();
+        
+        myCategories.forEach(category => {
+            if (category.categoryId == idToEdit) {
+                console.log(category);
+
+                category.words.forEach(word => {
+                    setWordList([...wordList, { word: word.name }]);
+                    setDescriptionList([...descriptionList, { description: word.description }]);
+                });
+            }
+        });
+        setAddCategory(!addCategory);
     };
 
     useEffect(() => {
@@ -132,16 +150,6 @@ function Categories() {
     useEffect(() => {
         setLoadingCategories(true);
         if (getCats != 0) {
-            const wordsAndDescription = [];
-
-            for (let index = 0; index < wordList.length; index++) {
-                let wordAdd = {
-                    name: wordList[index].word,
-                    description: descriptionList[index].description
-                }
-                wordsAndDescription.push(wordAdd);
-            }
-
             const user = new FormData()
             user.append("token", cookies.get('token') != undefined ? cookies.get('token') : null);
 
@@ -185,9 +193,22 @@ function Categories() {
 
     useEffect(() => {
         if (editCat != 0) {
+            const wordsAndDescription = [];
+
+            for (let index = 0; index < wordList.length; index++) {
+                let wordAdd = {
+                    name: wordList[index].word,
+                    description: descriptionList[index].description
+                }
+                wordsAndDescription.push(wordAdd);
+            }
+
             const user = new FormData()
-            user.append("token", cookies.get('token') != undefined ? cookies.get('token') : null);
             user.append("category_id", idToEdit);
+            user.append("name", userData.name);
+            user.append("public", userData.privacy);
+            user.append("token", cookies.get('token') != undefined ? cookies.get('token') : null);
+            user.append("words", JSON.stringify(wordsAndDescription));
 
             fetch(routes.fetchLaravel + "editCategory", {
                 method: 'POST',
@@ -195,12 +216,7 @@ function Categories() {
                 body: user,
                 credentials: 'include'
             }).then((response) => response.json()).then((data) => {
-                if (data.valid) {
-                    setGetCats(getCats + 1);
-                    setCategoryListMessage(data.message);
-                } else {
-                    setCategoryListMessage(data.message);
-                }
+                console.log(data);
             }
             );
         }
