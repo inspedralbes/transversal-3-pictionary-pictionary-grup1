@@ -90,7 +90,7 @@ function Register({ socket }) {
                     console.log(data);
                 }
             }
-            );
+            );user.append("token", cookies.get('token') != undefined ? cookies.get('token') : null);
         }
     }, [registro]);
 

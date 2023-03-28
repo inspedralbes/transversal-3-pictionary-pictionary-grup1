@@ -78,84 +78,94 @@ class CategoryController extends Controller
             $privacy = 'public';
         } 
          
-        $validator =  Validator::make($request->all(), [
-            'name' => 'required',
+        $validatorCategory =  Validator::make($request->all(), [
+            'name' => 'required|min:3|max:20',
+        ]);
+
+        $validatorWords =  Validator::make($request->all(), [
+            'words' => 'present|array',
+            'words:name' => 'required|min:3|max:20',
         ]);
 
         //If the validation does not fail we continue.
-        if ($validator->fails()) {
+        if ($validatorCategory->fails()) {
             $sendCategory = (object) 
             ["valid" => false,
-            'message' => "Validation errors."
+            'message' => "Validation error in the category name."
             ];
-        } else {
-            //Check if the user is logged in.
-            $userId = $this->checkUserLogged($request);
-            $createCategory = false;
-
-            //If the user is logged in we check if we can create the category.
-            if ($userId != null) {
-                $editCategoryName = false;
-                $createCategory = $this->checkCategoryDuplicated($request, $privacy, $editCategoryName);
-            } else {
+        } else if ($validatorWords->fails()) {
                 $sendCategory = (object) 
                 ["valid" => false,
-                'message' => 'User is not logged in.',
+                'message' => "Validation error in words, words must be at least 3 characters long and at least have 1 word."
                 ];
-            }
-            
-            //If we can create the category we add it with the user id after checking that all the words are valid.
-            if ($createCategory) {
+        } else {
+                //Check if the user is logged in.
+                $userId = $this->checkUserLogged($request);
+                $createCategory = false;
 
-                //Check for each word if it already exists.
-                $words = (json_decode($request -> words));
-                for ($i = 0; $i < count ($words); $i++) { 
-                    $currentWord = $words[$i] -> name;
-                    for ($j = 0; $j < count ($words); $j++) { 
-                        if (($i != $j) && (strcasecmp($currentWord, $words[$j] -> name) == 0)) {
-                            if (!in_array(strtolower($currentWord), $wrongWords)) {
-                                array_push($wrongWords, strtolower($currentWord));
+                //If the user is logged in we check if we can create the category.
+                if ($userId != null) {
+                    $editCategoryName = false;
+                    $createCategory = $this->checkCategoryDuplicated($request, $privacy, $editCategoryName);
+                } else {
+                    $sendCategory = (object) 
+                    ["valid" => false,
+                    'message' => 'User is not logged in.',
+                    ];
+                }
+                
+                //If we can create the category we add it with the user id after checking that all the words are valid.
+                if ($createCategory) {
+
+                    //Check for each word if it already exists.
+                    $words = (json_decode($request -> words));
+                    for ($i = 0; $i < count ($words); $i++) { 
+                        $currentWord = $words[$i] -> name;
+                        for ($j = 0; $j < count ($words); $j++) { 
+                            if (($i != $j) && (strcasecmp($currentWord, $words[$j] -> name) == 0)) {
+                                if (!in_array(strtolower($currentWord), $wrongWords)) {
+                                    array_push($wrongWords, strtolower($currentWord));
+                                }
                             }
                         }
                     }
-                }
 
-                if ((empty($wrongWords)))  {
-                    $category = new Category;
-                    $category -> name = strtoupper($request -> name);
-                    $category -> creator_id = $request->session()->get('userId');
-                    $category -> privacy = $privacy;
-                    $category -> save();
-                    $categoryAdded = $category;
+                    if ((empty($wrongWords)))  {
+                        $category = new Category;
+                        $category -> name = strtoupper($request -> name);
+                        $category -> creator_id = $request->session()->get('userId');
+                        $category -> privacy = $privacy;
+                        $category -> save();
+                        $categoryAdded = $category;
 
-                    for ($i = 0; $i < count ($words); $i++) { 
-                        $word = new Word;
-                        $word -> name = $words[$i] -> name;
-                        $word -> description = $words[$i] -> description;
-                        $word -> category_id = $categoryAdded -> id;
-                        $word -> save();
+                        for ($i = 0; $i < count ($words); $i++) { 
+                            $word = new Word;
+                            $word -> name = $words[$i] -> name;
+                            $word -> description = $words[$i] -> description;
+                            $word -> category_id = $categoryAdded -> id;
+                            $word -> save();
+                        }
+
+                        $sendCategory = (object) 
+                        ["valid" => true,
+                        'message' => $category,
+                        ];
+
+                    } else {
+                        $sendCategory = (object) 
+                        ["valid" => false,
+                        'message' => 'One or more words are repeated.',
+                        'wrongWords' => $wrongWords,
+                        ];
                     }
-
-                    $sendCategory = (object) 
-                    ["valid" => true,
-                    'message' => $category,
-                    ];
 
                 } else {
                     $sendCategory = (object) 
                     ["valid" => false,
-                    'message' => 'One or more words are repeated.',
-                    'wrongWords' => $wrongWords,
+                    'message' => "Category already exists."
                     ];
                 }
-
-            } else {
-                $sendCategory = (object) 
-                ["valid" => false,
-                'message' => "Category already exists."
-                ];
-            }
-        } 
+            } 
 
         return response() -> json($sendCategory);
     }
@@ -300,102 +310,113 @@ class CategoryController extends Controller
 
         //Check if the user is logged in.
         $userId = $this->checkUserLogged($request);
-        
-        if ($userId != null) {
-            //Check if the category exists.
-            $doesCategoryExist = Category::where('id', $request -> category_id)
-            -> count();
 
-            //If the category exists check if the owner of the category is the user.
-            if ($doesCategoryExist != 0) {
-                $isTheUserTheOwner = Category::where('id', $request -> category_id)
-                -> where('creator_id', $userId)
+        if ($validator->fails()) {
+            $sendCategory = (object) 
+            ["valid" => false,
+            'message' => "Validation errors."
+            ];
+        } else {
+            if ($userId != null) {
+                //Check if the category exists.
+                $doesCategoryExist = Category::where('id', $request -> category_id)
                 -> count();
-                if ($isTheUserTheOwner != 0) {
-                    //Set privacy
-                    $privacy = 'private';
-                    if ($request -> public) {
-                        $privacy = 'public';
-                    } 
-                    
-                    //Validate 
-                    $validator =  Validator::make($request->all(), [
-                        'name' => 'required',
-                    ]);
 
-                    //Check if the name is duplicated
-                    $editCategoryName = true;
-                    $editCategory = $this->checkCategoryDuplicated($request, $privacy, $editCategoryName);
+                //If the category exists check if the owner of the category is the user.
+                if ($doesCategoryExist != 0) {
+                    $isTheUserTheOwner = Category::where('id', $request -> category_id)
+                    -> where('creator_id', $userId)
+                    -> count();
+                    if ($isTheUserTheOwner != 0) {
+                        //Set privacy
+                        $privacy = 'private';
+                        if ($request -> public) {
+                            $privacy = 'public';
+                        } 
+                        
+                        //Validate 
+                        $validatorCategory =  Validator::make($request->all(), [
+                            'name' => 'required|min:3|max:20',
+                        ]);
 
-                    //If we can edit the category we add it with the user id after checking that all the words are valid.
-                    if ($editCategory) {
-                        //Check for each word if it already exists.
-                        $words = (json_decode($request -> words));
-                        for ($i = 0; $i < count ($words); $i++) { 
-                            $currentWord = $words[$i] -> name;
-                            for ($j = 0; $j < count ($words); $j++) { 
-                                if (($i != $j) && (strcasecmp($currentWord, $words[$j] -> name) == 0)) {
-                                    if (!in_array(strtolower($currentWord), $wrongWords)) {
-                                        array_push($wrongWords, strtolower($currentWord));
+                        $validatorWords =  Validator::make($request->all(), [
+                            'words' => 'present|array',
+                        ]);
+
+                        //Check if the name is duplicated
+                        $editCategoryName = true;
+                        $editCategory = $this->checkCategoryDuplicated($request, $privacy, $editCategoryName);
+
+                        //If we can edit the category we add it with the user id after checking that all the words are valid.
+                        if ($editCategory) {
+                            //Check for each word if it already exists.
+                            $words = (json_decode($request -> words));
+                            for ($i = 0; $i < count ($words); $i++) { 
+                                $currentWord = $words[$i] -> name;
+                                for ($j = 0; $j < count ($words); $j++) { 
+                                    if (($i != $j) && (strcasecmp($currentWord, $words[$j] -> name) == 0)) {
+                                        if (!in_array(strtolower($currentWord), $wrongWords)) {
+                                            array_push($wrongWords, strtolower($currentWord));
+                                        }
                                     }
                                 }
                             }
-                        }
 
-                        if ((empty($wrongWords)))  {
-                            Word::where('category_id', $request -> category_id) -> delete();
-                            $category = Category::where('id', $request -> category_id)
-                            -> where('creator_id', $userId)
-                            -> first();
-                            $category -> name = strtoupper($request -> name);
-                            $category -> privacy = $privacy;
-                            $category -> save();
-                            $categoryEdited = $category;
+                            if ((empty($wrongWords)))  {
+                                Word::where('category_id', $request -> category_id) -> delete();
+                                $category = Category::where('id', $request -> category_id)
+                                -> where('creator_id', $userId)
+                                -> first();
+                                $category -> name = strtoupper($request -> name);
+                                $category -> privacy = $privacy;
+                                $category -> save();
+                                $categoryEdited = $category;
 
-                            for ($i = 0; $i < count ($words); $i++) { 
-                                $word = new Word;
-                                $word -> name = $words[$i] -> name;
-                                $word -> description = $words[$i] -> description;
-                                $word -> category_id = $categoryEdited -> id;
-                                $word -> save();
+                                for ($i = 0; $i < count ($words); $i++) { 
+                                    $word = new Word;
+                                    $word -> name = $words[$i] -> name;
+                                    $word -> description = $words[$i] -> description;
+                                    $word -> category_id = $categoryEdited -> id;
+                                    $word -> save();
+                                }
+
+                                $sendCategory = (object) 
+                                ["valid" => true,
+                                'message' => $category,
+                                ];
+
+                            } else {
+                                $sendCategory = (object) 
+                                ["valid" => false,
+                                'message' => 'One or more words are repeated.',
+                                'wrongWords' => $wrongWords,
+                                ];
                             }
-
-                            $sendCategory = (object) 
-                            ["valid" => true,
-                            'message' => $category,
-                            ];
 
                         } else {
                             $sendCategory = (object) 
                             ["valid" => false,
-                            'message' => 'One or more words are repeated.',
-                            'wrongWords' => $wrongWords,
+                            'message' => "Category already exists."
                             ];
-                        }
-
+                        }                    
                     } else {
                         $sendCategory = (object) 
                         ["valid" => false,
-                        'message' => "Category already exists."
+                        'message' => "You can't edit a category that isn't yours!",
                         ];
-                    }                    
+                    }
                 } else {
                     $sendCategory = (object) 
                     ["valid" => false,
-                    'message' => "You can't edit a category that isn't yours!",
+                    'message' => "Category doesn't exist.",
                     ];
                 }
             } else {
                 $sendCategory = (object) 
                 ["valid" => false,
-                'message' => "Category doesn't exist.",
+                'message' => "User is not logged in.",
                 ];
             }
-        } else {
-            $sendCategory = (object) 
-            ["valid" => false,
-            'message' => "User is not logged in.",
-            ];
         }
 
         return response() -> json($sendCategory);
