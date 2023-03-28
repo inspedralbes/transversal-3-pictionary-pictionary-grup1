@@ -168,6 +168,14 @@ function Board({ socket, pintor }) {
         isDrawing = true;
         x = evt.offsetX;
         y = evt.offsetY;
+        context.beginPath();
+        context.arc(x, y, brushRadius / 2, 0, 2 * Math.PI);
+        context.fillStyle = currentColor;
+        context.fill();
+        context.closePath();
+        arrayDatos.push({ x, y, currentColor, brushRadius });
+        sendBoardDataToSocketIo();
+        console.log(arrayDatos);
       }
 
       function handleMouseMove(evt) {
