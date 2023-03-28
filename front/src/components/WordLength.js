@@ -15,18 +15,13 @@ function WordLength({ socket }) {
 
   }
 
-  const updateArray = (data) => {
-    console.log(data);
-    if (data === []) {
-      spaces = [];
-      console.log(spaces);
-    } else {
+  const updateArray = (data) => {      
       spaces.map((s) => {
         if (s.id === data.pos) {
           spaces[s.id].letter = data.letterNode + " ";
         }
       });
-    }
+    
 
     arrayToString();
   };
@@ -59,7 +54,8 @@ function WordLength({ socket }) {
 
     socket.on("clear_word", () => {
       console.log("clear");
-      updateArray([]);
+      spaces = [];
+      setWord("")
     });
 
     socket.emit("word_length_loaded");

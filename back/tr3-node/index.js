@@ -739,13 +739,11 @@ function startWordLength(room) {
   });
 
   let timeBetweenLetters = time / (Math.trunc(long / 2) + 1);
-  let timeCounter = Math.trunc(long / 2);
   let letters = word.split("");
   let letterPositions = [];
   let letterPosition = 0;
 
   timer = setInterval(() => {
-    timeCounter--;
     let roundChanged;
     for (i = 0; i < 1; i++) {
       letterPosition = Math.trunc(Math.random() * long);
@@ -760,14 +758,13 @@ function startWordLength(room) {
       pos: letterPosition,
     });
 
-    console.log(timeCounter);
 
     lobbies.forEach((lobby) => {
       if (lobby.lobbyIdentifier == room) {
         roundChanged = lobby.actualRound;
       }
     });
-    if (timeCounter <= 0 || actualRound != roundChanged) {
+    if (actualRound != roundChanged) {
       clearInterval(timer);
       actualRound = roundChanged;
       socketIO.to(room).emit("clear_word");
