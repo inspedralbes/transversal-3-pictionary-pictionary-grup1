@@ -224,7 +224,7 @@ class CategoryController extends Controller
     //Get my categories
     public function getMyCategories (Request $request)
     {  
-        $categories = (object) 
+        $returnCategories = (object) 
         ["valid" => true,
         'message' => "You haven't created any categories yet!",
         ];
@@ -250,9 +250,13 @@ class CategoryController extends Controller
                         'createdAt' => $getCategories[$i] -> created_at -> format('d/m/Y')
                     ];
                     $categories[$i] = $category;
+                    $returnCategories = (object) 
+                    ["valid" => true,
+                    'categories' => $categories
+                    ];
                 }
         } else {
-            $categories = (object) 
+            $returnCategories = (object) 
             ["valid" => false,
             'message' => "User is not logged in.",
             ];
