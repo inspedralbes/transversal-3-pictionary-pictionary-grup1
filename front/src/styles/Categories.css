@@ -42,7 +42,7 @@
 
 fieldset{
     width: 60%;
-    margin: 5% auto;
+    margin: 3% auto;
     border: 2px solid #2c2c2c;
 }
 
@@ -223,10 +223,27 @@ fieldset{
     border: 3px dashed #378137;
 }
 
-.list__container>.title
-{
-    /* border: 2px dashed black; */
+#scroll{
+    margin: 2vh auto;
+    width: 90%;
+    height: 33vh;
+    overflow: auto;
 }
+
+#scroll::-webkit-scrollbar-track {
+    border-radius: 255px 15px 255px 15px / 15px 255px 15px 255px;
+    border: 2px solid #3e3e3e;
+}
+
+#scroll::-webkit-scrollbar {
+    width: 15px;
+}
+
+#scroll::-webkit-scrollbar-thumb {
+    border-radius: 255px 15px 255px 15px / 15px 255px 15px 255px;
+    background-color: #575757;
+}
+
 
 @keyframes arrow {
     0%{

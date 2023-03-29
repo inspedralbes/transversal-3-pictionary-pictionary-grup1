@@ -352,7 +352,7 @@ function Categories() {
                 <div className="addCategory">
                     <div className="form__goBack">
                         <div className="form__button--flex">
-                            <button id="goBack__button" onClick={handleSetAddCategory}>
+                            <button id="add" onMouseOver={changeColor} style={{margin: '30px', height:'60px', width:'200px', letterSpacing:'1px', fontSize:'1.7rem'}} onClick={handleSetAddCategory}>
                                 <span className="button-text">Category list</span>
                             </button>
                         </div>
@@ -368,7 +368,7 @@ function Categories() {
                             </div>
                         </div>
                         <form className="App" autoComplete="off">
-                            <div className="form-field">
+                            <div className="form-field" id="scroll">
                                 {wordList.map((singleWord, index) => (
                                     <div key={index} className="words">
                                         <div className="wordSettings">
@@ -394,6 +394,7 @@ function Categories() {
                                                 type="button"
                                                 onClick={handleWordAdd}
                                                 className="add-btn"
+                                                id="add" onMouseOver={changeColor}
                                             >
                                                 <span>Add a Word</span>
                                             </button>
@@ -403,6 +404,8 @@ function Categories() {
                                                 type="button"
                                                 onClick={() => handleWordRemove(index)}
                                                 className="remove-btn"
+                                                id="add" onMouseOver={changeColor}
+                                                
                                             >
                                                 <span>Remove</span>
                                             </button>
