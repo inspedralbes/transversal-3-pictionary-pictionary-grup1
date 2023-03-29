@@ -219,6 +219,13 @@ function Categories() {
                         <h1>Loading categories...</h1>}
                 </> :
                 <div className="addCategory">
+                    <div className="addCategory__goBack">
+                        <div className="form__button--flex">
+                            <button id="goBack__button" onClick={handleSetAddCategory}>
+                                <span className="button-text">Category list</span>
+                            </button>
+                        </div>
+                    </div>
                     <fieldset>
                         <legend className="addCategory__legend">ADD NEW CATEGORY</legend>
                         <br />
@@ -277,14 +284,6 @@ function Categories() {
 
                         <div className="form__buttonsLinks">
                             <div className="form__buttons">
-                                <div className="form__goBack">
-                                    <div className="form__button--flex">
-                                        <button id="goBack__button" onClick={handleSetAddCategory}>
-                                            <span className="button-text">Category list</span>
-                                        </button>
-                                    </div>
-                                </div>
-
                                 <label className="addCategory__public">
                                     <input className="addCategory__publicCheckbox" type="checkbox" onChange={(e) => setUserData({ ...userData, privacy: e.target.checked })} required></input>
                                     <p>Do you want the category to be public?</p>

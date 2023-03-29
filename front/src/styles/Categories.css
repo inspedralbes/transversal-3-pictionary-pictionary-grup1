@@ -1,11 +1,15 @@
 .addCategory {
-    width: 60%;
     font-size: 1.3rem;
-    margin: 5% auto;
 }
 
 fieldset{
+    width: 60%;
+    margin: 5% auto;
     border: 2px solid #2c2c2c;
+}
+
+.addCategory__goBack{
+    margin:30px;
 }
 
 .wordSettings{
