@@ -52,7 +52,6 @@ function Game({ socket }) {
 
     socket.on("pintor", (data) => {
       setPintor(data.pintor);
-      console.log(data);
       setResult(null);
     });
 
@@ -92,7 +91,6 @@ function Game({ socket }) {
     });
 
     socket.on("started", () => {
-      console.log("STARTED");
       setStarting(false);
       const intervalId = setInterval(() => {
         setCountdown((countdown) => countdown - 1);

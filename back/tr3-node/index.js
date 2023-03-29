@@ -75,6 +75,8 @@ socketIO.on("connection", (socket) => {
   socket.data.username = "";
   socket.data.token = null;
   socket.data.current_lobby = null;
+  socket.data.avatar = "";
+
   console.log(socket.data.id + " connected ");
 
   const random_hex_color_code = () => {
@@ -154,9 +156,11 @@ socketIO.on("connection", (socket) => {
           ownerId: socket.data.id,
           members: [],
           currentDrawer: "",
+          wordLengthUserCount: 0,
           words: [],
           rounds: 0,
           actualRound: 0,
+          startedWordLength: false,
           actualTurn: 1,
           ind_drawer: 0,
           ended: false,
@@ -189,6 +193,22 @@ socketIO.on("connection", (socket) => {
       joinLobby(socket, data.lobbyIdentifier, socket.data.username);
     }
   });
+
+  socket.on("set_avatar", (data) => {
+    socket.data.avatar = data.avatar;
+    lobbies.forEach((lobby) => {
+      if (lobby.lobbyIdentifier == socket.data.current_lobby) {
+        lobby.members.forEach((member) => {
+          if (member.idUser == socket.data.id) {
+            member.avatar = data.avatar;
+          }
+        });
+      }
+    });
+    sendUserList(socket.data.current_lobby)
+  });
+
+
 
   socket.on("leave_lobby", (data) => {
     let lobby = socket.data.current_lobby;
@@ -246,6 +266,18 @@ socketIO.on("connection", (socket) => {
     });
   })
 
+  socket.on("word_length_loaded", () => {
+    lobbies.forEach(lobby => {
+      if (lobby.lobbyIdentifier == socket.data.current_lobby) {
+        lobby.wordLengthUserCount++;
+        if ((!lobby.settings.ownerPlay && lobby.wordLengthUserCount == lobby.members.length) || (lobby.settings.ownerPlay && lobby.wordLengthUserCount == lobby.members.length - 1)) {
+          startWordLength(socket.data.current_lobby);
+          lobby.wordLengthUserCount = 0;
+        }
+      }
+    });
+  })
+
   socket.on("get_game_data", () => {
     enviarPintor(socket.data.current_lobby);
     let word;
@@ -259,49 +291,7 @@ socketIO.on("connection", (socket) => {
     });
   });
 
-  socket.on("get_word_length", () => {
-    let long;
-    lobbies.forEach((lobby) => {
-      if (lobby.lobbyIdentifier == socket.data.current_lobby) {
-        word = lobby.words[lobby.actualRound].name;
-        long = lobby.words[lobby.actualRound].name.length;
-        time = lobby.settings.roundDuration;
-      }
-    });
-    socketIO.to(socket.id).emit("current_word_length", {
-      long: long,
-    });
 
-    let timeBetweenLetters = time / (Math.trunc(long / 2) + 1);
-    let timeCounter = Math.trunc(long / 2);
-    let letters = word.split("");
-    let letterPositions = [];
-    let letterPosition = 0;
-
-    timer = setInterval(() => {
-      timeCounter--;
-      for (i = 0; i < 1; i++) {
-        letterPosition = Math.trunc(Math.random() * long);
-        if (!letterPositions.some((num) => num == letterPosition)) {
-          letterPositions.push(letterPosition);
-        } else {
-          i--;
-        }
-      }
-      //console.log(letterPositions);
-      socketIO.to(socket.id).emit("word_letters", {
-        letter: letters[letterPosition],
-        pos: letterPosition,
-      });
-
-      //console.log(timeCounter);
-      if (timeCounter == 0) {
-        //console.log("TIME CLEAR");
-        clearInterval(timer);
-        //console.log(timer);
-      }
-    }, timeBetweenLetters * 1000);
-  });
 
   socket.on("get_lobby_settings", () => {
     let data;
@@ -507,11 +497,19 @@ socketIO.on("connection", (socket) => {
 
   socket.on('round_end', () => {
     lobbies.forEach((lobby) => {
-      if (lobby.lobbyIdentifier == socket.data.current_lobby && lobby.ownerId == socket.data.id && !lobby.acabando) {
-        enviarPintor(socket.data.current_lobby);
-        sendUserList(socket.data.current_lobby);
-        console.log("acaba ronda");
-        acabarRonda(socket.data.current_lobby);
+      if (lobby.lobbyIdentifier == socket.data.current_lobby) {
+        if (lobby.ownerId == socket.data.id) {
+          enviarPintor(socket.data.current_lobby);
+          sendUserList(socket.data.current_lobby);
+          acabarRonda(socket.data.current_lobby);
+        }
+        if (!lobby.ended) {
+          lobby.wordLengthUserCount++;
+          if (lobby.wordLengthUserCount == lobby.members.length) {
+            startWordLength(socket.data.current_lobby);
+            lobby.wordLengthUserCount = 0;
+          }
+        }
       }
     });
   })
@@ -534,6 +532,8 @@ async function resetLobbyData(room) {
       lobby.words = [];
       lobby.rounds = 0;
       lobby.actualRound = 0;
+      lobby.wordLengthUserCount = 0;
+      lobby.startedWordLength = false;
       lobby.cont = 0;
       lobby.ind_drawer = 0;
       lobby.actualTurn = 1;
@@ -544,6 +544,7 @@ async function resetLobbyData(room) {
         member.lastAnswerCorrect = false;
         member.lastAnswer = "";
         member.points = 0;
+        member.avatar = "";
       });
       lobby_data = lobby;
     }
@@ -675,6 +676,7 @@ function joinLobby(socket, lobbyIdentifier, username) {
           lastAnswerCorrect: false,
           lastAnswer: "",
           points: 0,
+          avatar: "",
         });
 
         socketIO.to(socket.id).emit("lobby_info", lobby);
@@ -754,6 +756,66 @@ async function setLobbyWord(room, amount) {
   });
 }
 
+function startWordLength(room) {
+  let long;
+  let timer;
+  let time;
+  let actualRound;
+  let word = "";
+
+  lobbies.forEach((lobby) => {
+    if (lobby.lobbyIdentifier == room && lobby.actualRound < lobby.words.length) {
+      word = lobby.words[lobby.actualRound].name;
+      long = lobby.words[lobby.actualRound].name.length;
+      time = lobby.settings.roundDuration;
+      actualRound = lobby.actualRound;
+    }
+  });
+
+  socketIO.to(room).emit("word_length", {
+    long: long,
+  });
+
+  let timeBetweenLetters = time / (Math.trunc(long / 2) + 1);
+  let letters = word.split("");
+  let letterPositions = [];
+  let letterPosition = 0;
+  let contTimer = 0;
+
+  timer = setInterval(() => {
+    contTimer++;
+    let roundChanged;
+
+    lobbies.forEach((lobby) => {
+      if (lobby.lobbyIdentifier == room) {
+        roundChanged = lobby.actualRound;
+      }
+    });
+
+    if (contTimer == timeBetweenLetters) {
+      for (i = 0; i < 1; i++) {
+        letterPosition = Math.trunc(Math.random() * long);
+        if (!letterPositions.some((num) => num == letterPosition)) {
+          letterPositions.push(letterPosition);
+        } else {
+          i--;
+        }
+      }
+      socketIO.to(room).emit("word_letters", {
+        letterNode: letters[letterPosition],
+        pos: letterPosition,
+      });
+      contTimer = 0;
+    }
+
+    if (actualRound != roundChanged) {
+      clearInterval(timer);
+      actualRound = roundChanged;
+      socketIO.to(room).emit("clear_word");
+    }
+  }, 1000);
+}
+
 function sendUserList(room) {
   var list = [];
 
@@ -766,6 +828,7 @@ function sendUserList(room) {
           lastAnswer: member.lastAnswer,
           painting: member.painting,
           points: member.points,
+          avatar: member.avatar
         });
       });
     }

@@ -1,14 +1,27 @@
 import { useState, useEffect, useRef } from "react";
 import { render } from "react-dom";
+import "../styles/Ranking.css"
+
 
 function Ranking({ socket }) {
   const [userList, setUserList] = useState([]);
   const [firstTime, setFirstTime] = useState(true);
   const [spectator, setSpectator] = useState(false);
-  
-    socket.on("spectator", (data) => {
-      setSpectator(data.spectator);
-    });
+
+  var items = document.getElementsByClassName("fade-item");
+
+  let aux = items.length - 1;
+  for (let i = 0; i < items.length; i++) {
+    fadeIn(items[aux], i * 1000)
+    aux--;
+
+  }
+
+  function fadeIn(item, delay) {
+    setTimeout(() => {
+      item.classList.add('fadein')
+    }, delay)
+  }
 
   useEffect(() => {
     if (firstTime) {
@@ -20,24 +33,76 @@ function Ranking({ socket }) {
       data.list.sort((a, b) => b.points - a.points);
       setUserList(data.list);
     });
+
+    socket.on("spectator", (data) => {
+      setSpectator(data.spectator);
+    });
+
   }, [firstTime, socket])
 
   return (
     <div>
-      <div className="endgame__ranking">
-        <h1>Ranking</h1>
-        <ul id="userList" className="connectedUsers__userList userList">
-          {userList.map((user, index) => {
-            return (
-              <li className="userList__item item" key={index}>
-                <div className="item__name">
-                  <h3 id="list">{user.name}</h3>
-                  <h2>Points {user.points}</h2>
+      <h1>Ranking</h1>
+
+      <div className="ranking__container">
+        <div className="topLeadersList fire">
+          {userList.map((leader, index) => (
+            <div key={leader.id}>
+              {index + 1 <= 3 && (
+                <div key={index} className="ranking__leader fade-item">
+                  <div className="crown">
+                    {(() => {
+                      if (index == 1) {
+                        return (
+                          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-crown" width="100" height="100" viewBox="0 0 24 24" strokeWidth="3" stroke="#597e8d" fill="rgb(192, 192, 192)" strokeLinecap="round" strokeLinejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                            <path d="M12 6l4 6l5 -4l-2 10h-14l-2 -10l5 4z" />
+                          </svg>
+                        )
+                      } else if (index == 2) {
+                        return (
+                          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-crown" width="100" height="100" viewBox="0 0 24 24" strokeWidth="3" stroke="#ff9300" fill="#ffbf00" strokeLinecap="round" strokeLinejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                            <path d="M12 6l4 6l5 -4l-2 10h-14l-2 -10l5 4z" />
+                          </svg>
+                        )
+                      } else {
+                        return (
+                          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-crown" width="100" height="100" viewBox="0 0 24 24" strokeWidth="3" stroke="#ffec00" fill="gold" strokeLinecap="round" strokeLinejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                            <path d="M12 6l4 6l5 -4l-2 10h-14l-2 -10l5 4z" />
+                          </svg>
+                        )
+                      }
+                    })()}
+
+
+                  </div>
+                  <img className="leader__avatar" src={leader.avatar}></img>
+                  <div className="leader__name">{leader.name}</div>
+                  <div className="leader__points"><p>{leader.points} points</p></div>
                 </div>
-              </li>
-            );
-          })}
-        </ul>
+              )}
+            </div>
+          ))}
+        </div>
+
+        <div className="playerslist fade-item">
+          <div className="ranking__listPlayers">
+            {userList.map((leader, index) => (
+              <div className="player" key={leader.id}>
+                <span> {index + 1 > 3 && (
+                  <div key={index} className="ranking__player">
+                      <p className="player__index">{index}</p>
+                      <img className="avatar__img" src={leader.avatar}></img>
+                      <p className="player__name"> {leader.name} </p>
+                      <p className="player__points"> {leader.points} points</p>
+                  </div>
+                )}</span>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );

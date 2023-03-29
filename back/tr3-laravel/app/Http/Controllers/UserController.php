@@ -188,11 +188,14 @@ class UserController extends Controller
         [$id, $token] = explode('|', $request -> token, 2);
         $accessToken = PersonalAccessToken::find($id);
 
-        if (hash_equals($accessToken->token, hash('sha256', $token))) {
-            $userId = $accessToken -> tokenable_id;
-            $request->session()->put('userId', $userId);
-            $userLogged = true;
+        if ($accessToken != null) {
+            if (hash_equals($accessToken->token, hash('sha256', $token))) {
+                $userId = $accessToken -> tokenable_id;
+                $request->session()->put('userId', $userId);
+                $userLogged = true;
+            }
         }
+
         }
         return response() -> json($userLogged);
     }  
