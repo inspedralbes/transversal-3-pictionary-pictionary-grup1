@@ -181,18 +181,21 @@ class UserController extends Controller
     {
         $userLogged = false;
 
-        if ($request -> token == null || $request -> token == "" ) {
+        if ($request -> token == null || $request -> token == "" || $request -> token == "null") {
             $userLogged = false;
         } else {    
         //Check if the user is logged, returns 'null' if the user is not logged in.
         [$id, $token] = explode('|', $request -> token, 2);
         $accessToken = PersonalAccessToken::find($id);
 
-        if (hash_equals($accessToken->token, hash('sha256', $token))) {
-            $userId = $accessToken -> tokenable_id;
-            $request->session()->put('userId', $userId);
-            $userLogged = true;
+        if ($accessToken != null) {
+            if (hash_equals($accessToken->token, hash('sha256', $token))) {
+                $userId = $accessToken -> tokenable_id;
+                $request->session()->put('userId', $userId);
+                $userLogged = true;
+            }
         }
+
         }
         return response() -> json($userLogged);
     }  

@@ -50,7 +50,10 @@ function ConnectedUsersOwner({ socket }) {
                             <li style={{ color: colors[index] }}
                                 id="bgColor" className="game_item item">
                                 <div className="GameItem__name">
-                                    <p>{user.name}</p>
+                                    <div className="player__data">
+                                        <img src={user.avatar} width="50px" />
+                                        <p className="user__name">{user.name}</p>
+                                    </div>
                                 </div>
                             </li>
                         );

@@ -33,7 +33,7 @@ function ConnectedUsers({ socket }) {
                 {userList.map((user, index) => {
                     return (
                         <li onMouseOver={changeColor} className="userList__item item" key={index}>
-                            <img src={user.avatar}></img>
+                            <img src={user.avatar} width="120px" ></img>
                             <div className="item__name">
                                 <h3 id="list">{user.name}</h3>
                             </div>

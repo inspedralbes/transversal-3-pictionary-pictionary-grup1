@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import Cookies from 'universal-cookie';
 import { useNavigate } from "react-router-dom"; //Rutas
 import routes from "../index";
+import arrow from "../img/arrow.png";
 import '../styles/Categories.css';
 
 
@@ -28,7 +29,7 @@ function Categories() {
 
     const [userData, setUserData] = useState({
         name: "",
-        privacy: "",
+        privacy: false,
         token: "",
         words: [],
     });
@@ -58,18 +59,22 @@ function Categories() {
     };
 
     const handleWordAdd = () => {
-        setUserData({
-            name: "",
-            privacy: "",
-            token: "",
-            words: [],
-        });
         setWordList([...wordList, { word: "" }]);
         setDescriptionList([...descriptionList, { description: "" }]);
     };
 
     const handleSetAddCategory = () => {
-        setCategoryListMessage("");
+        setUserData({
+            name: "",
+            privacy: false,
+            token: "",
+            words: [],
+        })
+        setWordList([{ word: "" }])
+        setDescriptionList([{ description: "" }])
+        setEditing(false);
+        // setCategoryListMessage("");
+        setAddCategoryMessage("");
         setAddCategory(!addCategory);
         setGetCats(getCats + 1);
     };
@@ -88,30 +93,61 @@ function Categories() {
     };
 
     const handleEdit = (e) => {
-        e.preventDefault();
-        setIdToEdit(e.target.id);
-        console.log(e.target);
+        // e.preventDefault();
+        let id = e.target.id;
         setEditing(true);
-        setWordList([]);
-        setDescriptionList([]);
 
         myCategories.forEach(category => {
-            if (category.categoryId == idToEdit) {
-                console.log(category);
+            if (category.categoryId == id) {
+                setIdToEdit(id);
 
-                setUserData({ categoryName: category.categoryName, privacy: category.privacy == "public" ? true : false })
                 let wordList = [];
                 let catList = [];
+                let user = { name: category.categoryName, privacy: category.privacy == "public" ? true : false };
+
                 category.words.forEach(word => {
                     wordList.push({ word: word.name })
                     catList.push({ description: word.description })
                 });
                 setWordList(wordList);
                 setDescriptionList(catList);
+                setUserData(user)
+                setAddCategory(!addCategory);
             }
         });
-        setAddCategory(!addCategory);
     };
+    function changeColor() {
+        document
+            .getElementById("add")
+            .addEventListener("mouseover", function () {
+                let colors = [
+                    "#990000",
+                    "#157425",
+                    "#0d63aa",
+                    "#788124",
+                    "#c04d00",
+                    "#132094",
+                    "#c413c4",
+                    "#229e98",
+                    "#599c53",
+                    "#7a31ce",
+                    "#b17419",
+                    "#4d2504",
+                    "#ff7505",
+                    "#db3c20",
+                    "#358884",
+                    "#356088",
+                    "#b44567",
+                    "#b4a345",
+                    "#39862e",
+                    "#80862e"
+                ];
+                let color = colors[Math.floor(Math.random() * 21)];
+                document.getElementById("add").style.backgroundColor = color;
+                document.getElementById("add").style.borderColor = color;
+                document.getElementById("add").style.transition = 'all 0.2s';
+            });
+    }
 
     useEffect(() => {
         if (registro != 0) {
@@ -137,15 +173,17 @@ function Categories() {
                 body: user,
                 credentials: 'include'
             }).then((response) => response.json()).then((data) => {
-                console.log(data);
                 if (data.valid) {
-                    setAddCategoryMessage(`Category ${data.category.name} added correctly`);
+                    setCategoryListMessage(`Category ${data.category.name} added correctly`);
+                    let user = { name: "", privacy: false };
+                    setUserData(user);
                     setWordList([{ word: "" }]);
                     setDescriptionList([{ description: "" }]);
+                    handleSetAddCategory();
                 } else {
                     setAddCategoryMessage(data.message)
                     if (data.wrongWords != null) {
-                        setAddCategoryMessage(`One or more words are repeated. (${data.wrongWords})`)
+                        setAddCategoryMessage(`${data.message} (${data.wrongWords})`)
                     }
                 }
             }
@@ -165,7 +203,6 @@ function Categories() {
                 body: user,
                 credentials: 'include'
             }).then((response) => response.json()).then((data) => {
-                // console.log(data);
                 setMyCategories(data);
                 setLoadingCategories(false);
             }
@@ -222,7 +259,19 @@ function Categories() {
                 body: user,
                 credentials: 'include'
             }).then((response) => response.json()).then((data) => {
-                console.log(data);
+                if (data.valid) {
+                    setCategoryListMessage(`Category ${userData.name} updated correctly`);
+                    let user = { name: "", privacy: false };
+                    setUserData(user);
+                    setWordList([{ word: "" }]);
+                    setDescriptionList([{ description: "" }]);
+                    handleSetAddCategory();
+                } else {
+                    setAddCategoryMessage(data.message)
+                    if (data.wrongWords != null) {
+                        setAddCategoryMessage(`${data.message} (${data.wrongWords})`)
+                    }
+                }
             }
             );
         }
@@ -239,12 +288,21 @@ function Categories() {
         <>
             {!addCategory ?
                 <>
+                    <div className="form__goBack">
+                        <div className="form__button--flex">
+                            <Link to="/">
+                                <button id="goBack__button">
+                                    <span className="button-text">Go back</span>
+                                </button>
+                            </Link>
+                        </div>
+                    </div>
                     {!loadingCategories ?
                         <div>
                             {myCategories.length > 0 ?
                                 <>
                                     <h1 style={{ textAlign: "center" }}>Categorias</h1>
-                                    {categoryListMessage != "" && <h3 style={{ textAlign: "center", color: "red" }}>{categoryListMessage}</h3>}
+                                    {categoryListMessage != "" && <h3 style={{ textAlign: "center" }}>{categoryListMessage}</h3>}
                                     <div className="myCategories">
                                         <table className="myCategories__table">
                                             <thead className="myCategories__thead">
@@ -272,35 +330,45 @@ function Categories() {
                                                     <td className="myCategories__td"></td>
                                                     <td className="myCategories__td"></td>
                                                     <td className="myCategories__td"></td>
-                                                    <td className="myCategories__addCategoryButton"><button onClick={handleSetAddCategory}><i className="icon-plus"></i>Add category</button></td>
+                                                    <td className="myCategories__addCategoryButton"><button id="add" onMouseOver={changeColor} onClick={handleSetAddCategory}><i className="icon-plus"></i>Add category</button></td>
                                                 </tr>
                                             </tfoot>
                                         </table>
                                     </div>
                                 </>
                                 :
-                                <>
+                                <div className="NoCategory">
                                     <h1 style={{ textAlign: "center" }}>You haven't created any category yet!</h1>
-                                    <button onClick={handleSetAddCategory}><i className="icon-plus"></i>Add category</button>
-                                </>
+                                    <div className="NoCategory__arrowBtn">
+                                        <img src={arrow} alt=" " height={'110px'} />
+                                        <button style={{ margin: '0 auto' }} className='NoCategory__addBtn' id="add" onMouseOver={changeColor} onClick={handleSetAddCategory}><i className="icon-plus"></i>Add category</button>
+                                    </div>
+                                </div>
+
                             }
                         </div> :
                         <h1>Loading categories...</h1>}
                 </> :
                 <div className="addCategory">
+                    <div className="form__goBack">
+                        <div className="form__button--flex">
+                            <button id="add" onMouseOver={changeColor} style={{margin: '30px', height:'60px', width:'200px', letterSpacing:'1px', fontSize:'1.7rem'}} onClick={handleSetAddCategory}>
+                                <span className="button-text">Category list</span>
+                            </button>
+                        </div>
+                    </div>
                     <fieldset>
                         <legend className="addCategory__legend">ADD NEW CATEGORY</legend>
                         <br />
                         {addCategoryMessage != "" && <h3 style={{ textAlign: "center" }}>{addCategoryMessage}</h3>}
                         <div className="addCategory__form">
-                            <div className="addCategory__name">
-                                <span className="addCategory__formSpan">
-                                    <input className="slide-up" id="name" type="text" placeholder="Introduce name" onChange={(e) => setUserData({ ...userData, name: e.target.value })} required /><label className="addCategory__nameLabel" htmlFor="name">Name</label>
-                                </span>
+                            <div className="addCategory__nameTA">
+                                <span className="addCategory__formSpanTA"><p className="addCategory__Name">CATEGORY NAME</p>
+                                    <input className="input" id="name" type="text" placeholder="Introduce  category name" onChange={(e) => setUserData({ ...userData, name: e.target.value })} required /></span>
                             </div>
                         </div>
                         <form className="App" autoComplete="off">
-                            <div className="form-field">
+                            <div className="form-field" id="scroll">
                                 {wordList.map((singleWord, index) => (
                                     <div key={index} className="words">
                                         <div className="wordSettings">
@@ -326,6 +394,7 @@ function Categories() {
                                                 type="button"
                                                 onClick={handleWordAdd}
                                                 className="add-btn"
+                                                id="add" onMouseOver={changeColor}
                                             >
                                                 <span>Add a Word</span>
                                             </button>
@@ -335,6 +404,8 @@ function Categories() {
                                                 type="button"
                                                 onClick={() => handleWordRemove(index)}
                                                 className="remove-btn"
+                                                id="add" onMouseOver={changeColor}
+                                                
                                             >
                                                 <span>Remove</span>
                                             </button>
@@ -347,17 +418,23 @@ function Categories() {
 
                         <div className="form__buttonsLinks">
                             <div className="form__buttons">
-                                <div className="form__goBack">
-                                    <div className="form__button--flex">
-                                        <button id="goBack__button" onClick={handleSetAddCategory}>
-                                            <span className="button-text">Category list</span>
-                                        </button>
-                                    </div>
-                                </div>
-
                                 <label className="addCategory__public">
-                                    <input className="addCategory__publicCheckbox" type="checkbox" checked={userData.privacy} onChange={(e) => setUserData({ ...userData, privacy: e.target.checked })} required></input>
-                                    <p>Do you want the category to be public?</p>
+                                    <div  className="list__container__text">
+                                        <input type="checkbox" id="check1"className="check" onChange={(e) => setUserData({ ...userData, privacy: e.target.checked })} required />
+                                            <label htmlFor="check1" className="list__container__text__label" >
+                                            <svg width="500" height="50" viewBox="0 0 500 100">
+                                                <rect x="0" y="15" width="50" height="50" stroke="black" fill="none" className="list__container__checkbox" />
+                                                <g transform="translate(-10,-962.36218)">
+                                                    <path d="m 13,983 c 33,6 40,26 55,48 " stroke="black" strokeWidth="3" className="path1" fill="none" />
+                                                    <path d="M 75,970 C 51,981 34,1014 25,1031 " stroke="black" strokeWidth="3" className="path1" fill="none" />
+                                                </g>
+                                            </svg>
+                                            <span style={{ marginLeft: "-326px", marginTop: "10px" }}>Do you want the category to be public?</span>
+                                        </label>
+
+                                    </div>
+                                    {/* <input className="addCategory__publicCheckbox" type="checkbox" onChange={(e) => setUserData({ ...userData, privacy: e.target.checked })} required></input> */}
+                                    <p></p>
                                 </label>
                                 <div className="form__submit submit">
                                     <button onClick={handleSubmit} id="submit__button">

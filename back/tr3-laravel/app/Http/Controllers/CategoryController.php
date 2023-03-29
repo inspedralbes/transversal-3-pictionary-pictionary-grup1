@@ -58,9 +58,11 @@ class CategoryController extends Controller
             [$id, $token] = explode('|', $request->token, 2);
             $accessToken = PersonalAccessToken::find($id);
 
-            if (hash_equals($accessToken->token, hash('sha256', $token))) {
-                $userId = $accessToken->tokenable_id;
-                $request->session()->put('userId', $userId);
+            if ($accessToken != null) {
+                if (hash_equals($accessToken->token, hash('sha256', $token))) {
+                    $userId = $accessToken->tokenable_id;
+                    $request->session()->put('userId', $userId);
+                }
             }
         }
 
@@ -71,11 +73,12 @@ class CategoryController extends Controller
     {
         $wrongWords = [];
         $invalidWords = [];
+        $createCategory = false;
         $categoryAdded = (object)[];
 
         //Set privacy
         $privacy = 'private';
-        if ($request->public) {
+        if ($request->public == "true") {
             $privacy = 'public';
         }
 
@@ -99,15 +102,7 @@ class CategoryController extends Controller
             if ($userId != null) {
                 $editCategoryName = false;
                 $createCategory = $this->checkCategoryDuplicated($request, $privacy, $editCategoryName);
-            } else {
-                $sendCategory = (object)
-                [
-                    "valid" => false,
-                    'message' => 'User is not logged in.',
-                ];
-            }
-
-            //If we can create the category we add it with the user id after checking that all the words are valid.
+                            //If we can create the category we add it with the user id after checking that all the words are valid.
 
             if ($createCategory) {
                 $allWordsAreValid = true;
@@ -178,7 +173,7 @@ class CategoryController extends Controller
                         [
                             "valid" => false,
                             'message' => 'Words should be more than 3 characters and less than 20.',
-                            'wrongWords' => $wrongWords,
+                            'wrongWords' => $invalidWords,
                         ];
                     }
                 }
@@ -189,6 +184,15 @@ class CategoryController extends Controller
                     'message' => "Category already exists."
                 ];
             }
+            } else {
+                $sendCategory = (object)
+                [
+                    "valid" => false,
+                    'message' => 'User is not logged in.',
+                ];
+            }
+
+
         }
 
         return response()->json($sendCategory);
@@ -351,7 +355,7 @@ class CategoryController extends Controller
                 if ($isTheUserTheOwner != 0) {
                     //Set privacy
                     $privacy = 'private';
-                    if ($request->public) {
+                    if ($request->public == "true") {
                         $privacy = 'public';
                     }
 
@@ -407,7 +411,7 @@ class CategoryController extends Controller
                                             }
                                         }
                                     }
-                                    
+
                                     if ((empty($wrongWords))) {
                                         //Delete all the words from this category
                                         Word::where('category_id', $request->category_id)->delete();
@@ -446,7 +450,7 @@ class CategoryController extends Controller
                                     [
                                         "valid" => false,
                                         'message' => 'Words should be more than 3 characters and less than 20.',
-                                        'wrongWords' => $wrongWords,
+                                        'wrongWords' => $invalidWords,
                                     ];
                                 }
                             }

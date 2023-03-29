@@ -58,7 +58,7 @@ function ConnectedUsersInGame({ socket, pintor }) {
                   key={index}
                 >
                   <div className="GameItem__name">
-                  <img src={user.avatar} width="100px" height="100px"></img>
+                  <img src={user.avatar} width="60px"></img>
                     <p>
                       {user.painting ? (
                         <>
