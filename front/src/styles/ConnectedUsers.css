@@ -299,7 +299,7 @@
     border: 2px dashed #868686;
 }
 
-.game__connectedUsersInGameOwner .connectedUsersInGame__title{
+.game__connectedUsersInGameOwner .connectedUsersInGame__title {
     transform: translate(-5%, 0);
 }
 
@@ -431,4 +431,14 @@
     color: #9afa66;
     display: inline-block;
     transition: all 0.03s ease-in-out;
+}
+
+.user__name {
+    position: relative;
+    top: 16px;
+    margin-left: 20px;
+}
+
+.player__data {
+    display: inline-flex;
 }

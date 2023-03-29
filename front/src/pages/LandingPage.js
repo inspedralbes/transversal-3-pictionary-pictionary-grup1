@@ -11,6 +11,8 @@ function LandingPage({ socket }) {
   const [menuBarClass, setMenuBarClass] = useState(false);
   const [menuBgClass, setMenuBgClass] = useState(false);
   const [navClass, setNavClass] = useState(false);
+  const [displayMenu, setdisplayMenu] = useState(false);
+
 
 
   const cookies = new Cookies();
@@ -91,6 +93,7 @@ function LandingPage({ socket }) {
     const data = await response.json();
     if (data) {
         setisLogged(true);
+        setdisplayMenu(true);
     }
     else {
       setisLogged(false);
@@ -102,34 +105,43 @@ function LandingPage({ socket }) {
   }, [])
 
   return (
-    <div className="ldPage">
-      {isLogged ?
-        <div>
-          <div id="menu">
-            <div id="menu-bar" className={`menu-bar${menuBarClass ? " change" : ""}`} onClick={menuOnClick}>
-              <div id="bar1" className="bar"></div>
-              <div id="bar2" className="bar"></div>
-              <div id="bar3" className="bar"></div>
-            </div>
-            <nav className={`nav${navClass ? " change" : ""}`} id="nav">
-              <ol>
-                <li><Link to="/categories">Categories</Link></li>
-                <li onClick={Logout}><Link to="/">Logout</Link></li>
-              </ol>
-            </nav>
-          </div>
 
-          <div className={`menu-bg${menuBgClass ? " change-bg" : ""}`} id="menu-bg"></div>
-        </div>
-        :
-        <div>
-          <Link to="/login">
-            <div className="ldPage__loginRegister">
-              <>Log in/Register</>
+    <div className="ldPage">
+      {displayMenu ? 
+      <>
+         {isLogged ?
+          <div>
+            <div id="menu">
+              <div id="menu-bar" className={`menu-bar${menuBarClass ? " change" : ""}`} onClick={menuOnClick}>
+                <div id="bar1" className="bar"></div>
+                <div id="bar2" className="bar"></div>
+                <div id="bar3" className="bar"></div>
+              </div>
+              <nav className={`nav${navClass ? " change" : ""}`} id="nav">
+                <ol>
+                  <li><Link to="/categories">Categories</Link></li>
+                  <li onClick={Logout}><Link to="/">Logout</Link></li>
+                </ol>
+              </nav>
             </div>
-          </Link>
-        </div>
-      }
+  
+            <div className={`menu-bg${menuBgClass ? " change-bg" : ""}`} id="menu-bg"></div>
+          </div>
+          :
+          <div>
+            <Link to="/login">
+              <div className="ldPage__loginRegister">
+                <>Log in/Register</>
+              </div>
+            </Link>
+          </div>
+          }
+          
+        </>
+        : 
+        <>
+        </>
+    } 
       <div className="border is-drawn" id="border">
         <div className="space-around">
           <h1 className="ldPage__title">
