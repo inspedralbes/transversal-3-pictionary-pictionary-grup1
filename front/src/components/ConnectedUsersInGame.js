@@ -1,4 +1,3 @@
-// import "../normalize.css";
 import { useState, useEffect } from "react";
 import pincell from "../img/brush.cur";
 
@@ -58,7 +57,7 @@ function ConnectedUsersInGame({ socket, pintor }) {
                   key={index}
                 >
                   <div className="GameItem__name">
-                  <img src={user.avatar} width="60px"></img>
+                  <img alt="avatar" src={user.avatar} width="60px"></img>
                     <p>
                       {user.painting ? (
                         <>
@@ -73,7 +72,7 @@ function ConnectedUsersInGame({ socket, pintor }) {
                         <>
                        
                           {user.name}{" "}
-                          {pintor && user.lastAnswer != ""
+                          {pintor && user.lastAnswer !== ""
                             ? `: ${user.lastAnswer}`
                             : ""}
                         </>

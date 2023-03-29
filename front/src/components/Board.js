@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { CirclePicker, SketchPicker } from "react-color";
-import WordGuess from "../components/WordGuess";
+import { CirclePicker } from "react-color";
 import "../styles/Board.css";
 import React from "react";
 import CountDownTimer from "./CountdownTimer";
@@ -20,7 +19,6 @@ function Board({ socket, pintor }) {
   const sendBoardDataToSocketIo = () => {
     const data = { arrayDatos };
     socket.emit("save_coord", data);
-    console.log(arrayDatos);
   };
 
   const undo = (e) => {
@@ -92,7 +90,7 @@ function Board({ socket, pintor }) {
               arrayRedo.splice(i, 1);
             }
           }
-          else if (arrayRedo[i] === "nuevaLinea" && endLine == false) {
+          else if (arrayRedo[i] === "nuevaLinea" && endLine === false) {
             if (auxNum === 1) {
               endLine = true;
             }
@@ -177,7 +175,6 @@ function Board({ socket, pintor }) {
         context.fill();
         arrayDatos.push({ x, y, currentColor, brushRadius });
         sendBoardDataToSocketIo();
-        console.log(arrayDatos);
       }
 
       function handleMouseMove(evt) {

@@ -90,7 +90,7 @@ function Settings({ socket, start }) {
       </div>
       <div className="settings__zone">
         <h2>SETTINGS </h2>
-        {error != "" && <h1 className="error">{error}</h1>}
+        {error !== "" && <h1 className="error">{error}</h1>}
         <form className="App" autoComplete="off">
           <span className="addCategory__formSpanTA">
             <p className="settings__zone__title">Round duration (seconds)</p>
@@ -127,14 +127,14 @@ function Settings({ socket, start }) {
                   <path
                     d="m 13,983 c 33,6 40,26 55,48 "
                     stroke="black"
-                    stroke-width="3"
+                    strokeWidth="3"
                     className="path1"
                     fill="none"
                   />
                   <path
                     d="M 75,970 C 51,981 34,1014 25,1031 "
                     stroke="black"
-                    stroke-width="3"
+                    strokeWidth="3"
                     className="path1"
                     fill="none"
                   />

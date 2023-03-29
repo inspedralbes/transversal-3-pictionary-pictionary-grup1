@@ -1,12 +1,10 @@
-import { useState, useEffect, useRef } from "react";
-import { render } from "react-dom";
+import { useState, useEffect } from "react";
 import "../styles/Ranking.css"
 
 
 function Ranking({ socket }) {
   const [userList, setUserList] = useState([]);
   const [firstTime, setFirstTime] = useState(true);
-  const [spectator, setSpectator] = useState(false);
 
   var items = document.getElementsByClassName("fade-item");
 
@@ -34,10 +32,6 @@ function Ranking({ socket }) {
       setUserList(data.list);
     });
 
-    socket.on("spectator", (data) => {
-      setSpectator(data.spectator);
-    });
-
   }, [firstTime, socket])
 
   return (
@@ -52,14 +46,14 @@ function Ranking({ socket }) {
                 <div className="ranking__leader fade-item">
                   <div className="crown">
                     {(() => {
-                      if (index == 1) {
+                      if (index === 1) {
                         return (
                           <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-crown" width="100" height="100" viewBox="0 0 24 24" strokeWidth="3" stroke="#597e8d" fill="rgb(192, 192, 192)" strokeLinecap="round" strokeLinejoin="round">
                             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                             <path d="M12 6l4 6l5 -4l-2 10h-14l-2 -10l5 4z" />
                           </svg>
                         )
-                      } else if (index == 2) {
+                      } else if (index === 2) {
                         return (
                           <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-crown" width="100" height="100" viewBox="0 0 24 24" strokeWidth="3" stroke="#ff9300" fill="#ffbf00" strokeLinecap="round" strokeLinejoin="round">
                             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -78,7 +72,7 @@ function Ranking({ socket }) {
 
 
                   </div>
-                  <img className="leader__avatar" src={leader.avatar}></img>
+                  <img alt="avatar" className="leader__avatar" src={leader.avatar}></img>
                   <div className="leader__name">{leader.name}</div>
                   <div className="leader__points"><p>{leader.points} points</p></div>
                 </div>
@@ -94,7 +88,7 @@ function Ranking({ socket }) {
                 <span> {index + 1 > 3 && (
                   <div  className="ranking__player">
                       <p className="player__index">{index}</p>
-                      <img className="avatar__img" src={leader.avatar}></img>
+                      <img alt="avatar" className="avatar__img" src={leader.avatar}></img>
                       <p className="player__name"> {leader.name} </p>
                       <p className="player__points"> {leader.points} points</p>
                   </div>

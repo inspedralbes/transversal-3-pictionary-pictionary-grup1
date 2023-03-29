@@ -187,7 +187,7 @@ function LobbyCreation({ socket }) {
           Creating lobby...
         </div>
       )}
-      {error != "" && <h1>{error}</h1>}
+      {error !== "" && <h1>{error}</h1>}
     </>
   );
 }

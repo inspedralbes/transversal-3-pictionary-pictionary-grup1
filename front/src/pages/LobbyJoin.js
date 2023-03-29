@@ -10,7 +10,6 @@ function LobbyJoin({ socket }) {
   const [error, setError] = useState("");
   const [insideLobby, setInsideLobby] = useState(false);
   const [firstTime, setFirstTime] = useState(true);
-  //const [registeredUsername, setRegisteredUsername] = useState(false);
   const navigate = useNavigate();
 
   function handleChangeLobbyId(e) {
@@ -20,10 +19,6 @@ function LobbyJoin({ socket }) {
   function handleChangeUsername(e) {
     setUsername(e.target.value);
   }
-
-  // function handleEnableUsername(e) {
-  //   setRegisteredUsername(false);
-  // }
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -39,7 +34,6 @@ function LobbyJoin({ socket }) {
 
   function handleLeave(e) {
     e.preventDefault();
-    //
     socket.emit("leave_lobby", {
       lobbyIdentifier: lobbyId,
     });
@@ -99,7 +93,6 @@ function LobbyJoin({ socket }) {
 
     socket.on("username_saved", (data) => {
       setUsername(data.name);
-      //setRegisteredUsername(true);
     });
 
     socket.on("lobby_info", (data) => {

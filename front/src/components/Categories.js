@@ -23,7 +23,7 @@ function Categories({ socket, start, categoriesData }) {
   return (
     <div className="checkList">
       <div className="list__container default">
-        <h3 className="title">Default</h3>
+        <h3 className="title">Default categories</h3>
         <div id="list__container_li">
           {Array.isArray(categoriesData.default)
             ? categoriesData.default.map((item, index) => (
@@ -53,14 +53,14 @@ function Categories({ socket, start, categoriesData }) {
                       <path
                         d="m 13,983 c 33,6 40,26 55,48 "
                         stroke="black"
-                        stroke-width="3"
+                        strokeWidth="3"
                         className="path1"
                         fill="none"
                       />
                       <path
                         d="M 75,970 C 51,981 34,1014 25,1031 "
                         stroke="black"
-                        stroke-width="3"
+                        strokeWidth="3"
                         className="path1"
                         fill="none"
                       />
@@ -76,9 +76,9 @@ function Categories({ socket, start, categoriesData }) {
         </div>
       </div>
       <div className="list__container public">
-        <h3 className="title">Public</h3>
+        <h3 className="title">Created by others</h3>
         <div id="list__container_li">
-          {Array.isArray(categoriesData.public) && categoriesData.public != []
+          {Array.isArray(categoriesData.public) && categoriesData.public !== []
             ? categoriesData.public.map((item, index) => (
               <div key={index} className="list__container__text">
                 <input
@@ -106,14 +106,14 @@ function Categories({ socket, start, categoriesData }) {
                       <path
                         d="m 13,983 c 33,6 40,26 55,48 "
                         stroke="black"
-                        stroke-width="3"
+                        strokeWidth="3"
                         className="path1"
                         fill="none"
                       />
                       <path
                         d="M 75,970 C 51,981 34,1014 25,1031 "
                         stroke="black"
-                        stroke-width="3"
+                        strokeWidth="3"
                         className="path1"
                         fill="none"
                       />
@@ -148,7 +148,7 @@ function Categories({ socket, start, categoriesData }) {
       <div className="list__container private">
         <h3 className="title">My categories</h3>
         {Array.isArray(categoriesData.myCategories) &&
-          categoriesData.myCategories != []
+          categoriesData.myCategories !== []
           ? categoriesData.myCategories.map((item, index) => (
             <div key={index} className="list__container__text">
               <input
@@ -176,14 +176,14 @@ function Categories({ socket, start, categoriesData }) {
                     <path
                       d="m 13,983 c 33,6 40,26 55,48 "
                       stroke="black"
-                      stroke-width="3"
+                      strokeWidth="3"
                       className="path1"
                       fill="none"
                     />
                     <path
                       d="M 75,970 C 51,981 34,1014 25,1031 "
                       stroke="black"
-                      stroke-width="3"
+                      strokeWidth="3"
                       className="path1"
                       fill="none"
                     />
