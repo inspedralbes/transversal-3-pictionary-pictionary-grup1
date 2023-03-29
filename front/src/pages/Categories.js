@@ -98,13 +98,11 @@ function Categories() {
 
         myCategories.forEach(category => {
             if (category.categoryId == id) {
-                console.log(category);
                 setIdToEdit(id);
 
                 let wordList = [];
                 let catList = [];
                 let user = { name: category.categoryName, privacy: category.privacy == "public" ? true : false };
-                console.log(user);
 
                 category.words.forEach(word => {
                     wordList.push({ word: word.name })
@@ -135,7 +133,7 @@ function Categories() {
             user.append("public", userData.privacy);
             user.append("token", cookies.get('token') != undefined ? cookies.get('token') : null);
             user.append("words", JSON.stringify(wordsAndDescription));
-            console.log(userData.privacy);
+
             fetch(routes.fetchLaravel + "addCategory", {
                 method: 'POST',
                 mode: 'cors',
@@ -172,7 +170,6 @@ function Categories() {
                 body: user,
                 credentials: 'include'
             }).then((response) => response.json()).then((data) => {
-                console.log(data);
                 setMyCategories(data);
                 setLoadingCategories(false);
             }
