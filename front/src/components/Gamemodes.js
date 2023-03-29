@@ -22,16 +22,16 @@ function Gamemodes({ socket, start }) {
     <div>
       {error !== "" && <h1 className="error">{error}</h1>}
       <form className="form__setting">
-        <div class="form__setting__radio">
-          <div class="radio">
+        <div className="form__setting__radio">
+          <div className="radio">
             <input type="radio" name="radio" id="radio1" value="normal" className="check" onChange={handleChange} />
-            <label for="radio1">Normal mode</label>
+            <label htmlFor="radio1">Normal mode</label>
           </div>
           <br />
-          <div class="radio">
+          <div className="radio">
             <input type="radio"
               value="fast" name="radio" id="radio2" onChange={handleChange} />
-            <label for="radio2">Fast mode</label>
+            <label htmlFor="radio2">Fast mode</label>
           </div>
         </div>
         <br />
