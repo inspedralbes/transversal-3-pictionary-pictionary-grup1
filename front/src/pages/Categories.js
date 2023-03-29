@@ -28,7 +28,7 @@ function Categories() {
 
     const [userData, setUserData] = useState({
         name: "",
-        privacy: "",
+        privacy: false,
         token: "",
         words: [],
     });
@@ -58,18 +58,22 @@ function Categories() {
     };
 
     const handleWordAdd = () => {
-        setUserData({
-            name: "",
-            privacy: "",
-            token: "",
-            words: [],
-        });
         setWordList([...wordList, { word: "" }]);
         setDescriptionList([...descriptionList, { description: "" }]);
     };
 
     const handleSetAddCategory = () => {
-        setCategoryListMessage("");
+        setUserData({
+            name: "",
+            privacy: false,
+            token: "",
+            words: [],
+        })
+        setWordList([{ word: "" }])
+        setDescriptionList([{ description: "" }])
+        setEditing(false);
+        // setCategoryListMessage("");
+        setAddCategoryMessage("");
         setAddCategory(!addCategory);
         setGetCats(getCats + 1);
     };
@@ -88,29 +92,30 @@ function Categories() {
     };
 
     const handleEdit = (e) => {
-        e.preventDefault();
-        setIdToEdit(e.target.id);
-        console.log(e.target);
+        // e.preventDefault();
+        let id = e.target.id;
         setEditing(true);
-        setWordList([]);
-        setDescriptionList([]);
 
         myCategories.forEach(category => {
-            if (category.categoryId == idToEdit) {
+            if (category.categoryId == id) {
                 console.log(category);
+                setIdToEdit(id);
 
-                setUserData({ categoryName: category.categoryName, privacy: category.privacy == "public" ? true : false })
                 let wordList = [];
                 let catList = [];
+                let user = { name: category.categoryName, privacy: category.privacy == "public" ? true : false };
+                console.log(user);
+
                 category.words.forEach(word => {
                     wordList.push({ word: word.name })
                     catList.push({ description: word.description })
                 });
                 setWordList(wordList);
                 setDescriptionList(catList);
+                setUserData(user)
+                setAddCategory(!addCategory);
             }
         });
-        setAddCategory(!addCategory);
     };
 
     useEffect(() => {
@@ -130,22 +135,24 @@ function Categories() {
             user.append("public", userData.privacy);
             user.append("token", cookies.get('token') != undefined ? cookies.get('token') : null);
             user.append("words", JSON.stringify(wordsAndDescription));
-
+            console.log(userData.privacy);
             fetch(routes.fetchLaravel + "addCategory", {
                 method: 'POST',
                 mode: 'cors',
                 body: user,
                 credentials: 'include'
             }).then((response) => response.json()).then((data) => {
-                console.log(data);
                 if (data.valid) {
-                    setAddCategoryMessage(`Category ${data.category.name} added correctly`);
+                    setCategoryListMessage(`Category ${data.category.name} added correctly`);
+                    let user = { name: "", privacy: false };
+                    setUserData(user);
                     setWordList([{ word: "" }]);
                     setDescriptionList([{ description: "" }]);
+                    handleSetAddCategory();
                 } else {
                     setAddCategoryMessage(data.message)
                     if (data.wrongWords != null) {
-                        setAddCategoryMessage(`One or more words are repeated. (${data.wrongWords})`)
+                        setAddCategoryMessage(`${data.message} (${data.wrongWords})`)
                     }
                 }
             }
@@ -165,7 +172,7 @@ function Categories() {
                 body: user,
                 credentials: 'include'
             }).then((response) => response.json()).then((data) => {
-                // console.log(data);
+                console.log(data);
                 setMyCategories(data);
                 setLoadingCategories(false);
             }
@@ -222,7 +229,19 @@ function Categories() {
                 body: user,
                 credentials: 'include'
             }).then((response) => response.json()).then((data) => {
-                console.log(data);
+                if (data.valid) {
+                    setCategoryListMessage(`Category ${userData.name} updated correctly`);
+                    let user = { name: "", privacy: false };
+                    setUserData(user);
+                    setWordList([{ word: "" }]);
+                    setDescriptionList([{ description: "" }]);
+                    handleSetAddCategory();
+                } else {
+                    setAddCategoryMessage(data.message)
+                    if (data.wrongWords != null) {
+                        setAddCategoryMessage(`${data.message} (${data.wrongWords})`)
+                    }
+                }
             }
             );
         }
@@ -239,12 +258,21 @@ function Categories() {
         <>
             {!addCategory ?
                 <>
+                    <div className="form__goBack">
+                        <div className="form__button--flex">
+                            <Link to="/">
+                                <button id="goBack__button">
+                                    <span className="button-text">Go back</span>
+                                </button>
+                            </Link>
+                        </div>
+                    </div>
                     {!loadingCategories ?
                         <div>
                             {myCategories.length > 0 ?
                                 <>
                                     <h1 style={{ textAlign: "center" }}>Categorias</h1>
-                                    {categoryListMessage != "" && <h3 style={{ textAlign: "center", color: "red" }}>{categoryListMessage}</h3>}
+                                    {categoryListMessage != "" && <h3 style={{ textAlign: "center" }}>{categoryListMessage}</h3>}
                                     <div className="myCategories">
                                         <table className="myCategories__table">
                                             <thead className="myCategories__thead">
@@ -288,6 +316,13 @@ function Categories() {
                         <h1>Loading categories...</h1>}
                 </> :
                 <div className="addCategory">
+                    <div className="form__goBack">
+                        <div className="form__button--flex">
+                            <button id="goBack__button" onClick={handleSetAddCategory}>
+                                <span className="button-text">Category list</span>
+                            </button>
+                        </div>
+                    </div>
                     <fieldset>
                         <legend className="addCategory__legend">ADD NEW CATEGORY</legend>
                         <br />
@@ -295,7 +330,7 @@ function Categories() {
                         <div className="addCategory__form">
                             <div className="addCategory__name">
                                 <span className="addCategory__formSpan">
-                                    <input className="slide-up" id="name" type="text" placeholder="Introduce name" onChange={(e) => setUserData({ ...userData, name: e.target.value })} required /><label className="addCategory__nameLabel" htmlFor="name">Name</label>
+                                    <input className="slide-up" id="name" type="text" placeholder="Introduce name" value={userData.name} onChange={(e) => setUserData({ ...userData, name: e.target.value })} required /><label className="addCategory__nameLabel" htmlFor="name">Name</label>
                                 </span>
                             </div>
                         </div>
@@ -347,14 +382,6 @@ function Categories() {
 
                         <div className="form__buttonsLinks">
                             <div className="form__buttons">
-                                <div className="form__goBack">
-                                    <div className="form__button--flex">
-                                        <button id="goBack__button" onClick={handleSetAddCategory}>
-                                            <span className="button-text">Category list</span>
-                                        </button>
-                                    </div>
-                                </div>
-
                                 <label className="addCategory__public">
                                     <input className="addCategory__publicCheckbox" type="checkbox" checked={userData.privacy} onChange={(e) => setUserData({ ...userData, privacy: e.target.checked })} required></input>
                                     <p>Do you want the category to be public?</p>
