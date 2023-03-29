@@ -54,8 +54,7 @@ app.use(
 );
 
 let i = 0;
-<<<<<<< HEAD
-const laravelRoute = "http://144.24.200.186:8000/index.php/";
+const laravelRoute = "https://g1.pictionary-api.alumnes.inspedralbes.cat/";
 
 let lobbies = [];
 

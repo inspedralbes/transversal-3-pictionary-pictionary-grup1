@@ -14,8 +14,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import socketIO from "socket.io-client";
 
 const routes = {
-  fetchLaravel: "http://g1.pictionary.alumnes.inspedralbes.cat/index.php/",
-  // fetchNode: "http://localhost:7500",
+  fetchLaravel: "https://g1.pictionary-api.alumnes.inspedralbes.cat/index.php/",
   wsNode: "wss://g1.pictionary.alumnes.inspedralbes.cat/",
 };
 
