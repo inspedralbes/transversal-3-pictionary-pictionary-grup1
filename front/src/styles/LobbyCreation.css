@@ -18,7 +18,7 @@
 .createGame__startButtonDiv {
     margin: 0 auto;
     position: absolute;
-    bottom: 15%;
+    bottom: 10%;
     right: 22%;
     width: fit-content;
 }
@@ -325,7 +325,7 @@
 .container {
     display: grid;
     grid-template-columns: 0.6fr 1.4fr;
-    grid-auto-rows: 1fr;
+    grid-template-rows: 1fr ;
     gap: 0px 8px;
     grid-auto-flow: row;
 }
@@ -333,7 +333,7 @@
 .i7 {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: auto 100px auto ;
+    grid-template-rows: 0.4fr 1.6fr;
     gap: 0px 0px;
     grid-auto-flow: row;
     grid-template-areas:
@@ -360,7 +360,7 @@
     overflow: hidden;
     border: 2px solid #5c5b5b;
     border-radius: 2% 2% / 10% 20%;
-    height: 40vh;
+    height: 50vh;
 }
 
 .tabs {
@@ -385,8 +385,6 @@
 
 .tab-content {
     display: none;
-    margin-top: 1%;
-    padding: 1% 2%;
     font-size: 1.5em;
     border: none;
     clear: both;
@@ -400,7 +398,7 @@
 
 .checkList {
     display: grid; 
-    grid-template-columns: 1fr 1fr 1fr; 
+    grid-template-columns: 1fr 1.25fr 1fr; 
     grid-template-rows: 1fr;
     width: 100%; 
     gap: 0px 0px; 
@@ -410,18 +408,101 @@
 
 .list__container {
     text-align: center;
+    
+}
+#list__container_li {
+    height: 35vh;
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+#list__container_li::-webkit-scrollbar-track, .icon-info-circle__content::-webkit-scrollbar {
+    border-radius: 255px 15px 255px 15px / 15px 255px 15px 255px;
+    border: 2px solid #3e3e3e;
+}
+
+#list__container_li::-webkit-scrollbar, .icon-info-circle__content::-webkit-scrollbar {
+    width: 15px;
+}
+
+#list__container_li::-webkit-scrollbar-thumb, .icon-info-circle__content::-webkit-scrollbar-thumb{
+    border-radius: 255px 15px 255px 15px / 15px 255px 15px 255px;
+    background-color: #575757;
 }
 
 .list__container__text {
     text-align: left;
-}
-.list__container__text>input {
-    text-decoration: none;
+    position:relative;
+    display:block;
 }
 
+.check {
+    position:absolute;
+    opacity:0;
+}
+.path1{
+    stroke-dasharray:400;
+    stroke-dashoffset:400;
+    transition:.5s all;
+}
+.path2{
+    stroke-dasharray:1800;
+    stroke-dashoffset:1800;
+    transition:.5s all;
+}
+.check:checked + label svg g path {
+    stroke-dashoffset:0;
+}
+
+input[type="radio"]:checked+ label svg g path {
+    stroke-dashoffset:0;
+}
+
+.list__container__text__label span {
+    position:absolute;
+    margin-left: -234px;
+    color: black;
+    width: 80%;
+}
+.list__container__text__label{
+    display:block;
+    justify-content: center;
+}   
+.list__container__checkbox{
+    margin-left: 35px;
+}
 .default { 
     grid-area: default; 
     border-right: 1px dashed black; 
-    padding-left: 2%;}
+    padding-left: 2%;
+    }
 .public { grid-area: public; border-right: 1px dashed black; padding-left: 2%; }
 .private { grid-area: private; padding-left: 2%;}
+
+.icon-info-circle{
+    float: right; /* This will float the icon to the right side */
+    margin-right: 2%;
+  
+}
+
+  .icon-info-circle__content {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #fff;
+    padding: 10px;
+    border: 1px solid #ccc;
+    width: 100%;
+    height: 25vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+  
+.icon-info-circle:hover .icon-info-circle__content {
+    display: block; /* This will show the div on hover */
+    position: absolute;
+    background-color: white;
+    font-size: 70%;
+  }

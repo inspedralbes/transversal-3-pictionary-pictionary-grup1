@@ -248,3 +248,8 @@ fieldset{
 .input:focus, .text-area:focus{
     border-color: #378137;
 }
+
+.list__container>.title
+{
+    /* border: 2px dashed black; */
+}
