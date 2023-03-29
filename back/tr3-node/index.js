@@ -764,7 +764,7 @@ function startWordLength(room) {
   let word = "";
 
   lobbies.forEach((lobby) => {
-    if (lobby.lobbyIdentifier == room) {
+    if (lobby.lobbyIdentifier == room && lobby.actualRound < lobby.words.length) {
       word = lobby.words[lobby.actualRound].name;
       long = lobby.words[lobby.actualRound].name.length;
       time = lobby.settings.roundDuration;
