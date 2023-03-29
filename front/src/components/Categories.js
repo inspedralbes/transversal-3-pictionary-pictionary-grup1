@@ -36,7 +36,7 @@ function Categories({ socket, start, categoriesData }) {
                   onChange={handleCheck}
                 />
                 <label
-                  for={item.categoryId}
+                  htmlFor={item.categoryId}
                   className="list__container__text__label"
                 >
                   <svg width="300" height="50" viewBox="0 0 500 100">
@@ -89,7 +89,7 @@ function Categories({ socket, start, categoriesData }) {
                   onChange={handleCheck}
                 />
                 <label
-                  for={item.categoryId}
+                  htmlFor={item.categoryId}
                   className="list__container__text__label"
                 >
                   <svg width="300" height="50" viewBox="0 0 500 100">
@@ -159,7 +159,7 @@ function Categories({ socket, start, categoriesData }) {
                 onChange={handleCheck}
               />
               <label
-                for={item.categoryId}
+                htmlFor={item.categoryId}
                 className="list__container__text__label"
               >
                 <svg width="300" height="50" viewBox="0 0 500 100">
