@@ -40,9 +40,8 @@
 }
 
 .leader__name{
-    position: absolute;
-    top: -40px;
-    left: 35%;
+    position: relative;
+    top: -61px;
     
 }
 
@@ -76,7 +75,7 @@
     border: 2px solid rgb(69, 168, 255);
     border-radius: 255px 15px 255px 15px / 15px 255px 15px 255px;
     width: 30%;
-    height: 5%;
+    height: 50%;
     padding: 20px;
     margin: 30px auto;
     font-size: 25px;
@@ -88,11 +87,15 @@ div.player:nth-child(odd)>span:nth-child(1)>div:nth-child(1) {
 }
 
 .player__name {
-    padding-left: 14px;
+    position: relative;
+    top: -155px;
+    left: 82px;
 }
 
 .player__points {
     float: right;
+    position: relative;
+    top: -231px;
 }
 
 .back__button {
@@ -126,6 +129,8 @@ div.player:nth-child(odd)>span:nth-child(1)>div:nth-child(1) {
 .avatar__img{
     width: 50px;
     position: relative;
+    top: -88px;
+    left: 25px;
 }
 
 .leader__avatar{
@@ -222,8 +227,32 @@ div.player:nth-child(odd)>span:nth-child(1)>div:nth-child(1) {
         left: 47%;
        }
        
+
+       .player {
+        height: 70px;
+       }
+
+
+       .player__index {
+        position: relative;
+        top: -21px;
+        }
        
+
+    .player__avatar {
+        position: absolute;
+        top: 119px;
+        left: 490px;
+    }
  
+
+    div.player:nth-child(1),
+    div.player:nth-child(2),
+    div.player:nth-child(3)
+    {
+        display: none;
+    }
+       
     
    
    
