@@ -64,8 +64,7 @@ function LandingPage({ socket }) {
       credentials: "include",
     })
       .then((response) => response.json())
-      .then((data) => {
-        console.log("Primer fetch", data);
+      .then(() => {
         setisLogged(false);
       });
 
@@ -114,7 +113,7 @@ function LandingPage({ socket }) {
             </div>
             <nav className={`nav${navClass ? " change" : ""}`} id="nav">
               <ol>
-                <li><Link to="/addCategory">Categories</Link></li>
+                <li><Link to="/categories">Categories</Link></li>
                 <li onClick={Logout}><Link to="/">Logout</Link></li>
               </ol>
             </nav>

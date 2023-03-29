@@ -40,4 +40,10 @@ Route::group(['middleware' => ['web']], function () {
 
     Route::post('/getCategories', [CategoryController::class, 'getCategories']);  
 
+    Route::post('/getMyCategories', [CategoryController::class, 'getMyCategories']);  
+
+    Route::post('/editCategory', [CategoryController::class, 'editCategory']);  
+
+    Route::post('/deleteCategory', [CategoryController::class, 'deleteCategory']);  
+
 });

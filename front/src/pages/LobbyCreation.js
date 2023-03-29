@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import ConnectedUsers from "../components/ConnectedUsers";
+import ConnectedUsersOwner from "../components/ConnectedUsersOwner";
 import Tabs from "../components/Tabs";
 import { useNavigate } from "react-router-dom";
 import "../styles/LobbyCreation.css";
@@ -89,7 +89,6 @@ function LobbyCreation({ socket }) {
     });
 
     socket.on("categories", (data) => {
-      console.log(data);
       setCategoriesData(data)
       setCategoriesDataLoaded(true);
       if (firstTime) {
@@ -122,7 +121,7 @@ function LobbyCreation({ socket }) {
           </button>
           <div className="container">
             <div>
-              <ConnectedUsers socket={socket}></ConnectedUsers>
+              <ConnectedUsersOwner socket={socket}></ConnectedUsersOwner>
             </div>
             <div className="i7">
               <div className="Identi">

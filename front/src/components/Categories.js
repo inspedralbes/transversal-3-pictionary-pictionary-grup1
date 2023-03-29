@@ -23,21 +23,31 @@ function Categories({ socket, start, categoriesData }) {
 
     return (
         <div className="checkList">
-            <div className="list__container-left">
-                <div className="title">Categorias públicas:</div>
+            <div className="list__container default">
+                <h3 className="title">Default</h3>
                 {Array.isArray(categoriesData.public)
                     ? categoriesData.public.map((item, index) => (
-                        <div key={index}>
+                        <div key={index} className="list__container__text">
                             <label htmlFor={item.categoryId}>{`${item.categoryName}`}</label>
                             <input value={item.categoryId} type="checkbox" id={item.categoryId} onChange={handleCheck} />
                         </div>
                     )) : null}
             </div>
-            <div className="list__container-right">
-                <div className="title">Categorias privadas:</div>
+            <div className="list__container public">
+                <h3 className="title">Public</h3>
                 {Array.isArray(categoriesData.private) && categoriesData.private != []
                     ? categoriesData.private.map((item, index) => (
-                        <div key={index}>
+                        <div key={index} className="list__container__text">
+                            <label htmlFor={item.categoryId}>{`${item.categoryName}`}</label>
+                            <input value={item.categoryId} type="checkbox" id={item.categoryId} onChange={handleCheck} />
+                        </div>
+                    )) : null}
+            </div>
+            <div className="list__container private">
+                <h3 className="title">Private</h3>
+                {Array.isArray(categoriesData.private) && categoriesData.private != []
+                    ? categoriesData.private.map((item, index) => (
+                        <div key={index} className="list__container__text">
                             <label htmlFor={item.categoryId}>{`${item.categoryName}`}</label>
                             <input value={item.categoryId} type="checkbox" id={item.categoryId} onChange={handleCheck} />
                         </div>
