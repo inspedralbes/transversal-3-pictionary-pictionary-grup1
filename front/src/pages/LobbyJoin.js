@@ -200,7 +200,7 @@ function LobbyJoin({ socket }) {
     );
   } else {
     return (
-      <div>
+      <div className="joinLobby">
         <button className="createGame__leaveButton" onClick={handleLeave}>
           Leave lobby
         </button>
@@ -227,7 +227,9 @@ function LobbyJoin({ socket }) {
           </span>
         </h1>
         <ConnectedUsers socket={socket}></ConnectedUsers>
-        <button className="createGame__leaveButton" onClick={setAvatar}>Change avatar</button>
+        <div className="joinLobby__avatar">
+          <button className="joinLobby__changeAvatar" onClick={setAvatar}>Change avatar</button>
+        </div>
       </div>
     );
   }
