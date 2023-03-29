@@ -1,11 +1,53 @@
 .addCategory {
-    width: 60%;
     font-size: 1.3rem;
-    margin: 5% auto;
+}
+
+.NoCategory{
+    height: 60vh;
+    width: 60%;
+    margin: 10vh auto;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    flex-direction: column;
+    border: 4px dashed #a5a5a5;
+    box-shadow: 20px 38px 34px -26px #00000033;
+    border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+}
+
+.NoCategory h1{
+    letter-spacing: 2px;
+    margin-top: 20%;
+}
+
+.NoCategory__addBtn{
+    padding: 15px 25px;
+    display: flex;
+    margin-left: 10px !important;
+    align-items: center;
+    font-size: 1.2rem;
+    transform: translate(0,40px);
+}
+
+.NoCategory__arrowBtn{
+    transform: translate(-10px,0);
+    display: flex;
+}
+
+.NoCategory__arrowBtn img{
+    opacity: 0.6;
+    margin-right: 10px;
+    animation: arrow infinite 1s;
 }
 
 fieldset{
+    width: 60%;
+    margin: 5% auto;
     border: 2px solid #2c2c2c;
+}
+
+.addCategory__goBack{
+    margin:30px;
 }
 
 .wordSettings{
@@ -22,6 +64,7 @@ fieldset{
 }
 
 .addCategory__nameTA {
+    display:flex;
     width: 100%;
 }
 
@@ -41,11 +84,27 @@ fieldset{
 
 .addCategory__formSpanTA {
     margin: 0 auto;
+    display: flex;
+    margin: 0 auto;
+    width: 100%;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
     width: 100%;
 }
 
 .addCategory__nameInput::placeholder {
     color: #a8a8a8;
+}
+
+.addCategory__Name{
+    text-align: center;
+    font-size: 1.7rem;
+    text-transform: uppercase;
+    letter-spacing: 3px; 
+    font-weight: 600;
 }
 
 .addCategory__legend {
@@ -65,61 +124,6 @@ fieldset{
 
 .addCategory__form {
     position: relative;
-}
-
-.slide-up {
-    display: inline-block;
-    width: 95%;
-    padding: 10px 0 10px 15px;
-    font-weight: 400;
-    border: 0;
-    border-radius: 3px;
-    outline: 0;
-    text-indent: 80px;
-    transition: all .3s ease-in-out;
-}
-
-.slide-up::-webkit-input-placeholder {
-    color: #efefef;
-    text-indent: 0;
-    font-weight: 300;
-}
-
-.slide-up+label {
-    display: inline-flex;
-    transform: translateX(270%);
-    top: 0;
-    position: absolute;
-    left: 2px;
-    color:#929292;
-    padding: 10px 15px;
-    text-shadow: 0 1px 0 rgba(19, 74, 70, 0.4);
-    transition: all .3s ease-in-out;
-    border-top-left-radius: 3px;
-    border-bottom-left-radius: 3px;
-    overflow: hidden;
-}
-
-.slide-up+label:before,
-.slide-up+label:after {
-    content: "";
-    position: absolute;
-    right: 0;
-    left: 0;
-    z-index: -1;
-    transition: all .3s ease-in-out;
-}
-
-.slide-up+label:before {
-    top: 6px;
-    left: 5px;
-    right: 5px;
-    bottom: 6px;
-}
-
-.slide-up+label:after {
-    top: 0;
-    bottom: 0;
 }
 
 #submit__button{
@@ -145,33 +149,6 @@ fieldset{
     box-shadow: 20px 38px 34px -26px hsla(0, 0%, 0%, .2);
     border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
 }
-
-.slide-up:focus,
-.slide-up:active {
-    text-indent: 0;
-}
-
-.slide-up:focus::-webkit-input-placeholder,
-.slide-up:active::-webkit-input-placeholder {
-    color: #aaa;
-}
-
-.slide-up:focus+label,
-.slide-up:active+label {
-    color: rgb(59, 59, 59);
-    transform: translate(270%, -80%);
-}
-
-.slide-up:focus+label:before,
-.slide-up:active+label:before {
-    border-radius: 5px;
-}
-
-.slide-up:focus+label:after,
-.slide-up:active+label:after {
-    transform: translateY(60%);
-}
-
 
 .myCategories__table {
     margin: 5% auto;
@@ -229,6 +206,7 @@ fieldset{
     border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
     margin-bottom: 20px;
     padding-left: 20px;
+    text-align: center;
 }
 
 .text-area {
@@ -242,10 +220,22 @@ fieldset{
 }
 
 .input:focus, .text-area:focus{
-    border-color: #378137;
+    border: 3px dashed #378137;
 }
 
 .list__container>.title
 {
     /* border: 2px dashed black; */
+}
+
+@keyframes arrow {
+    0%{
+        transform: translate(0, 0);
+    }
+    50%{
+        transform: translate(15px, 5px);
+    }
+    100%{
+        transform: translate(0, 0);
+    }
 }
