@@ -325,7 +325,7 @@
 .container {
     display: grid;
     grid-template-columns: 0.6fr 1.4fr;
-    grid-template-rows: 1fr ;
+    grid-template-rows: 1fr;
     gap: 0px 8px;
     grid-auto-flow: row;
 }
@@ -376,7 +376,7 @@
     font-size: 1.5em;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    width: 33.3%;
+    width: 50%;
 }
 
 .tab-link.active {
@@ -397,19 +397,19 @@
 }
 
 .checkList {
-    display: grid; 
-    grid-template-columns: 1fr 1.25fr 1fr; 
+    display: grid;
+    grid-template-columns: 1fr 1.25fr 1fr;
     grid-template-rows: 1fr;
-    width: 100%; 
-    gap: 0px 0px; 
-    grid-template-areas: 
-    "default public private"; 
+    width: 100%;
+    gap: 0px 0px;
+    grid-template-areas:
+        "default public private";
 }
 
 .list__container {
     text-align: center;
-    
 }
+
 #list__container_li {
     height: 35vh;
     width: 100%;
@@ -417,76 +417,130 @@
     overflow-x: hidden;
 }
 
-#list__container_li::-webkit-scrollbar-track, .icon-info-circle__content::-webkit-scrollbar {
+#list__container_li::-webkit-scrollbar-track,
+.icon-info-circle__content::-webkit-scrollbar {
     border-radius: 255px 15px 255px 15px / 15px 255px 15px 255px;
     border: 2px solid #3e3e3e;
 }
 
-#list__container_li::-webkit-scrollbar, .icon-info-circle__content::-webkit-scrollbar {
+#list__container_li::-webkit-scrollbar,
+.icon-info-circle__content::-webkit-scrollbar {
     width: 15px;
 }
 
-#list__container_li::-webkit-scrollbar-thumb, .icon-info-circle__content::-webkit-scrollbar-thumb{
+#list__container_li::-webkit-scrollbar-thumb,
+.icon-info-circle__content::-webkit-scrollbar-thumb {
     border-radius: 255px 15px 255px 15px / 15px 255px 15px 255px;
     background-color: #575757;
 }
 
 .list__container__text {
     text-align: left;
-    position:relative;
-    display:block;
+    position: relative;
+    display: block;
 }
 
 .check {
-    position:absolute;
-    opacity:0;
-}
-.path1{
-    stroke-dasharray:400;
-    stroke-dashoffset:400;
-    transition:.5s all;
-}
-.path2{
-    stroke-dasharray:1800;
-    stroke-dashoffset:1800;
-    transition:.5s all;
-}
-.check:checked + label svg g path {
-    stroke-dashoffset:0;
+    position: absolute;
+    opacity: 0;
 }
 
-input[type="radio"]:checked+ label svg g path {
-    stroke-dashoffset:0;
+.path1 {
+    stroke-dasharray: 400;
+    stroke-dashoffset: 400;
+    transition: .5s all;
 }
+
+.check:checked+label svg g path {
+    stroke-dashoffset: 0;
+}
+
 
 .list__container__text__label span {
-    position:absolute;
+    position: absolute;
     margin-left: -234px;
-    color: black;
+    font-weight: 200;
     width: 80%;
+    margin-top: 2%;
 }
-.list__container__text__label{
-    display:block;
-    justify-content: center;
-}   
-.list__container__checkbox{
+
+.list__container__text__label {
+    display: block;
+}
+
+.settingCreator__label{
+    margin: 3% 3% 0 25%;
+}
+
+.list__container__checkbox {
     margin-left: 35px;
 }
-.default { 
-    grid-area: default; 
-    border-right: 1px dashed black; 
-    padding-left: 2%;
-    }
-.public { grid-area: public; border-right: 1px dashed black; padding-left: 2%; }
-.private { grid-area: private; padding-left: 2%;}
 
-.icon-info-circle{
-    float: right; /* This will float the icon to the right side */
-    margin-right: 2%;
-  
+.default {
+    grid-area: default;
+    border-right: 1px dashed black;
+    padding-left: 2%;
 }
 
-  .icon-info-circle__content {
+.public {
+    grid-area: public;
+    border-right: 1px dashed black;
+    padding-left: 2%;
+}
+
+.private {
+    grid-area: private;
+    padding-left: 2%;
+}
+
+
+.setting-container {
+    display: grid;
+    grid-auto-rows: 1fr;
+    grid-template-columns: 0.6fr 1.8fr;
+    grid-template-rows: 1fr;
+    gap: 0px 0px;
+    grid-template-areas:
+        ". .";
+}
+
+.settings__zone {
+    border-left: 1px dashed black;
+}
+
+.settings__zone>h2 {
+    text-align: center;
+}
+
+.gamemodes>h2 {
+    text-align: center;
+}
+
+.form__setting {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+}
+
+.settings__zone__title {
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 600;
+    color: #5c5b5b;
+    font-size: 70%;
+    margin-bottom: 0;
+}
+
+/* ========================================================================Icon de info======================================================================= */
+.icon-info-circle {
+    float: right;
+    /* This will float the icon to the right side */
+    margin-right: 2%;
+
+}
+
+.icon-info-circle__content {
     display: none;
     position: absolute;
     top: 100%;
@@ -495,14 +549,20 @@ input[type="radio"]:checked+ label svg g path {
     padding: 10px;
     border: 1px solid #ccc;
     width: 100%;
-    height: 25vh;
+    min-height: fit-content;
+    max-height: 25vh;
+    /* height: 25vh; */
     overflow-y: auto;
     overflow-x: hidden;
-  }
-  
+    color: #5c5b5b;
+}
+
 .icon-info-circle:hover .icon-info-circle__content {
-    display: block; /* This will show the div on hover */
+    display: block;
+    /* This will show the div on hover */
     position: absolute;
     background-color: white;
     font-size: 70%;
-  }
+    z-index: 1;
+}
+

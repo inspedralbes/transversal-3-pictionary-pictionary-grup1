@@ -419,9 +419,9 @@ function Categories() {
                         <div className="form__buttonsLinks">
                             <div className="form__buttons">
                                 <label className="addCategory__public">
-                                    <div className="list__container__text">
-                                        <input type="checkbox" id="check1" className="check" checked={userData.privacy} onChange={(e) => setUserData({ ...userData, privacy: e.target.checked })} required />
-                                        <label htmlFor="check1" className="list__container__text__label" >
+                                    <div  className="list__container__text">
+                                        <input type="checkbox" id="check1"class="check" onChange={(e) => setUserData({ ...userData, privacy: e.target.checked })} required />
+                                            <label htmlFor="check1" class="list__container__text__label" >
                                             <svg width="500" height="50" viewBox="0 0 500 100">
                                                 <rect x="0" y="15" width="50" height="50" stroke="black" fill="none" className="list__container__checkbox" />
                                                 <g transform="translate(-10,-962.36218)">

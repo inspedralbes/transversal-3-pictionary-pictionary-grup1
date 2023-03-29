@@ -154,7 +154,7 @@ function LobbyCreation({ socket }) {
                 <section id="main">
                   <div>
                     <Tabs socket={socket} start={starting} categoriesData={categoriesData}></Tabs>
-                  </div>
+                  </div>  
                 </section>
                 <div className="createGame__startButtonDiv">
                   <button
