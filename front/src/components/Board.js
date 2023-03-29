@@ -172,7 +172,6 @@ function Board({ socket, pintor }) {
         context.arc(x, y, brushRadius / 2, 0, 2 * Math.PI);
         context.fillStyle = currentColor;
         context.fill();
-        context.closePath();
         arrayDatos.push({ x, y, currentColor, brushRadius });
         sendBoardDataToSocketIo();
         console.log(arrayDatos);
@@ -197,14 +196,24 @@ function Board({ socket, pintor }) {
         sendBoardDataToSocketIo();
       }
 
-      function handleMouseUp() {
+      function handleMouseUp(evt) {
         isDrawing = false;
+        x = evt.offsetX;
+        y = evt.offsetY;
+        context.beginPath();
+        context.arc(x, y, brushRadius / 2, 0, 2 * Math.PI);
+        context.fillStyle = currentColor;
+        context.fill();
+        arrayDatos.push({ x, y, currentColor, brushRadius });
+        sendBoardDataToSocketIo();
         arrayDatos.push("nuevaLinea");
       }
 
       function handleMouseOut() {
+        if (isDrawing) {
+          arrayDatos.push("nuevaLinea");
+        }
         isDrawing = false;
-        arrayDatos.push("nuevaLinea");
       }
 
       canvas.addEventListener("mousedown", handleMouseDown);
