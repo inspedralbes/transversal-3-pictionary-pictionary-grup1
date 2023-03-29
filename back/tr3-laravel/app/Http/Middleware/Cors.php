@@ -15,7 +15,7 @@ class Cors
      */
     public function handle($request, Closure $next)
     {
-        return $next($request)->header('Access-Control-Allow-Origin', 'http://144.24.200.186:7878')
+        return $next($request)->header('Access-Control-Allow-Origin', 'https://g1.pictionary.alumnes.inspedralbes.cat')
             ->header('Access-Control-Allow-Methods','GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS')
             ->header('Access-Control-Allow-Credentials', "true")
             ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
