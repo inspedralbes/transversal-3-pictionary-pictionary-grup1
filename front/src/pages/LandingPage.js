@@ -91,9 +91,9 @@ function LandingPage({ socket }) {
     });
 
     const data = await response.json();
+    setdisplayMenu(true);
     if (data) {
         setisLogged(true);
-        setdisplayMenu(true);
     }
     else {
       setisLogged(false);
