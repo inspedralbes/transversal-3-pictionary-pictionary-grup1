@@ -47,28 +47,28 @@ function Ranking({ socket }) {
       <div className="ranking__container">
         <div className="topLeadersList fire">
           {userList.map((leader, index) => (
-            <div key={leader.id}>
+            <div key={index}>
               {index + 1 <= 3 && (
-                <div key={index} className="ranking__leader fade-item">
+                <div className="ranking__leader fade-item">
                   <div className="crown">
                     {(() => {
                       if (index == 1) {
                         return (
-                          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-crown" width="100" height="100" viewBox="0 0 24 24" strokeWidth="3" stroke="#597e8d" fill="rgb(192, 192, 192)" strokeLinecap="round" strokeLinejoin="round">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-crown" width="100" height="100" viewBox="0 0 24 24" strokeWidth="3" stroke="#597e8d" fill="rgb(192, 192, 192)" strokeLinecap="round" strokeLinejoin="round">
                             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                             <path d="M12 6l4 6l5 -4l-2 10h-14l-2 -10l5 4z" />
                           </svg>
                         )
                       } else if (index == 2) {
                         return (
-                          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-crown" width="100" height="100" viewBox="0 0 24 24" strokeWidth="3" stroke="#ff9300" fill="#ffbf00" strokeLinecap="round" strokeLinejoin="round">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-crown" width="100" height="100" viewBox="0 0 24 24" strokeWidth="3" stroke="#ff9300" fill="#ffbf00" strokeLinecap="round" strokeLinejoin="round">
                             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                             <path d="M12 6l4 6l5 -4l-2 10h-14l-2 -10l5 4z" />
                           </svg>
                         )
                       } else {
                         return (
-                          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-crown" width="100" height="100" viewBox="0 0 24 24" strokeWidth="3" stroke="#ffec00" fill="gold" strokeLinecap="round" strokeLinejoin="round">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-crown" width="100" height="100" viewBox="0 0 24 24" strokeWidth="3" stroke="#ffec00" fill="gold" strokeLinecap="round" strokeLinejoin="round">
                             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                             <path d="M12 6l4 6l5 -4l-2 10h-14l-2 -10l5 4z" />
                           </svg>
@@ -90,9 +90,9 @@ function Ranking({ socket }) {
         <div className="playerslist fade-item">
           <div className="ranking__listPlayers">
             {userList.map((leader, index) => (
-              <div className="player" key={leader.id}>
+              <div className="player" key={index}>
                 <span> {index + 1 > 3 && (
-                  <div key={index} className="ranking__player">
+                  <div  className="ranking__player">
                       <p className="player__index">{index}</p>
                       <img className="avatar__img" src={leader.avatar}></img>
                       <p className="player__name"> {leader.name} </p>
