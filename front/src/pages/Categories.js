@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import Cookies from 'universal-cookie';
 import { useNavigate } from "react-router-dom"; //Rutas
 import routes from "../index";
+import arrow from "../img/arrow.png";
 import '../styles/Categories.css';
 
 
@@ -98,6 +99,38 @@ function Categories() {
         // setGetCats(getCats + 1);
         // setAddCategory(!addCategory);
     };
+    function changeColor() {
+        document
+            .getElementById("add")
+            .addEventListener("mouseover", function () {
+                let colors = [
+                    "#990000",
+                    "#157425",
+                    "#0d63aa",
+                    "#788124",
+                    "#c04d00",
+                    "#132094",
+                    "#c413c4",
+                    "#229e98",
+                    "#599c53",
+                    "#7a31ce",
+                    "#b17419",
+                    "#4d2504",
+                    "#ff7505",
+                    "#db3c20",
+                    "#358884",
+                    "#356088",
+                    "#b44567",
+                    "#b4a345",
+                    "#39862e",
+                    "#80862e"
+                ];
+                let color = colors[Math.floor(Math.random() * 21)];
+                document.getElementById("add").style.backgroundColor = color;
+                document.getElementById("add").style.borderColor = color;
+                document.getElementById("add").style.transition = 'all 0.2s';
+            });
+    }
 
     useEffect(() => {
         if (registro != 0) {
@@ -203,17 +236,21 @@ function Categories() {
                                                     <td className="myCategories__td"></td>
                                                     <td className="myCategories__td"></td>
                                                     <td className="myCategories__td"></td>
-                                                    <td className="myCategories__addCategoryButton"><button onClick={handleSetAddCategory}><i className="icon-plus"></i>Add category</button></td>
+                                                    <td className="myCategories__addCategoryButton"><button id="add" onMouseOver={changeColor} onClick={handleSetAddCategory}><i className="icon-plus"></i>Add category</button></td>
                                                 </tr>
                                             </tfoot>
                                         </table>
                                     </div>
                                 </>
                                 :
-                                <>
+                                <div className="NoCategory">
                                     <h1 style={{ textAlign: "center" }}>You haven't created any category yet!</h1>
-                                    <button onClick={handleSetAddCategory}><i className="icon-plus"></i>Add category</button>
-                                </>
+                                    <div className="NoCategory__arrowBtn">
+                                        <img src={arrow} alt=" " height={'110px'} />
+                                        <button style={{ margin: '0 auto' }} className='NoCategory__addBtn' id="add" onMouseOver={changeColor} onClick={handleSetAddCategory}><i className="icon-plus"></i>Add category</button>
+                                    </div>
+                                </div>
+
                             }
                         </div> :
                         <h1>Loading categories...</h1>}
@@ -230,9 +267,9 @@ function Categories() {
                         <legend className="addCategory__legend">ADD NEW CATEGORY</legend>
                         <br />
                         <div className="addCategory__form">
-                            <div className="addCategory__name">
-                                <span className="addCategory__formSpan">
-                                    <input className="slide-up" id="name" type="text" placeholder="Introduce name" onChange={(e) => setUserData({ ...userData, name: e.target.value })} required /><label className="addCategory__nameLabel" htmlFor="name">Name</label>
+                            <div className="addCategory__nameTA">
+                                <span className="addCategory__formSpanTA"><p  className="addCategory__Name">CATEGORY NAME</p>
+                                    <input className="input" id="name" type="text" placeholder="Introduce  category name" onChange={(e) => setUserData({ ...userData, name: e.target.value })} required />
                                 </span>
                             </div>
                         </div>
@@ -285,17 +322,17 @@ function Categories() {
                         <div className="form__buttonsLinks">
                             <div className="form__buttons">
                                 <label className="addCategory__public">
-                                    <div  className="list__container__text">
-                                        <input type="checkbox" id="check1"class="check" onChange={(e) => setUserData({ ...userData, privacy: e.target.checked })} required />
-                                        <label for="check1" class="list__container__text__label" >
+                                    <div className="list__container__text">
+                                        <input type="checkbox" id="check1" className="check" onChange={(e) => setUserData({ ...userData, privacy: e.target.checked })} required />
+                                        <label htmlFor="check1" className="list__container__text__label" >
                                             <svg width="500" height="50" viewBox="0 0 500 100">
                                                 <rect x="0" y="15" width="50" height="50" stroke="black" fill="none" className="list__container__checkbox" />
                                                 <g transform="translate(-10,-962.36218)">
-                                                    <path d="m 13,983 c 33,6 40,26 55,48 " stroke="black" stroke-width="3" class="path1" fill="none" />
-                                                    <path d="M 75,970 C 51,981 34,1014 25,1031 " stroke="black" stroke-width="3" class="path1" fill="none" />
+                                                    <path d="m 13,983 c 33,6 40,26 55,48 " stroke="black" strokeWidth="3" className="path1" fill="none" />
+                                                    <path d="M 75,970 C 51,981 34,1014 25,1031 " stroke="black" strokeWidth="3" className="path1" fill="none" />
                                                 </g>
                                             </svg>
-                                            <span style={{marginLeft: "-326px",marginTop:"10px"}}>Do you want the category to be public?</span>
+                                            <span style={{ marginLeft: "-326px", marginTop: "10px" }}>Do you want the category to be public?</span>
                                         </label>
 
                                     </div>
