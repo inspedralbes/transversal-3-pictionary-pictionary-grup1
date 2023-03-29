@@ -80,6 +80,11 @@ function LobbyCreation({ socket }) {
     socket.on("starting_errors", (data) => {
       if (data.valid) {
         if (!sent) {
+          let avatar = Math.floor(Math.random() * 25);
+
+          const avatarurl = `https://api.dicebear.com/6.x/bottts/svg?seed=${avatar}`;
+          socket.emit('set_avatar', { avatar: avatarurl });
+          
           socket.emit("start_game");
         }
         setSent(true);
@@ -154,7 +159,7 @@ function LobbyCreation({ socket }) {
                 <section id="main">
                   <div>
                     <Tabs socket={socket} start={starting} categoriesData={categoriesData}></Tabs>
-                  </div>  
+                  </div>
                 </section>
                 <div className="createGame__startButtonDiv">
                   <button

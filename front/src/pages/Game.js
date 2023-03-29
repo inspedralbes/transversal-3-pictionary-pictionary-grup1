@@ -133,7 +133,7 @@ function Game({ socket }) {
   }, []);
 
   useEffect(() => {
-    if (words != undefined && words.length > 0) {
+    if (words != undefined && words.length > wordIndex) {
       setWordToCheck(words[wordIndex].name);
     }
   }, [wordIndex, words]);
