@@ -1,24 +1,55 @@
-@import "http://fxaeberhard.github.io/handdrawn.css/handdrawn.css";
+/* @import "http://fxaeberhard.github.io/handdrawn.css/handdrawn.css"; */
+@import "./styles/handdrawn/handdrawn.css";
 
 body {
   margin: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: rgb(255, 247, 236);
+  background: none;
+  background-color: #fffaf4;
   width: 100%;
-  height: 100vh;
   padding: 0;
   overflow: auto;
 }
 
-
-.game__timer {
-  border: 2px solid red;
-  border-radius: 100px;
-  background-color: white;
-  text-align: center;
-  width: 70px;
-  height: 70px;
-  font-size: 46px;
+* {
+  cursor: url('./img/default.cur'), pointer;
 }
 
+*:active {
+  cursor: url('./img/default-click.cur'), pointer;
+}
+
+button {
+  background-color: #5c5b5b;
+  border-color: #5c5b5b;
+}
+
+a,
+button,
+input,
+label,
+select,
+textarea {
+  cursor: url('./img/pointer.cur'), pointer;
+}
+
+
+a:hover,
+button:hover,
+input:hover,
+label:hover,
+select:hover,
+textarea:hover
+ {
+  cursor: url('./img/pointer.cur'), pointer;
+}
+
+a:active,
+button:active,
+input:active,
+label:active,
+select:active,
+textarea:active {
+  cursor: url('./img/pointer-active.cur'), pointer;
+}

@@ -1,4 +1,5 @@
 import "../App.css";
+import "../styles/Game.css"
 import { useState, useEffect } from "react";
 import React from 'react';
 
@@ -8,8 +9,7 @@ function WordGuess({ socket }) {
     useEffect(() => {
         socket.emit('get_game_data');
         
-        socket.on('game_data', (data) => {
-            console.log(data);
+        socket.once('game_data', (data) => {
             if (data.words != undefined) {
                 setWordToCheck(data.words[0].name);
             }
@@ -22,14 +22,14 @@ function WordGuess({ socket }) {
         });
 
         return () => {
-            socket.off('word_to_check');
+            socket.off('current_word');
         };
     }, []);
 
 
     return (
         <>
-            <p>{wordToCheck}</p>
+            <p className="WordGuess">{wordToCheck}</p>
         </>
     )
 

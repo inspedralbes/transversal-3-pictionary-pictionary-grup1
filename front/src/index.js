@@ -9,6 +9,7 @@ import Game from './pages/Game';
 import LobbyCreation from './pages/LobbyCreation';
 import LobbyJoin from './pages/LobbyJoin';
 import EndGame from './pages/EndGame';
+import Categories from './pages/Categories';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import socketIO from "socket.io-client";
 
@@ -35,13 +36,14 @@ root.render(
   <BrowserRouter>
     <Routes>
       <Route path='/'>
-        <Route index element={<LandingPage />} />
+        <Route index element={<LandingPage socket={socket} />} />
         <Route path="/login" element={<Login socket={socket} />} />
         <Route path="/register" element={<Register socket={socket} />} />
         <Route path="/game" element={<Game socket={socket} />} />
         <Route path="/createlobby" element={<LobbyCreation socket={socket} />} />
         <Route path="/joinlobby" element={<LobbyJoin socket={socket} />} />
-        <Route path="/endGame" element={<EndGame />} />
+        <Route path="/endGame" element={<EndGame socket={socket} />} />
+        <Route path="/categories" element={<Categories />} />
       </Route>
     </Routes>
   </BrowserRouter>
