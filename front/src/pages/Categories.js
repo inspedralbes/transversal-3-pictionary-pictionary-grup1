@@ -117,36 +117,32 @@ function Categories() {
         });
     };
     function changeColor() {
-        document
-            .getElementById("add")
-            .addEventListener("mouseover", function () {
-                let colors = [
-                    "#990000",
-                    "#157425",
-                    "#0d63aa",
-                    "#788124",
-                    "#c04d00",
-                    "#132094",
-                    "#c413c4",
-                    "#229e98",
-                    "#599c53",
-                    "#7a31ce",
-                    "#b17419",
-                    "#4d2504",
-                    "#ff7505",
-                    "#db3c20",
-                    "#358884",
-                    "#356088",
-                    "#b44567",
-                    "#b4a345",
-                    "#39862e",
-                    "#80862e"
-                ];
-                let color = colors[Math.floor(Math.random() * 21)];
-                document.getElementById("add").style.backgroundColor = color;
-                document.getElementById("add").style.borderColor = color;
-                document.getElementById("add").style.transition = 'all 0.2s';
-            });
+        let colors = [
+            "#990000",
+            "#157425",
+            "#0d63aa",
+            "#788124",
+            "#c04d00",
+            "#132094",
+            "#c413c4",
+            "#229e98",
+            "#599c53",
+            "#7a31ce",
+            "#b17419",
+            "#4d2504",
+            "#ff7505",
+            "#db3c20",
+            "#358884",
+            "#356088",
+            "#b44567",
+            "#b4a345",
+            "#39862e",
+            "#80862e"
+        ];
+        let color = colors[Math.floor(Math.random() * 21)];
+        document.getElementById("add").style.backgroundColor = color;
+        document.getElementById("add").style.borderColor = color;
+        document.getElementById("add").style.transition = 'all 0.2s';
     }
 
     useEffect(() => {
@@ -330,7 +326,7 @@ function Categories() {
                                                     <td className="myCategories__td"></td>
                                                     <td className="myCategories__td"></td>
                                                     <td className="myCategories__td"></td>
-                                                    <td className="myCategories__addCategoryButton"><button id="add" onMouseOver={changeColor} onClick={handleSetAddCategory}><i className="icon-plus"></i>Add category</button></td>
+                                                    <td className="myCategories__addCategoryButton"><button className="add" id="add" onMouseOver={changeColor} onClick={handleSetAddCategory}><i className="icon-plus"></i>Add category</button></td>
                                                 </tr>
                                             </tfoot>
                                         </table>
@@ -352,7 +348,7 @@ function Categories() {
                 <div className="addCategory">
                     <div className="form__goBack">
                         <div className="form__button--flex">
-                            <button id="add" onMouseOver={changeColor} style={{margin: '30px', height:'60px', width:'200px', letterSpacing:'1px', fontSize:'1.7rem'}} onClick={handleSetAddCategory}>
+                            <button className="add" style={{ margin: '30px', height: '60px', width: '200px', letterSpacing: '1px', fontSize: '1.7rem' }} onClick={handleSetAddCategory}>
                                 <span className="button-text">Category list</span>
                             </button>
                         </div>
@@ -394,7 +390,6 @@ function Categories() {
                                                 type="button"
                                                 onClick={handleWordAdd}
                                                 className="add-btn"
-                                                id="add" onMouseOver={changeColor}
                                             >
                                                 <span>Add a Word</span>
                                             </button>
@@ -404,8 +399,6 @@ function Categories() {
                                                 type="button"
                                                 onClick={() => handleWordRemove(index)}
                                                 className="remove-btn"
-                                                id="add" onMouseOver={changeColor}
-                                                
                                             >
                                                 <span>Remove</span>
                                             </button>
@@ -419,9 +412,9 @@ function Categories() {
                         <div className="form__buttonsLinks">
                             <div className="form__buttons">
                                 <label className="addCategory__public">
-                                    <div  className="list__container__text">
-                                        <input type="checkbox" id="check1"className="check" onChange={(e) => setUserData({ ...userData, privacy: e.target.checked })} required />
-                                            <label htmlFor="check1" className="list__container__text__label" >
+                                    <div className="list__container__text">
+                                        <input type="checkbox" id="check1" className="check" onChange={(e) => setUserData({ ...userData, privacy: e.target.checked })} required />
+                                        <label htmlFor="check1" className="list__container__text__label" >
                                             <svg width="500" height="50" viewBox="0 0 500 100">
                                                 <rect x="0" y="15" width="50" height="50" stroke="black" fill="none" className="list__container__checkbox" />
                                                 <g transform="translate(-10,-962.36218)">
