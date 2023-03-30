@@ -62,7 +62,7 @@ function Game({ socket }) {
     socket.on("round_ended", (data) => {
       setRoundEnded(true);
       setGamemode(data.gamemode);
-      if (data.motivo === "time") {
+      if (data.motivo == "time") {
         setTimeUp(true);
       } else {
         setTimeUp(false);
@@ -132,7 +132,7 @@ function Game({ socket }) {
   }, []);
 
   useEffect(() => {
-    if (words !== undefined && words.length > wordIndex) {
+    if (words != undefined && words.length > wordIndex) {
       setWordToCheck(words[wordIndex].name);
     }
   }, [wordIndex, words]);
@@ -148,7 +148,7 @@ function Game({ socket }) {
                 Last word was: {wordToCheck}
                 <br></br>
                 <br></br>
-                {nextDrawerName !== null && (
+                {nextDrawerName != null && (
                   <>Next round drawer: {nextDrawerName}</>
                 )}
               </p>
@@ -157,13 +157,11 @@ function Game({ socket }) {
 
           {roundEnded && !result && pintor && !timeUp && !gameEnded && (
             <div className="Game__modal">
-              <p>
-                {gamemode === "fast" ? (
+                {gamemode == "fast" ? (
                   <p>Congratulations! Your drawing was wonderful!</p>
                 ) : (
                   <p>Congratulations! Everyone got the word!</p>
                 )}
-              </p>
             </div>
           )}
 
@@ -176,7 +174,7 @@ function Game({ socket }) {
           {roundEnded && result && !gameEnded && (
             <div className="Game__modal">
               <p>You did it!</p> <br />
-              {nextDrawerName !== null && (
+              {nextDrawerName != null && (
                 <p>Next round drawer: {nextDrawerName}</p>
               )}
             </div>
@@ -227,7 +225,7 @@ function Game({ socket }) {
                         <Board socket={socket} pintor={pintor} />
                         <WordForm socket={socket} answerCorrect={result} />
                         <br />
-                        {result !== null && messageWin && (
+                        {result != null && messageWin && (
                           <>
                             {result && !roundEnded && (
                               <div className="Game__modal">

@@ -94,7 +94,7 @@ function Categories() {
     setEditing(true);
 
     myCategories.forEach((category) => {
-      if (category.categoryId === id) {
+      if (category.categoryId == id) {
         setIdToEdit(id);
         let wordList = [];
         let catList = [];

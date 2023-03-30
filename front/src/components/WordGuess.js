@@ -10,13 +10,13 @@ function WordGuess({ socket }) {
         socket.emit('get_game_data');
         
         socket.once('game_data', (data) => {
-            if (data.words !== undefined) {
+            if (data.words != undefined) {
                 setWordToCheck(data.words[0].name);
             }
         });
         
         socket.on('current_word', (data) => {
-            if (data !== undefined) {
+            if (data != undefined) {
                 setWordToCheck(data.word.name);
             }
         });

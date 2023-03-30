@@ -16,7 +16,7 @@ function WordLength({ socket }) {
 
   const updateArray = (data) => {      
       spaces.map((s) => {
-        if (s.id === data.pos) {
+        if (s.id == data.pos) {
           spaces[s.id].letter = data.letterNode + " ";
         }
       });
@@ -35,8 +35,8 @@ function WordLength({ socket }) {
 
   useEffect(() => {
     socket.on("word_length", (data) => {
-      if (data !== undefined && spaces.length === 0) {
-        if (data.long !== 0) {
+      if (data != undefined && spaces.length == 0) {
+        if (data.long != 0) {
           for (let i = 0; i < data.long; i++) {
             pushSpaces(i);
           }
