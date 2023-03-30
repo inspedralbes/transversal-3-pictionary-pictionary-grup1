@@ -11,7 +11,7 @@ function App({ socket }) {
   const [userMessages, setUserMessages] = useState([]);
 
   const messageResponses = {
-    wordAttemptError: "You failed the attempt!",
+    wordAttemptError: "Wrong word! Try again <i className='icon-smile-o'></i>",
     wordAttemptSuccess: "Well done! You're the best!"
   }
 

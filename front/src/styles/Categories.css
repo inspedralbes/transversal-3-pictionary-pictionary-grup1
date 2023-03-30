@@ -289,6 +289,10 @@ fieldset {
     color: #405b94;
 }
 
+.list__container__text__label{
+    text-transform: capitalize;
+}
+
 @keyframes arrow {
     0% {
         transform: translate(0, 0);

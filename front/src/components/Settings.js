@@ -91,7 +91,7 @@ function Settings({ socket, start }) {
       <div className="settings__zone">
         <h2>SETTINGS </h2>
         {error !== "" && <h1 className="error">{error}</h1>}
-        <form className="App" autoComplete="off">
+        <form className="App" autoComplete="off" id="settings">
           <span className="addCategory__formSpanTA">
             <p className="settings__zone__title">Round duration (seconds)</p>
             <input type="number" value={roundDuration} onChange={handleChangeRoundDuration} />
@@ -146,7 +146,6 @@ function Settings({ socket, start }) {
               >Will the lobby creator play?</span>
             </label>
           </div>
-          <br />
           {ownerPlay ? (
             <span className="addCategory__formSpanTA">
               <p className="settings__zone__title">Enter your nickname:</p>

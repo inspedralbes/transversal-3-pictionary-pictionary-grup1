@@ -31,7 +31,7 @@ function Game({ socket }) {
   const [gameEnded, setGameEnded] = useState(false);
 
   const messageResponses = {
-    wordAttemptError: "You failed the attempt!",
+    wordAttemptError: "Wrong word! Try again :)",
     wordAttemptSuccess: "Well done! You're the best!",
   };
 
@@ -233,7 +233,7 @@ function Game({ socket }) {
                               </div>
                             )}
                             {!result && (
-                              <p>{messageResponses.wordAttemptError}</p>
+                              <p className="game__error">{messageResponses.wordAttemptError}</p>
                             )}
                           </>
                         )}
