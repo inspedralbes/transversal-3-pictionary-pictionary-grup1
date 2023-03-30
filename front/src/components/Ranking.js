@@ -86,11 +86,11 @@ function Ranking({ socket }) {
             {userList.map((leader, index) => (
               <div className="player" key={index}>
                 <span> {index + 1 > 3 && (
-                  <div  className="ranking__player">
-                      <p className="player__index">{index+1}</p>
-                      <img alt="avatar" className="avatar__img" src={leader.avatar}></img>
-                      <p className="player__name"> {leader.name} </p>
-                      <p className="player__points"> {leader.points} points</p>
+                  <div className="ranking__player">
+                    <p className="player__index">{index + 1}</p>
+                    <img alt="avatar" className="avatar__img" src={leader.avatar}></img>
+                    <p className="player__name"> {leader.name} </p>
+                    <p className="player__points"> {leader.points} points</p>
                   </div>
                 )}</span>
               </div>
