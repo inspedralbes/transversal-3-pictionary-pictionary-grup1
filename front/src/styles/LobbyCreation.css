@@ -229,7 +229,8 @@
 .joinLobby__changeAvatar {
     font-size: 1.7rem;
     width: 17%;
-    height: 10vh;
+    height: 7vh;
+    padding-bottom: 15px;
     margin: 0 auto;
     transition: all 0.2s;
 }
@@ -454,19 +455,28 @@
     overflow-y: auto;
     overflow-x: hidden;
 }
+#settings {
+    height: 35vh;
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
 
 #list__container_li::-webkit-scrollbar-track,
-.icon-info-circle__content::-webkit-scrollbar {
+.icon-info-circle__content::-webkit-scrollbar,
+#settings::-webkit-scrollbar-track {
     border-radius: 255px 15px 255px 15px / 15px 255px 15px 255px;
     border: 2px solid #3e3e3e;
 }
 
 #list__container_li::-webkit-scrollbar,
-.icon-info-circle__content::-webkit-scrollbar {
+.icon-info-circle__content::-webkit-scrollbar,
+#settings::-webkit-scrollbar {
     width: 15px;
 }
 
 #list__container_li::-webkit-scrollbar-thumb,
+#settings::-webkit-scrollbar-thumb,
 .icon-info-circle__content::-webkit-scrollbar-thumb {
     border-radius: 255px 15px 255px 15px / 15px 255px 15px 255px;
     background-color: #575757;
@@ -493,17 +503,20 @@
     stroke-dashoffset: 0;
 }
 
+.list__container__text__label{
+    display:flex;
+    justify-content: center;
+} 
 
 .list__container__text__label span {
-    position: absolute;
+    position:relative;
     margin-left: -234px;
     font-weight: 200;
     width: 80%;
-    margin-top: 2%;
 }
 
 .list__container__text__label {
-    display: block;
+    display: flex;
 }
 
 .settingCreator__label {
@@ -548,6 +561,7 @@
 
 .settings__zone>h2 {
     text-align: center;
+    margin-bottom: 0;
 }
 
 .gamemodes>h2 {
