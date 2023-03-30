@@ -458,16 +458,19 @@
 .check:checked + label svg g path {
     stroke-dashoffset:0;
 }
+
+.list__container__text__label{
+    display:flex;
+    justify-content: center;
+} 
+
 .list__container__text__label span {
-    position:absolute;
+    position:relative;
     margin-left: -234px;
     color: black;
     width: 80%;
 }
-.list__container__text__label{
-    display:block;
-    justify-content: center;
-}   
+  
 .list__container__checkbox{
     margin-left: 35px;
 }
