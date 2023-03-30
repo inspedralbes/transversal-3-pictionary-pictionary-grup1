@@ -51,11 +51,10 @@ function Login({ socket }) {
         <button className="createGame__leaveButton">Go back</button>
       </Link>
       <div className="form login">
-        <h1>LOGIN</h1>
+        <h1 className="form__title">LOGIN</h1>
         <br />
         <div className="form__form">
-          <p>{errorText}</p>
-
+          <p className="loginError">{errorText}</p>
           <div className="form__inputGroup">
             <input
               id="email"
