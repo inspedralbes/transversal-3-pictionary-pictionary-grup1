@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { CirclePicker, SketchPicker } from "react-color";
-import WordGuess from "../components/WordGuess";
+import { CirclePicker } from "react-color";
 import "../styles/Board.css";
 import React from "react";
 import CountDownTimer from "./CountdownTimer";
@@ -26,52 +25,54 @@ function Board({ socket, pintor }) {
     let endLine = false;
     let auxNum = 0;
     if (e.ctrlKey && !e.shiftKey && e.key === "z" && pintor) {
-      let i = arrayDatos.length;
-      for (i; i >= 0; i--) {
-        if (arrayDatos[i] !== "nuevaLinea" && endLine === false) {
-          if (arrayDatos[i] != null) {
-            arrayRedo.push(arrayDatos[i]);
-          }
-          arrayDatos.splice(i, 1);
-        }
-        else {
-          if (auxNum === 1) {
-            endLine = true;
+      if (arrayDatos.length > 0) {
+        let i = arrayDatos.length;
+        for (i; i >= 0; i--) {
+          if (arrayDatos[i] !== "nuevaLinea" && endLine === false) {
+            if (arrayDatos[i] != null) {
+              arrayRedo.push(arrayDatos[i]);
+            }
+            arrayDatos.splice(i, 1);
           }
           else {
-            arrayDatos.splice(i, 1);
-            auxNum++;
+            if (auxNum === 1) {
+              endLine = true;
+            }
+            else {
+              arrayDatos.splice(i, 1);
+              auxNum++;
+            }
           }
         }
-      }
-      arrayRedo.push("nuevaLinea");
+        arrayRedo.push("nuevaLinea");
 
 
-      const canvas = canvasRef.current;
-      const context = canvas.getContext("2d");
-      context.lineCap = "round";
-      context.clearRect(0, 0, canvas.width, canvas.height);
-      sendBoardDataToSocketIo();
+        const canvas = canvasRef.current;
+        const context = canvas.getContext("2d");
+        context.lineCap = "round";
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        sendBoardDataToSocketIo();
 
-      context.beginPath();
-      if (arrayDatos.length !== 0) {
-        context.moveTo(arrayDatos[0].x, arrayDatos[0].y);
-      } else {
-        return
-      }
-
-      for (let i = 0; i < arrayDatos.length; i++) {
-        if (arrayDatos[i] === "nuevaLinea") {
-          context.stroke();
-          context.beginPath();
-          i++;
+        context.beginPath();
+        if (arrayDatos.length !== 0) {
+          context.moveTo(arrayDatos[0].x, arrayDatos[0].y);
         } else {
-          context.lineTo(arrayDatos[i].x, arrayDatos[i].y);
-          context.lineWidth = arrayDatos[i].brushRadius;
-          context.strokeStyle = arrayDatos[i].currentColor;
+          return
         }
+
+        for (let i = 0; i < arrayDatos.length; i++) {
+          if (arrayDatos[i] === "nuevaLinea") {
+            context.stroke();
+            context.beginPath();
+            i++;
+          } else {
+            context.lineTo(arrayDatos[i].x, arrayDatos[i].y);
+            context.lineWidth = arrayDatos[i].brushRadius;
+            context.strokeStyle = arrayDatos[i].currentColor;
+          }
+        }
+        context.stroke();
       }
-      context.stroke();
     }
   }
 
@@ -89,7 +90,7 @@ function Board({ socket, pintor }) {
               arrayRedo.splice(i, 1);
             }
           }
-          else if (arrayRedo[i] === "nuevaLinea" && endLine == false) {
+          else if (arrayRedo[i] === "nuevaLinea" && endLine === false) {
             if (auxNum === 1) {
               endLine = true;
             }
@@ -168,6 +169,12 @@ function Board({ socket, pintor }) {
         isDrawing = true;
         x = evt.offsetX;
         y = evt.offsetY;
+        context.beginPath();
+        context.arc(x, y, brushRadius / 2, 0, 2 * Math.PI);
+        context.fillStyle = currentColor;
+        context.fill();
+        arrayDatos.push({ x, y, currentColor, brushRadius });
+        sendBoardDataToSocketIo();
       }
 
       function handleMouseMove(evt) {
@@ -189,14 +196,24 @@ function Board({ socket, pintor }) {
         sendBoardDataToSocketIo();
       }
 
-      function handleMouseUp() {
+      function handleMouseUp(evt) {
         isDrawing = false;
+        x = evt.offsetX;
+        y = evt.offsetY;
+        context.beginPath();
+        context.arc(x, y, brushRadius / 2, 0, 2 * Math.PI);
+        context.fillStyle = currentColor;
+        context.fill();
+        arrayDatos.push({ x, y, currentColor, brushRadius });
+        sendBoardDataToSocketIo();
         arrayDatos.push("nuevaLinea");
       }
 
       function handleMouseOut() {
+        if (isDrawing) {
+          arrayDatos.push("nuevaLinea");
+        }
         isDrawing = false;
-        arrayDatos.push("nuevaLinea");
       }
 
       canvas.addEventListener("mousedown", handleMouseDown);

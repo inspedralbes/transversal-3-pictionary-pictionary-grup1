@@ -73,6 +73,7 @@ class CategoryController extends Controller
     {
         $wrongWords = [];
         $invalidWords = [];
+        $createCategory = false;
         $categoryAdded = (object)[];
 
         //Set privacy
@@ -101,15 +102,7 @@ class CategoryController extends Controller
             if ($userId != null) {
                 $editCategoryName = false;
                 $createCategory = $this->checkCategoryDuplicated($request, $privacy, $editCategoryName);
-            } else {
-                $sendCategory = (object)
-                [
-                    "valid" => false,
-                    'message' => 'User is not logged in.',
-                ];
-            }
-
-            //If we can create the category we add it with the user id after checking that all the words are valid.
+                            //If we can create the category we add it with the user id after checking that all the words are valid.
 
             if ($createCategory) {
                 $allWordsAreValid = true;
@@ -191,6 +184,15 @@ class CategoryController extends Controller
                     'message' => "Category already exists."
                 ];
             }
+            } else {
+                $sendCategory = (object)
+                [
+                    "valid" => false,
+                    'message' => 'User is not logged in.',
+                ];
+            }
+
+
         }
 
         return response()->json($sendCategory);

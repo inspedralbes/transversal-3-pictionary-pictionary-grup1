@@ -14,7 +14,7 @@ function Description({ socket }) {
     });
 
     socket.on("current_word", (data) => {
-      if (data.word.description != null) {
+      if (data.word.description !== null) {
         setDescription(data.word.description);
       }
     });

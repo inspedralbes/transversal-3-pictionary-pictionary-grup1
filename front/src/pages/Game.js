@@ -1,4 +1,3 @@
-import logo from "../logo.svg";
 import "../App.css";
 import "../styles/Game.css";
 import { useState, useEffect } from "react";
@@ -133,7 +132,7 @@ function Game({ socket }) {
   }, []);
 
   useEffect(() => {
-    if (words != undefined && words.length > 0) {
+    if (words != undefined && words.length > wordIndex) {
       setWordToCheck(words[wordIndex].name);
     }
   }, [wordIndex, words]);
@@ -158,13 +157,11 @@ function Game({ socket }) {
 
           {roundEnded && !result && pintor && !timeUp && !gameEnded && (
             <div className="Game__modal">
-              <p>
                 {gamemode == "fast" ? (
                   <p>Congratulations! Your drawing was wonderful!</p>
                 ) : (
                   <p>Congratulations! Everyone got the word!</p>
                 )}
-              </p>
             </div>
           )}
 

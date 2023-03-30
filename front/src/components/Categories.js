@@ -23,7 +23,7 @@ function Categories({ socket, start, categoriesData }) {
   return (
     <div className="checkList">
       <div className="list__container default">
-        <h3 className="title">Default</h3>
+        <h3 className="title">Default categories</h3>
         <div id="list__container_li">
           {Array.isArray(categoriesData.default)
             ? categoriesData.default.map((item, index) => (
@@ -76,9 +76,9 @@ function Categories({ socket, start, categoriesData }) {
         </div>
       </div>
       <div className="list__container public">
-        <h3 className="title">Public</h3>
+        <h3 className="title">Created by others</h3>
         <div id="list__container_li">
-          {Array.isArray(categoriesData.public) && categoriesData.public != []
+          {Array.isArray(categoriesData.public) && categoriesData.public !== []
             ? categoriesData.public.map((item, index) => (
               <div key={index} className="list__container__text">
                 <input
@@ -148,7 +148,7 @@ function Categories({ socket, start, categoriesData }) {
       <div className="list__container private">
         <h3 className="title">My categories</h3>
         {Array.isArray(categoriesData.myCategories) &&
-          categoriesData.myCategories != []
+          categoriesData.myCategories !== []
           ? categoriesData.myCategories.map((item, index) => (
             <div key={index} className="list__container__text">
               <input

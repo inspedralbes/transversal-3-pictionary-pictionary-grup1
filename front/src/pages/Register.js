@@ -67,7 +67,7 @@ function Register({ socket }) {
     }, [userData.passwordValidation]);
 
     useEffect(() => {
-        if (registro != 0) {
+        if (registro !== 0) {
             const user = new FormData()
             user.append("name", userData.username);
             user.append("email", userData.email);
@@ -88,7 +88,7 @@ function Register({ socket }) {
                     navigate("/")
                 }
             }
-            );user.append("token", cookies.get('token') != undefined ? cookies.get('token') : null);
+            );user.append("token", cookies.get('token') !== undefined ? cookies.get('token') : null);
         }
     }, [registro]);
 

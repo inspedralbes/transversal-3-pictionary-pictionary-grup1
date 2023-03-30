@@ -90,7 +90,7 @@ function Settings({ socket, start }) {
       </div>
       <div className="settings__zone">
         <h2>SETTINGS </h2>
-        {error != "" && <h1 className="error">{error}</h1>}
+        {error !== "" && <h1 className="error">{error}</h1>}
         <form className="App" autoComplete="off">
           <span className="addCategory__formSpanTA">
             <p className="settings__zone__title">Round duration (seconds)</p>
