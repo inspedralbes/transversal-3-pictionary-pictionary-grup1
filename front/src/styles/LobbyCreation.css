@@ -229,7 +229,8 @@
 .joinLobby__changeAvatar {
     font-size: 1.7rem;
     width: 17%;
-    height: 10vh;
+    height: 7vh;
+    padding-bottom: 15px;
     margin: 0 auto;
     transition: all 0.2s;
 }
