@@ -2,10 +2,10 @@
     font-size: 1.3rem;
 }
 
-.NoCategory{
+.NoCategory {
     height: 60vh;
     width: 60%;
-    margin: 10vh auto;
+    margin: 3vh auto;
     display: flex;
     align-items: center;
     flex-wrap: wrap;
@@ -15,46 +15,46 @@
     border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
 }
 
-.NoCategory h1{
+.NoCategory h1 {
     letter-spacing: 2px;
     margin-top: 20%;
 }
 
-.NoCategory__addBtn{
+.NoCategory__addBtn {
     padding: 15px 25px;
     display: flex;
     margin-left: 10px !important;
     align-items: center;
     font-size: 1.2rem;
-    transform: translate(0,40px);
+    transform: translate(0, 40px);
 }
 
-.NoCategory__arrowBtn{
-    transform: translate(-10px,0);
+.NoCategory__arrowBtn {
+    transform: translate(-10px, 0);
     display: flex;
 }
 
-.NoCategory__arrowBtn img{
+.NoCategory__arrowBtn img {
     opacity: 0.6;
     margin-right: 10px;
     animation: arrow infinite 1s;
 }
 
-fieldset{
+fieldset {
     width: 60%;
     margin: 3% auto;
     border: 2px solid #2c2c2c;
 }
 
-.addCategory__goBack{
-    margin:30px;
+.addCategory__goBack {
+    margin: 30px;
 }
 
-.wordSettings{
+.wordSettings {
     padding: 20px;
     margin: auto;
     width: 60%;
-    border: 2px solid #bb9033;
+    border: 2px solid #f4a8a3;
     box-shadow: 20px 38px 34px -26px #00000033;
     border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
 }
@@ -64,23 +64,18 @@ fieldset{
 }
 
 .addCategory__nameTA {
-    display:flex;
+    display: flex;
     width: 100%;
 }
 
-.addCategory__description, .addCategory__Word {
+.addCategory__description,
+.addCategory__Word {
     text-transform: uppercase;
-    letter-spacing: 2px; 
+    letter-spacing: 2px;
     font-weight: 600;
+    color: #405b94;
 }
 
-.addCategory__Word{
-    color:#a72887;
-}
-
-.addCategory__description{
-    color:#45639b;
-}
 
 .addCategory__formSpanTA {
     margin: 0 auto;
@@ -99,12 +94,13 @@ fieldset{
     color: #a8a8a8;
 }
 
-.addCategory__Name{
+.addCategory__Name {
     text-align: center;
     font-size: 1.7rem;
     text-transform: uppercase;
-    letter-spacing: 3px; 
+    letter-spacing: 3px;
     font-weight: 600;
+    color: #ac2368;
 }
 
 .addCategory__legend {
@@ -126,8 +122,18 @@ fieldset{
     position: relative;
 }
 
-#submit__button{
-    margin:0;
+#submit__button {
+    height: 6vh;
+    margin: 20px;
+    letter-spacing: 2px;
+    transition: all 0.3s;
+}
+
+#submit__button:hover,
+#submit__button:focus {
+    background: none;
+    border-color: #bd5907;
+    color: #bd5907;
 }
 
 .addCategory__formSpan {
@@ -140,7 +146,7 @@ fieldset{
     border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
 }
 
-.addCategory__formSpanW{
+.addCategory__formSpanW {
     margin: auto;
     margin-bottom: 10px;
     width: 60%;
@@ -195,12 +201,12 @@ fieldset{
 }
 
 .addCategory__public {
-    width: fit-content;
+    width: 60%;
     margin: auto;
     display: flex;
 }
 
-.input{
+.input {
     width: 60%;
     border: solid 2px #929292;
     border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
@@ -211,19 +217,36 @@ fieldset{
 
 .text-area {
     width: 60%;
-    padding-left: 20px;
-
+    padding: 20px;
+    max-width: 90%;
+    min-width: 40%;
+    text-align: center;
 }
 
-.add-btn, .remove-btn{
+.add-btn,
+.remove-btn {
     margin: 20px;
+    border: 1px solid;
+    padding: 10px 20px;
+    transition: all 0.2s;
+    font-size: 1.2rem;
 }
 
-.input:focus, .text-area:focus{
-    border: 3px dashed #378137;
+.add-btn:hover,
+.add-btn:focus,
+.remove-btn:hover,
+.remove-btn:focus {
+    border: 1px solid #185b11;
+    background: none;
+    color: #ac2368;
 }
 
-#scroll{
+.input:focus,
+.text-area:focus {
+    border: 2px dashed #378137;
+}
+
+#scroll {
     margin: 2vh auto;
     width: 90%;
     height: 33vh;
@@ -244,15 +267,42 @@ fieldset{
     background-color: #575757;
 }
 
+#goBack__button {
+    font-size: 1.5rem;
+    margin: 30px;
+    width: 10%;
+    height: 7vh;
+}
+
+#goBack__button:hover {
+    background: none;
+    border-color: #790808;
+    color: #6b521d;
+    transition: all 0.2s;
+}
+
+.add:focus,
+.add:hover {
+    transition: all 0.2s;
+    background: none;
+    border-color: #ac2368;
+    color: #405b94;
+}
+
+.list__container__text__label{
+    text-transform: capitalize;
+}
 
 @keyframes arrow {
-    0%{
+    0% {
         transform: translate(0, 0);
     }
-    50%{
+
+    50% {
         transform: translate(15px, 5px);
     }
-    100%{
+
+    100% {
         transform: translate(0, 0);
     }
 }

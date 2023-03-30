@@ -1,4 +1,3 @@
-import logo from "../logo.svg";
 import "../App.css";
 import "../styles/Game.css";
 import { useState, useEffect } from "react";
@@ -32,7 +31,7 @@ function Game({ socket }) {
   const [gameEnded, setGameEnded] = useState(false);
 
   const messageResponses = {
-    wordAttemptError: "You failed the attempt!",
+    wordAttemptError: "Wrong word! Try again :)",
     wordAttemptSuccess: "Well done! You're the best!",
   };
 
@@ -133,7 +132,7 @@ function Game({ socket }) {
   }, []);
 
   useEffect(() => {
-    if (words != undefined && words.length > 0) {
+    if (words != undefined && words.length > wordIndex) {
       setWordToCheck(words[wordIndex].name);
     }
   }, [wordIndex, words]);
@@ -158,13 +157,11 @@ function Game({ socket }) {
 
           {roundEnded && !result && pintor && !timeUp && !gameEnded && (
             <div className="Game__modal">
-              <p>
                 {gamemode == "fast" ? (
                   <p>Congratulations! Your drawing was wonderful!</p>
                 ) : (
                   <p>Congratulations! Everyone got the word!</p>
                 )}
-              </p>
             </div>
           )}
 
@@ -236,7 +233,7 @@ function Game({ socket }) {
                               </div>
                             )}
                             {!result && (
-                              <p>{messageResponses.wordAttemptError}</p>
+                              <p className="game__error">{messageResponses.wordAttemptError}</p>
                             )}
                           </>
                         )}

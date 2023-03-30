@@ -252,12 +252,29 @@ div.player:nth-child(odd)>span:nth-child(1)>div:nth-child(1) {
     {
         display: none;
     }
-       
-    
-   
-   
-   
-   
-   
-   
 
+
+    .createGame__leaveButton {
+        width: fit-content;
+        font-size: 30px;
+        margin: 30px;
+        height: 60px;
+        justify-content: center;
+        color: white;
+        background-color: #5c5b5b;
+        border-color: #5c5b5b;
+    }
+
+.createGame__leaveButton:hover,
+.createGame__leaveButton:focus {
+    border: 2px solid #fa8a4a;
+    background: none;
+    color: #382af5;
+    transition: color 0.2s;
+    box-shadow: 0px 10px 34px 0px rgba(0, 0, 0, 0.2);
+    transition: all 0.7s;
+}
+
+.ranking__title {
+    font-size: 69px;
+}

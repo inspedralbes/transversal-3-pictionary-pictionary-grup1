@@ -162,9 +162,6 @@
     opacity: 1.0;
 }
 
-
-
-
 /* ===================================================================================================================
 ======================================================================================================================================
 ==================================================================================== */
@@ -178,6 +175,8 @@
     animation: draw 2s;
     animation-fill-mode: forwards;
 }
+
+
 
 .JoinLobby__form--grid {
     text-align: center;
@@ -227,8 +226,48 @@
     box-shadow: 0px 10px 34px 0px rgba(0, 0, 0, 0.2);
 }
 
+.joinLobby__changeAvatar {
+    font-size: 1.7rem;
+    width: 17%;
+    height: 7vh;
+    padding-bottom: 15px;
+    margin: 0 auto;
+    transition: all 0.2s;
+}
 
+.joinLobby__changeAvatar:hover {
+    background: none;
+    border-color: #2272a0;
+    color: #b300a4;
+}
 
+.joinLobby__avatar {
+    align-items: center;
+    margin: 2% auto;
+    display: flex;
+}
+
+#joinLobby__div {
+    margin-left: 30px;
+    height: 80vh;
+    padding: 10px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+#joinLobby__div::-webkit-scrollbar-track {
+    border-radius: 255px 15px 255px 15px / 15px 255px 15px 255px;
+    border: 2px solid #3e3e3e;
+}
+
+#joinLobby__div::-webkit-scrollbar {
+    width: 15px;
+}
+
+#joinLobby__div::-webkit-scrollbar-thumb {
+    border-radius: 255px 15px 255px 15px / 15px 255px 15px 255px;
+    background-color: #575757;
+}
 
 
 /* 0000000000000000000000000000000000000000000000000000000000000000000000000000000 */
@@ -416,19 +455,28 @@
     overflow-y: auto;
     overflow-x: hidden;
 }
+#settings {
+    height: 35vh;
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
 
 #list__container_li::-webkit-scrollbar-track,
-.icon-info-circle__content::-webkit-scrollbar {
+.icon-info-circle__content::-webkit-scrollbar,
+#settings::-webkit-scrollbar-track {
     border-radius: 255px 15px 255px 15px / 15px 255px 15px 255px;
     border: 2px solid #3e3e3e;
 }
 
 #list__container_li::-webkit-scrollbar,
-.icon-info-circle__content::-webkit-scrollbar {
+.icon-info-circle__content::-webkit-scrollbar,
+#settings::-webkit-scrollbar {
     width: 15px;
 }
 
 #list__container_li::-webkit-scrollbar-thumb,
+#settings::-webkit-scrollbar-thumb,
 .icon-info-circle__content::-webkit-scrollbar-thumb {
     border-radius: 255px 15px 255px 15px / 15px 255px 15px 255px;
     background-color: #575757;
@@ -455,20 +503,23 @@
     stroke-dashoffset: 0;
 }
 
+.list__container__text__label{
+    display:flex;
+    justify-content: center;
+} 
 
 .list__container__text__label span {
-    position: absolute;
+    position:relative;
     margin-left: -234px;
     font-weight: 200;
     width: 80%;
-    margin-top: 2%;
 }
 
 .list__container__text__label {
-    display: block;
+    display: flex;
 }
 
-.settingCreator__label{
+.settingCreator__label {
     margin: 3% 3% 0 25%;
 }
 
@@ -510,6 +561,7 @@
 
 .settings__zone>h2 {
     text-align: center;
+    margin-bottom: 0;
 }
 
 .gamemodes>h2 {
@@ -565,4 +617,3 @@
     font-size: 70%;
     z-index: 1;
 }
-

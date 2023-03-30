@@ -49,7 +49,7 @@ function Register({ socket }) {
     }, [userData.email]);
 
     useEffect(() => {
-        const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*#?&.])[a-zA-Z0-9@$!%*#?&.]{6,255}$/;
+        const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9]{6,255}$/;
         if (regex.test(userData.password)) {
             setColor({ ...color, password: "green" })
         } else {
@@ -58,7 +58,7 @@ function Register({ socket }) {
     }, [userData.password]);
 
     useEffect(() => {
-        const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*#?&.])[a-zA-Z0-9@$!%*#?&.]{6,255}$/;
+        const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9]{6,255}$/;
         if (userData.passwordValidation === userData.password && regex.test(userData.passwordValidation)) {
             setColor({ ...color, passwordValidation: "green" })
         } else {
@@ -67,7 +67,7 @@ function Register({ socket }) {
     }, [userData.passwordValidation]);
 
     useEffect(() => {
-        if (registro != 0) {
+        if (registro !== 0) {
             const user = new FormData()
             user.append("name", userData.username);
             user.append("email", userData.email);
@@ -88,7 +88,7 @@ function Register({ socket }) {
                     navigate("/")
                 }
             }
-            );user.append("token", cookies.get('token') != undefined ? cookies.get('token') : null);
+            );user.append("token", cookies.get('token') !== undefined ? cookies.get('token') : null);
         }
     }, [registro]);
 
