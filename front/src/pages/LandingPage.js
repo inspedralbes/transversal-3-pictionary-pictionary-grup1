@@ -35,8 +35,8 @@ function LandingPage({ socket }) {
         setisLogged(false);
       });
 
-      cookies.remove('token');  
-    }
+    cookies.remove('token');
+  }
 
   function menuOnClick() {
     setMenuBarClass(!menuBarClass);
@@ -58,7 +58,7 @@ function LandingPage({ socket }) {
     const data = await response.json();
     setdisplayMenu(true);
     if (data) {
-        setisLogged(true);
+      setisLogged(true);
     }
     else {
       setisLogged(false);
@@ -72,41 +72,41 @@ function LandingPage({ socket }) {
   return (
 
     <div className="ldPage">
-      {displayMenu ? 
-      <>
-         {isLogged ?
-          <div>
-            <div id="menu">
-              <div id="menu-bar" className={`menu-bar${menuBarClass ? " change" : ""}`} onClick={menuOnClick}>
-                <div id="bar1" className="bar"></div>
-                <div id="bar2" className="bar"></div>
-                <div id="bar3" className="bar"></div>
+      {displayMenu ?
+        <>
+          {isLogged ?
+            <div>
+              <div id="menu">
+                <div id="menu-bar" className={`menu-bar${menuBarClass ? " change" : ""}`} onClick={menuOnClick}>
+                  <div id="bar1" className="bar"></div>
+                  <div id="bar2" className="bar"></div>
+                  <div id="bar3" className="bar"></div>
+                </div>
+                <nav className={`nav${navClass ? " change" : ""}`} id="nav">
+                  <ol>
+                    <li><Link to="/categories">Categories</Link></li>
+                    <li onClick={Logout}><Link to="/">Logout</Link></li>
+                  </ol>
+                </nav>
               </div>
-              <nav className={`nav${navClass ? " change" : ""}`} id="nav">
-                <ol>
-                  <li><Link to="/categories">Categories</Link></li>
-                  <li onClick={Logout}><Link to="/">Logout</Link></li>
-                </ol>
-              </nav>
+
+              <div className={`menu-bg${menuBgClass ? " change-bg" : ""}`} id="menu-bg"></div>
             </div>
-  
-            <div className={`menu-bg${menuBgClass ? " change-bg" : ""}`} id="menu-bg"></div>
-          </div>
-          :
-          <div>
-            <Link to="/login">
+            :
+            <div>
               <div className="ldPage__loginRegister">
-                <>Log in/Register</>
+                <Link to="/login">
+                  <>Log in/Register</>
+                </Link>
               </div>
-            </Link>
-          </div>
+            </div>
           }
-          
+
         </>
-        : 
+        :
         <>
         </>
-    } 
+      }
       <div className="border is-drawn" id="border">
         <div className="space-around">
           <h1 className="ldPage__title">
@@ -132,7 +132,7 @@ function LandingPage({ socket }) {
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 }
 
