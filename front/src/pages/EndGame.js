@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import Ranking from '../components/Ranking';
 import { useState, useEffect } from "react";
+import "../styles/Ranking.css";
 import { useNavigate } from "react-router-dom";
 
 

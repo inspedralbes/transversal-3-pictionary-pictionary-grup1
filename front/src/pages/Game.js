@@ -52,7 +52,6 @@ function Game({ socket }) {
 
     socket.on("pintor", (data) => {
       setPintor(data.pintor);
-      console.log(data);
       setResult(null);
     });
 
@@ -92,7 +91,6 @@ function Game({ socket }) {
     });
 
     socket.on("started", () => {
-      console.log("STARTED");
       setStarting(false);
       const intervalId = setInterval(() => {
         setCountdown((countdown) => countdown - 1);
@@ -142,32 +140,31 @@ function Game({ socket }) {
 
   return (
     <>
-      {starting && (
-        <div className="Game__modal__loading">
-          Loading
-        </div>
-      )}
+      {starting && <div className="Game__modal__loading">Loading</div>}
       {!starting && (
         <>
           {roundEnded && !result && !pintor && !gameEnded && (
-            <div className="Game__modal"><p>
-              Last word was: {wordToCheck}
-              <br></br>
-              <br></br>
-              {nextDrawerName != null && (
-                <>Next round drawer: {nextDrawerName}</>
-              )}</p>
+            <div className="Game__modal">
+              <p>
+                Last word was: {wordToCheck}
+                <br></br>
+                <br></br>
+                {nextDrawerName != null && (
+                  <>Next round drawer: {nextDrawerName}</>
+                )}
+              </p>
             </div>
           )}
 
           {roundEnded && !result && pintor && !timeUp && !gameEnded && (
-            <div className="Game__modal"
-            ><p>
-              {gamemode == "fast" ? (
-                <p>Congratulations! Your drawing was wonderful!</p>
-              ) : (
-                <p>Congratulations! Everyone got the word!</p>
-              )}</p>
+            <div className="Game__modal">
+              <p>
+                {gamemode == "fast" ? (
+                  <p>Congratulations! Your drawing was wonderful!</p>
+                ) : (
+                  <p>Congratulations! Everyone got the word!</p>
+                )}
+              </p>
             </div>
           )}
 
@@ -179,8 +176,7 @@ function Game({ socket }) {
 
           {roundEnded && result && !gameEnded && (
             <div className="Game__modal">
-              <p>You did it!</p> <br></br>
-              <br></br>
+              <p>You did it!</p> <br />
               {nextDrawerName != null && (
                 <p>Next round drawer: {nextDrawerName}</p>
               )}
@@ -189,10 +185,12 @@ function Game({ socket }) {
 
           {showDrawer && (
             <div className="Game__modal">
-              <p>{countdown}
-              <br></br>
-              <br></br>
-              Drawer: {drawerName}</p>
+              <p>
+                {countdown}
+                <br></br>
+                <br></br>
+                Drawer: {drawerName}
+              </p>
             </div>
           )}
 
@@ -237,7 +235,9 @@ function Game({ socket }) {
                                 <p>{messageResponses.wordAttemptSuccess}</p>
                               </div>
                             )}
-                            {!result && <p>{messageResponses.wordAttemptError}</p>}
+                            {!result && (
+                              <p>{messageResponses.wordAttemptError}</p>
+                            )}
                           </>
                         )}
                       </>

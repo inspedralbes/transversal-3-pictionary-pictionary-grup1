@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Word;
+use App\Models\Category;
 
 class WordController extends Controller
 {
@@ -31,7 +32,11 @@ class WordController extends Controller
         if (!$enoughWords) {
             $words2 = Word::inRandomOrder()->whereNotIn("category_id", $request -> category)->limit($randomWords)->get(); 
             for ($i=0; $i < count($words2); $i++) { 
-                array_push($returnWords, $words2[$i]);
+                $wordCategory = Category::where('id', $words2[$i] -> category_id) -> first();
+                if ($wordCategory -> creator_id == NULL) {
+                    array_push($returnWords, $words2[$i]);
+                }
+                
             }
         }
 

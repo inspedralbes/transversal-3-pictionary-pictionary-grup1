@@ -89,7 +89,6 @@ function LobbyCreation({ socket }) {
     });
 
     socket.on("categories", (data) => {
-      console.log(data);
       setCategoriesData(data)
       setCategoriesDataLoaded(true);
       if (firstTime) {
@@ -155,7 +154,7 @@ function LobbyCreation({ socket }) {
                 <section id="main">
                   <div>
                     <Tabs socket={socket} start={starting} categoriesData={categoriesData}></Tabs>
-                  </div>
+                  </div>  
                 </section>
                 <div className="createGame__startButtonDiv">
                   <button
