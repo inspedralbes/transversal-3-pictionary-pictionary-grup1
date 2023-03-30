@@ -36,7 +36,7 @@ function Ranking({ socket }) {
 
   return (
     <div>
-      <h1>Ranking</h1>
+      <h1 className="ranking__title">Ranking</h1>
 
       <div className="ranking__container">
         <div className="topLeadersList fire">
