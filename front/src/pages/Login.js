@@ -80,11 +80,6 @@ function Login({ socket }) {
             ></input>
             <span className="form__inputBar"></span>
             <label className="form__inputlabel">Password</label>
-            <div className="form__links link">
-              {/* <Link className="link__ForgotPass" to="/forgotPassword">
-                                <p>Forgot your password?</p>
-                            </Link> */}
-            </div>
           </div>
         </div>
         <div className="form__buttonsLinks">
