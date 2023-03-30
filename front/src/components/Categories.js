@@ -27,7 +27,7 @@ function Categories({ socket, start, categoriesData }) {
         <div id="list__container_li">
           {Array.isArray(categoriesData.default)
             ? categoriesData.default.map((item, index) => (
-              <div key={index} className="list__container__text">
+              <div key={item.categoryId} className="list__container__text">
                 <input
                   value={item.categoryId}
                   type="checkbox"
@@ -80,7 +80,7 @@ function Categories({ socket, start, categoriesData }) {
         <div id="list__container_li">
           {Array.isArray(categoriesData.public) && categoriesData.public !== []
             ? categoriesData.public.map((item, index) => (
-              <div key={index} className="list__container__text">
+              <div key={item.categoryId} className="list__container__text">
                 <input
                   value={item.categoryId}
                   type="checkbox"
@@ -130,7 +130,9 @@ function Categories({ socket, start, categoriesData }) {
                         Words:{" "}
                         {Array.isArray(item.words) ? (
                           item.words.map((word, index) => (
-                            <li>{word.name}</li>
+                            <div key={index}>
+                                <li>{word.name}</li>
+                            </div>
                           ))
                         ) : (
                           <></>
@@ -150,7 +152,7 @@ function Categories({ socket, start, categoriesData }) {
         {Array.isArray(categoriesData.myCategories) &&
           categoriesData.myCategories !== []
           ? categoriesData.myCategories.map((item, index) => (
-            <div key={index} className="list__container__text">
+            <div key={item.categoryId} className="list__container__text">
               <input
                 value={item.categoryId}
                 type="checkbox"
