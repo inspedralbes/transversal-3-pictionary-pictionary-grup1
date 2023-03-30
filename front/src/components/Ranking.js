@@ -54,21 +54,21 @@ function Ranking({ socket }) {
                     {(() => {
                       if (index == 1) {
                         return (
-                          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-crown" width="100" height="100" viewBox="0 0 24 24" strokeWidth="3" stroke="#597e8d" fill="rgb(192, 192, 192)" strokeLinecap="round" strokeLinejoin="round">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-crown" width="100" height="100" viewBox="0 0 24 24" strokeWidth="3" stroke="#597e8d" fill="rgb(192, 192, 192)" strokeLinecap="round" strokeLinejoin="round">
                             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                             <path d="M12 6l4 6l5 -4l-2 10h-14l-2 -10l5 4z" />
                           </svg>
                         )
                       } else if (index == 2) {
                         return (
-                          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-crown" width="100" height="100" viewBox="0 0 24 24" strokeWidth="3" stroke="#ff9300" fill="#ffbf00" strokeLinecap="round" strokeLinejoin="round">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-crown" width="100" height="100" viewBox="0 0 24 24" strokeWidth="3" stroke="#ff9300" fill="#ffbf00" strokeLinecap="round" strokeLinejoin="round">
                             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                             <path d="M12 6l4 6l5 -4l-2 10h-14l-2 -10l5 4z" />
                           </svg>
                         )
                       } else {
                         return (
-                          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-crown" width="100" height="100" viewBox="0 0 24 24" strokeWidth="3" stroke="#ffec00" fill="gold" strokeLinecap="round" strokeLinejoin="round">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-crown" width="100" height="100" viewBox="0 0 24 24" strokeWidth="3" stroke="#ffec00" fill="gold" strokeLinecap="round" strokeLinejoin="round">
                             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                             <path d="M12 6l4 6l5 -4l-2 10h-14l-2 -10l5 4z" />
                           </svg>

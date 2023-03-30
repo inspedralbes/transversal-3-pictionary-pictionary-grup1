@@ -381,13 +381,13 @@ function Categories() {
                             <div className="form__buttons">
                                 <label className="addCategory__public">
                                     <div  className="list__container__text">
-                                        <input type="checkbox" id="check1"class="check" onChange={(e) => setUserData({ ...userData, privacy: e.target.checked })} required />
-                                        <label for="check1" class="list__container__text__label" >
+                                        <input type="checkbox" id="check1"className="check" onChange={(e) => setUserData({ ...userData, privacy: e.target.checked })} required />
+                                        <label htmlFor="check1" className="list__container__text__label" >
                                             <svg width="500" height="50" viewBox="0 0 500 100">
                                                 <rect x="0" y="15" width="50" height="50" stroke="black" fill="none" className="list__container__checkbox" />
                                                 <g transform="translate(-10,-962.36218)">
-                                                    <path d="m 13,983 c 33,6 40,26 55,48 " stroke="black" stroke-width="3" class="path1" fill="none" />
-                                                    <path d="M 75,970 C 51,981 34,1014 25,1031 " stroke="black" stroke-width="3" class="path1" fill="none" />
+                                                    <path d="m 13,983 c 33,6 40,26 55,48 " stroke="black" strokeWidth="3" className="path1" fill="none" />
+                                                    <path d="M 75,970 C 51,981 34,1014 25,1031 " stroke="black" strokeWidth="3" className="path1" fill="none" />
                                                 </g>
                                             </svg>
                                             <span style={{marginLeft: "-326px",marginTop:"10px"}}>Do you want the category to be public?</span>

@@ -36,7 +36,7 @@ function Categories({ socket, start, categoriesData }) {
                   onChange={handleCheck}
                 />
                 <label
-                  for={item.categoryId}
+                  htmlFor={item.categoryId}
                   className="list__container__text__label"
                 >
                   <svg width="300" height="50" viewBox="0 0 500 100">
@@ -53,14 +53,14 @@ function Categories({ socket, start, categoriesData }) {
                       <path
                         d="m 13,983 c 33,6 40,26 55,48 "
                         stroke="black"
-                        stroke-width="3"
+                        strokeWidth="3"
                         className="path1"
                         fill="none"
                       />
                       <path
                         d="M 75,970 C 51,981 34,1014 25,1031 "
                         stroke="black"
-                        stroke-width="3"
+                        strokeWidth="3"
                         className="path1"
                         fill="none"
                       />
@@ -89,7 +89,7 @@ function Categories({ socket, start, categoriesData }) {
                   onChange={handleCheck}
                 />
                 <label
-                  for={item.categoryId}
+                  htmlFor={item.categoryId}
                   className="list__container__text__label"
                 >
                   <svg width="300" height="50" viewBox="0 0 500 100">
@@ -106,14 +106,14 @@ function Categories({ socket, start, categoriesData }) {
                       <path
                         d="m 13,983 c 33,6 40,26 55,48 "
                         stroke="black"
-                        stroke-width="3"
+                        strokeWidth="3"
                         className="path1"
                         fill="none"
                       />
                       <path
                         d="M 75,970 C 51,981 34,1014 25,1031 "
                         stroke="black"
-                        stroke-width="3"
+                        strokeWidth="3"
                         className="path1"
                         fill="none"
                       />
@@ -159,7 +159,7 @@ function Categories({ socket, start, categoriesData }) {
                 onChange={handleCheck}
               />
               <label
-                for={item.categoryId}
+                htmlFor={item.categoryId}
                 className="list__container__text__label"
               >
                 <svg width="300" height="50" viewBox="0 0 500 100">
@@ -176,14 +176,14 @@ function Categories({ socket, start, categoriesData }) {
                     <path
                       d="m 13,983 c 33,6 40,26 55,48 "
                       stroke="black"
-                      stroke-width="3"
+                      strokeWidth="3"
                       className="path1"
                       fill="none"
                     />
                     <path
                       d="M 75,970 C 51,981 34,1014 25,1031 "
                       stroke="black"
-                      stroke-width="3"
+                      strokeWidth="3"
                       className="path1"
                       fill="none"
                     />

@@ -465,11 +465,10 @@
     margin-left: -234px;
     font-weight: 200;
     width: 80%;
-    margin-top: 2%;
 }
 
 .list__container__text__label {
-    display: block;
+    display: flex;
 }
 
 .settingCreator__label{
