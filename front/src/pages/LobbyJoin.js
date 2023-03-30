@@ -221,7 +221,7 @@ function LobbyJoin({ socket }) {
         </h1>
         <ConnectedUsers socket={socket}></ConnectedUsers>
         <div className="joinLobby__avatar">
-          <button className="joinLobby__changeAvatar" onClick={setAvatar}>Change avatar</button>
+          <button className="joinLobby__changeAvatar" onClick={setAvatar}> <i className="icon-undo"></i> Change avatar</button>
         </div>
       </div>
     );

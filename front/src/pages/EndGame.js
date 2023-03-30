@@ -42,9 +42,9 @@ function EndGame({ socket }) {
     <div>
       <div>
         {owner && (
-          <button onClick={onClick}>Go to lobby</button>
+          <button className='createGame__leaveButton' onClick={onClick}>Go to lobby</button>
         )}
-        <NavLink to='/'><button>Go to main page</button></NavLink>
+        <NavLink to='/'><button className='createGame__leaveButton'>Go to main page</button></NavLink>
       </div>
 
       <Ranking socket={socket}></Ranking>

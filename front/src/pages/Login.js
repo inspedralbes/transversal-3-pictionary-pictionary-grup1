@@ -51,11 +51,10 @@ function Login({ socket }) {
         <button className="createGame__leaveButton">Go back</button>
       </Link>
       <div className="form login">
-        <h1>LOGIN</h1>
+        <h1 className="form__title">LOGIN</h1>
         <br />
         <div className="form__form">
-          <p>{errorText}</p>
-
+          <p className="loginError">{errorText}</p>
           <div className="form__inputGroup">
             <input
               id="email"
@@ -80,11 +79,6 @@ function Login({ socket }) {
             ></input>
             <span className="form__inputBar"></span>
             <label className="form__inputlabel">Password</label>
-            <div className="form__links link">
-              {/* <Link className="link__ForgotPass" to="/forgotPassword">
-                                <p>Forgot your password?</p>
-                            </Link> */}
-            </div>
           </div>
         </div>
         <div className="form__buttonsLinks">

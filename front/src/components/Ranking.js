@@ -36,7 +36,7 @@ function Ranking({ socket }) {
 
   return (
     <div>
-      <h1>Ranking</h1>
+      <h1 className="ranking__title">Ranking</h1>
 
       <div className="ranking__container">
         <div className="topLeadersList fire">
@@ -87,7 +87,7 @@ function Ranking({ socket }) {
               <div className="player" key={index}>
                 <span> {index + 1 > 3 && (
                   <div  className="ranking__player">
-                      <p className="player__index">{index}</p>
+                      <p className="player__index">{index+1}</p>
                       <img alt="avatar" className="avatar__img" src={leader.avatar}></img>
                       <p className="player__name"> {leader.name} </p>
                       <p className="player__points"> {leader.points} points</p>

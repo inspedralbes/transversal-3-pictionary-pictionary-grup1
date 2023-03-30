@@ -39,4 +39,19 @@
     margin: 15px;
 }
 
+.loginError{
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 50px;
+    text-align: center;
+    color: #770000;
+}
+
+.form{
+    margin-top: 10vh;
+}
+
+.form__title{
+    margin-bottom: 0;
+}
 
