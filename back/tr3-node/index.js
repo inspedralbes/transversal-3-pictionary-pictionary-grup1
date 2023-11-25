@@ -54,7 +54,7 @@ app.use(
 );
 
 let i = 0;
-const laravelRoute = "https://g1.pictionary-api.alumnes.inspedralbes.cat/";
+const laravelRoute = "https://g1.pictionary-api.dam.inspedralbes.cat/";
 
 let lobbies = [];
 
